@@ -44,7 +44,7 @@ public class UsuarioService {
 	public ResponseEntity<Usuario> updateById(Long id, Usuario updateUsuario) {
 
 		if (usuarioRepository.existsById(id)) {
-			updateUsuario.setCadUser(id);
+			updateUsuario.setId(id);
 			return ResponseEntity.ok(usuarioRepository.save(updateUsuario));
 		}
 		return ResponseEntity.notFound().build();

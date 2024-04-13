@@ -14,11 +14,10 @@ public class Usuario {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long cadUser;
+	private Long id;
 	private String name;
-	private Integer phone;
 	private String region;
-	private Boolean isAdm;
+
 	
 	public Usuario() {
 		
