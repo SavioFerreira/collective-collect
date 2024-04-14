@@ -27,3 +27,18 @@ values
     'rua farofinha de mandioca, lá ele',
     'sacos de lixo jogados'
   );
+
+  insert into
+  "public"."collect" (
+    "artifact_id",
+    "id",
+    "data",
+    "gravity",
+    "status",
+    "type"
+  )
+values
+  (1, 1, '4/14/2024', 'critico', 'concluido', 'organico'),
+  (2, 2, '4/8/2024', 'braixo', 'em analise', 'plastico'),
+  (3, 3, '4/10/2024', 'moderado', 'pendente', 'alvenaria'); 
+ 

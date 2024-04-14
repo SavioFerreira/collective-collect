@@ -1,0 +1,9 @@
+tipos de gravidade para denúncias. 
+
+Moderado
+Crítico
+Baixo
+Urgente
+Alto
+Mínimo
+Importante
