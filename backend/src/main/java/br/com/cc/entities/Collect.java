@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 public class Collect {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String status;
 	private String type;
@@ -33,5 +32,11 @@ public class Collect {
 		local = artifact.getLocale();
 	}
 
+	public Long getId() {
+		return artifact.getId();
+	}
 
+	public void setId(Long id) {
+		this.id = artifact.getId();
+	}
 }

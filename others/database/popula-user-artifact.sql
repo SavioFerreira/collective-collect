@@ -1,13 +1,13 @@
 insert into
-  "public"."usuario" ("name","region")
+  "public"."user" ("name","email")
 values
-  ( 'savi', 'grajax'),
-  ('zoro', 'wano'),
-  ('luffy', 'eastblue'),
-  ('omega', 'gamax'),
-  ('vertebra', 'drobadix'),
-  ('brook', 'almar'),
-  ('canis', 'grajax');
+  ( 'savi', 'savi@email.com'),
+  ('zoro', 'zoro@email.com'),
+  ('luffy', 'luffy@email.comtblue'),
+  ('omega', 'omega@email.com'),
+  ('vertebra', 'vertebra@email.com'),
+  ('brook', 'brook@email.com'),
+  ('canis', 'scanis@email.com');
 
   insert into
   "public"."artifact" ("description", "locale", "title")
