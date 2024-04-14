@@ -13,38 +13,38 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.cc.entities.Usuario;
-import br.com.cc.services.UsuarioService;
+import br.com.cc.entities.User;
+import br.com.cc.services.UserService;
 
 @RestController
 @RequestMapping("/users")
-public class UsuarioController {
+public class UserController {
 	
 	@Autowired
-	private UsuarioService usuarioService;
+	private UserService userService;
 	
 	@GetMapping
-	public List<Usuario> findAll(){
-		return usuarioService.findAll();
+	public List<User> findAll(){
+		return userService.findAll();
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Usuario> findbyId(@PathVariable Long id) {
-		return usuarioService.findById(id);
+	public ResponseEntity<User> findbyId(@PathVariable Long id) {
+		return userService.findById(id);
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Usuario> deleteById(@PathVariable Long id){
-		return usuarioService.deletebyId(id);
+	public ResponseEntity<User> deleteById(@PathVariable Long id){
+		return userService.deletebyId(id);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Usuario> updateById(@PathVariable Long id,@RequestBody Usuario updateUser){
-		return usuarioService.updateById(id, updateUser);
+	public ResponseEntity<User> updateById(@PathVariable Long id, @RequestBody User updateUser){
+		return userService.updateById(id, updateUser);
 	}
 	
 	@PostMapping
-	public Usuario save(@RequestBody Usuario usuario) {
-		return usuarioService.save(usuario);
+	public User save(@RequestBody User user) {
+		return userService.save(user);
 	}
 }
