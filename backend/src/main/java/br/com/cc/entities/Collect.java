@@ -12,11 +12,12 @@ import java.time.LocalDateTime;
 public class Collect {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String status;
 	private String type;
 	private String gravity;
-	private LocalDateTime data;
+	private LocalDateTime date;
 
 	@OneToOne
 	private Artifact artifact;
@@ -25,18 +26,12 @@ public class Collect {
 		
 	}
 
-	public Collect(Long id, String title, String description,  String local) {
-		id = artifact.getId();
+	public Collect(Long id, Long artifactId, String title, String description,  String local) {
+		this.id = id;
+		artifactId = artifact.getId();
 		title = artifact.getTitle();
 		description = artifact.getDescription();
 		local = artifact.getLocale();
 	}
 
-	public Long getId() {
-		return artifact.getId();
-	}
-
-	public void setId(Long id) {
-		this.id = artifact.getId();
-	}
 }
