@@ -1,54 +1,41 @@
 package br.com.cc.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 @Entity
 public class Complaint {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String status;
 	private String type;
 	private String gravity;
 
-
+	@CreationTimestamp
 	private LocalDateTime date;
 	private String image;
 
-	@OneToOne
-	private Artifact artifact;
+	String title;
+	String description;
+	String locale;
+
+
+	@ManyToOne
+	private User author;
 
 	@OneToOne
 	private Collect collect;
-	
-	public Complaint() {
-		
-	}
-
-	public Complaint(Long id, Long artifactId,String title, String description, String locale,  String status, String type, String gravity, LocalDateTime date, String image) {
-		this.id = id;
-		artifactId = artifact.getId();
-		title = artifact.getTitle();
-		description = artifact.getDescription();
-		locale = artifact.getLocale();
-		this.status = status;
-		this.type = type;
-		this.gravity = gravity;
-		this.date = date;
-		this.image = image;
-
-	}
-
-	public Collect collect (Collect collect){
-		return collect;
-	}
 
 }

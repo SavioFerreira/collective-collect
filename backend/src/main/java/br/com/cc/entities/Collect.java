@@ -1,11 +1,20 @@
 package br.com.cc.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
+
+@NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
 @Entity
@@ -17,21 +26,23 @@ public class Collect {
 	private String status;
 	private String type;
 	private String gravity;
+
+	@CreationTimestamp
 	private LocalDateTime date;
+	private String image;
 
-	@OneToOne
-	private Artifact artifact;
+	private String title;
+	private String description;
+	private String locale;
 
-	public Collect() {
-		
-	}
+	private Long id_complaint;
 
-	public Collect(Long id, Long artifactId, String title, String description,  String local) {
-		this.id = id;
-		artifactId = artifact.getId();
-		title = artifact.getTitle();
-		description = artifact.getDescription();
-		local = artifact.getLocale();
-	}
+	@ManyToMany
+	@JoinTable(
+			name = "collect_collaborator",
+			joinColumns = @JoinColumn(name = "collect_id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id")
+	)
+	private Set<User> collaborators = new HashSet<>();
 
 }
