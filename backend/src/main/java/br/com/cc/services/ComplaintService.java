@@ -5,8 +5,8 @@ import br.com.cc.entities.Complaint;
 import br.com.cc.repositories.CollectRepository;
 import br.com.cc.repositories.ComplaintRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,42 +17,45 @@ public class ComplaintService {
 	@Autowired
 	private ComplaintRepository complaintRepository;
 
-	public List<Complaint> findAll() {
+	@Autowired
+	private CollectRepository collectRepository;
 
+	public List<Complaint> findAll() {
 		return complaintRepository.findAll();
 	}
 
-	public ResponseEntity<Complaint> findById(Long id) {
-
-		Optional<Complaint> complaint = complaintRepository.findById(id);
-
-		if (complaint.isPresent()) {
-			return ResponseEntity.ok(complaint.get());
-		}
-		return ResponseEntity.notFound().build();
-
+	public Optional<Complaint> findById(Long id) {
+		return complaintRepository.findById(id);
 	}
 
-	public ResponseEntity<Complaint> deletebyId(Long id) {
-
+	public boolean deleteById(Long id) {
 		if (complaintRepository.existsById(id)) {
 			complaintRepository.deleteById(id);
-			return ResponseEntity.noContent().build();
+			return true;
 		}
-		return ResponseEntity.notFound().build();
+		return false;
 	}
 
-	public ResponseEntity<Complaint> updateById(Long id, Complaint updateComplaint) {
-
+	public Complaint updateById(Long id, Complaint updateComplaint) {
 		if (complaintRepository.existsById(id)) {
 			updateComplaint.setId(id);
-			return ResponseEntity.ok(complaintRepository.save(updateComplaint));
+			return complaintRepository.save(updateComplaint);
 		}
-		return ResponseEntity.notFound().build();
+		return null;
 	}
 
+	@Transactional
 	public Complaint save(Complaint complaint) {
-		return complaintRepository.save(complaint);
-	}
+		Complaint savedComplaint = complaintRepository.save(complaint);
 
+		// Criar automaticamente uma coleta ao salvar uma nova denúncia
+		Collect collect = new Collect();
+		collect.setComplaint(savedComplaint); // Associar a coleta à denúncia
+		collect.setStatus("Pendente"); // Definir um status inicial para a coleta
+		collectRepository.save(collect);
+
+		// Opcionalmente, atualizar a denúncia com a coleta criada
+		savedComplaint.setCollect(collect);
+		return complaintRepository.save(savedComplaint);
+	}
 }

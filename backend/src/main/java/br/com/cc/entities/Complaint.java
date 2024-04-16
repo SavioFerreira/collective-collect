@@ -37,9 +37,11 @@ public class Complaint {
 
 	@ManyToOne
 	@NotNull
+	@JoinColumn(name = "author_id")
 	private User author;
 
 	@OneToOne
+	@JoinColumn(name = "collect_id")
 	private Collect collect;
 
 }

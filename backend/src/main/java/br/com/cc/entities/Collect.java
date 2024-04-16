@@ -6,12 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,7 +33,9 @@ public class Collect {
 	private String description;
 	private String locale;
 
-	private Long id_complaint;
+	@ManyToOne
+	@JoinColumn(name = "complaint_id")
+	private Complaint complaint;
 
 	@ManyToMany
 	@JoinTable(
