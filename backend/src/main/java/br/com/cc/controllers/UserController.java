@@ -1,15 +1,14 @@
 package br.com.cc.controllers;
 
+import br.com.cc.dto.UserDTO;
+import br.com.cc.entities.User;
+import br.com.cc.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.cc.entities.User;
-import br.com.cc.entities.Complaint;
-import br.com.cc.entities.Collect;
-import br.com.cc.services.UserService;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -19,49 +18,49 @@ public class UserController {
 	private UserService userService;
 
 	@GetMapping
-	public List<User> findAll(){
-		return userService.findAll();
+	public ResponseEntity<List<User>> findAll() {
+		List<User> users = userService.findAll();
+		return ResponseEntity.ok(users);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<User> findById(@PathVariable Long id) {
-		return userService.findById(id);
+		return userService.findById(id)
+				.map(ResponseEntity::ok)
+				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<User> deleteById(@PathVariable Long id){
-		return userService.deleteById(id);
+	public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+		boolean deleted = userService.deleteById(id);
+		return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<User> updateById(@PathVariable Long id, @RequestBody User updateUser){
-		return userService.updateById(id, updateUser);
+	public ResponseEntity<User> updateById(@PathVariable Long id, @RequestBody User user) {
+		User updatedUser = userService.updateById(id, user);
+		return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.notFound().build();
 	}
 
 	@PostMapping
-	public User save(@RequestBody User user) {
-		return userService.save(user);
+	public ResponseEntity<User> save(@RequestBody User user) {
+		User savedUser = userService.save(user);
+		return ResponseEntity.ok(savedUser);
 	}
 
-	// Método para registrar uma reclamação
-	@PostMapping("/{id}/complaints")
-	public ResponseEntity<Complaint> registerComplaint(@PathVariable Long id) {
-		User user = userService.findById(id).getBody();
-		if (user == null) {
-			return ResponseEntity.notFound().build();
-		}
-		Complaint complaint = userService.registerComplaint(user);
-		return ResponseEntity.ok(complaint); // Idealmente, deveria retornar a entidade salva, com status 201 (Created)
+	private UserDTO convertToDTO(User user) {
+		UserDTO dto = new UserDTO();
+		dto.setId(user.getId());
+		dto.setName(user.getName());
+		dto.setEmail(user.getEmail());
+		return dto;
 	}
 
-	// Método para iniciar uma coleta
-	@PostMapping("/{id}/collects")
-	public ResponseEntity<Collect> startCollect(@PathVariable Long id) {
-		User user = userService.findById(id).getBody();
-		if (user == null) {
-			return ResponseEntity.notFound().build();
-		}
-		Collect collect = userService.startCollect(user);
-		return ResponseEntity.ok(collect); // Idealmente, deveria retornar a entidade salva, com status 201 (Created)
+	private User convertToEntity(UserDTO dto) {
+		User user = new User();
+		user.setId(dto.getId());
+		user.setName(dto.getName());
+		user.setEmail(dto.getEmail());
+		return user;
 	}
 }

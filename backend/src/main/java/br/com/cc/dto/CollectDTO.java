@@ -3,13 +3,13 @@ package br.com.cc.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ComplaintDTO {
+public class CollectDTO {
     private Long id;
     private String status;
     private String type;
@@ -19,5 +19,6 @@ public class ComplaintDTO {
     private String title;
     private String description;
     private String locale;
-    private UserDTO author;
+    private Long complaintId;
+    private Set<UserDTO> collaborators;
 }

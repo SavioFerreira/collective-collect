@@ -3,15 +3,11 @@ package br.com.cc.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@Setter
-@Getter
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -29,6 +25,8 @@ public class User {
 
 	private String password;
 
+	public User(Long id, String name, String email) {
+	}
 
 	public Complaint makeComplaint(){
 		return new Complaint();

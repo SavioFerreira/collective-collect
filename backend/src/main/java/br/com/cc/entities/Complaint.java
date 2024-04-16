@@ -2,20 +2,15 @@ package br.com.cc.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@Setter
-@Getter
+@AllArgsConstructor
 @Entity
 public class Complaint {
 

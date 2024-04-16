@@ -7,7 +7,6 @@ import br.com.cc.entities.Collect;
 import br.com.cc.entities.Complaint;
 import br.com.cc.factories.UserActionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import br.com.cc.entities.User;
@@ -20,43 +19,32 @@ public class UserService {
 	private UserRepository userRepository;
 
 	public List<User> findAll() {
-
 		return userRepository.findAll();
 	}
 
-	public ResponseEntity<User> findById(Long id) {
-
-		Optional<User> user = userRepository.findById(id);
-
-		if (user.isPresent()) {
-			return ResponseEntity.ok(user.get());
-		}
-		return ResponseEntity.notFound().build();
-
+	public Optional<User> findById(Long id) {
+		return userRepository.findById(id);
 	}
 
-	public ResponseEntity<User> deleteById(Long id) {
-
+	public boolean deleteById(Long id) {
 		if (userRepository.existsById(id)) {
 			userRepository.deleteById(id);
-			return ResponseEntity.noContent().build();
+			return true;
 		}
-		return ResponseEntity.notFound().build();
+		return false;
 	}
 
-	public ResponseEntity<User> updateById(Long id, User updateUser) {
-
+	public User updateById(Long id, User updateUser) {
 		if (userRepository.existsById(id)) {
 			updateUser.setId(id);
-			return ResponseEntity.ok(userRepository.save(updateUser));
+			return userRepository.save(updateUser);
 		}
-		return ResponseEntity.notFound().build();
+		return null;
 	}
 
 	public User save(User user) {
 		return userRepository.save(user);
 	}
-
 	public Complaint registerComplaint(User user) {
 		Complaint complaint = UserActionFactory.createComplaint(user);
 
