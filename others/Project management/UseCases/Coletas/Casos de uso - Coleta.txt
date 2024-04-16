@@ -1,0 +1,11 @@
+Gerenciar Coletas (Coleta)
+O usuário deve ser capaz de marcar uma denúncia como coletada, indicando que ele irá ou já foi até o local para coletar o resíduo.
+
+Registrar Coleta: Após visualizar uma denúncia, um usuário pode se registrar para coletar o resíduo indicado.
+
+Visualizar Coletas: Usuários podem ver todas as coletas que foram registradas, incluindo os detalhes de quem irá realizar a coleta e quando.
+
+Atualizar Coleta: O usuário responsável pela coleta pode atualizar informações sobre a mesma.
+
+Concluir Coleta: O usuário marca a coleta como concluída após a realização, com a possibilidade de adicionar fotos e comentários sobre a conclusão.
+

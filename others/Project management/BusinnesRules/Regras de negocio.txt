@@ -1,0 +1,17 @@
+Regras de Negócio:
+
+Somente usuários cadastrados e logados podem fazer denúncias e marcar denúncias como coletadas.
+
+Uma denúncia só pode ser marcada como coletada por um usuário por vez.
+
+Um usuário só pode marcar uma denúncia como coletada se ele estiver próximo do local da denúncia.
+
+Autenticação Necessária: Usuários devem estar autenticados para criar, atualizar ou deletar denúncias e coletas.
+
+Validação de Dados: Todas as entradas (como emails, localizações e fotos em denúncias) devem ser validadas conforme o formato esperado.
+
+Responsabilidade Única por Denúncia: Uma denúncia só pode ser atualizada ou deletada pelo usuário que a criou e ou por um administrador.
+
+Limites de Cadastro de Coleta: Um usuário só pode registrar-se para uma coleta se não houver outra coleta pendente por ele.
+
+Confirmação de Coleta: A coleta só pode ser marcada como concluída pelos usuários que se registraram e comprovaram com foto a realização da coleta.

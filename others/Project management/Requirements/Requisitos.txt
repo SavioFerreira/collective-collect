@@ -1,0 +1,18 @@
+RequisitosFuncionais
+
+O sistema deve ter uma interface de usuário amigável e fácil de usar.
+O sistema deve ser capaz de armazenar informações de usuários, denúncias e coletas.
+O sistema deve ser capaz de exibir as denúncias em um mapa, para que os usuários possam ver facilmente as denúncias próximas a eles.
+O sistema deve ser capaz de enviar notificações para os usuários quando uma denúncia for feita perto de sua localização.
+O sistema deve ser capaz de registrar a data e hora de quando uma denúncia for feita e quando ela for marcada como coletada.
+
+O sistema deve permitir o registro de novos usuários.
+O sistema deve permitir que usuários façam login e logout.
+O sistema deve permitir a criação, visualização, atualização e remoção de denúncias.
+O sistema deve permitir o registro, visualização, atualização e conclusão de coletas.
+O sistema deve enviar notificações para os usuários quando novas denúncias ou coletas são registradas.
+
+Requisitos Não Funcionais
+
+O sistema deve ser capaz de suportar pelo menos 1000 usuários simultâneos.
+Todas as operações críticas (como criação de denúncia e registro de coleta) devem ser completadas em no máximo 2 segundos

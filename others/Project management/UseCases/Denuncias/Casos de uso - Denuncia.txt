@@ -1,0 +1,10 @@
+Gerenciar Denúncias (Denúncia)
+
+Criar Denúncia: Um usuário pode criar uma denúncia relatando descarte indevido de resíduos, incluindo detalhes como localização, tipo de resíduo e fotos.
+Visualizar Denúncias: Usuários podem visualizar todas as denúncias registradas.
+Atualizar Denúncia: O usuário que criou a denúncia pode atualizá-la, por exemplo, para adicionar mais informações ou corrigir um erro.
+Deletar Denúncia: O usuário que criou a denúncia pode deletá-la.
+
+
+
+

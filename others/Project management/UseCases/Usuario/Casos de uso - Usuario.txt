@@ -1,0 +1,8 @@
+Cadastro de Usuário
+O usuário deve ser capaz de se cadastrar no sistema fornecendo informações básicas, como nome, e-mail e senha.
+
+Login de Usuário
+O usuário deve ser capaz de fazer login no sistema usando seu e-mail e senha cadastrados.
+
+Editar Perfil
+Usuários podem alterar suas informações de perfil.
