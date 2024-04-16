@@ -1,6 +1,8 @@
 package br.com.cc.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +25,7 @@ public class Complaint {
 	private String type;
 	private String gravity;
 
+
 	@CreationTimestamp
 	private LocalDateTime date;
 	private String image;
@@ -33,6 +36,7 @@ public class Complaint {
 
 
 	@ManyToOne
+	@NotNull
 	private User author;
 
 	@OneToOne
