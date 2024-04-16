@@ -9,18 +9,15 @@ public class UserActionFactory {
     public static Complaint createComplaint(User author) {
         Complaint complaint = new Complaint();
         complaint.setAuthor(author);
-
-        //TODO
-
+        // todo - Inicialize outros atributos padrões conforme necessário
         return complaint;
     }
 
     public static Collect createCollect(User collector) {
         Collect collect = new Collect();
-
-        //TODO
-
+        // todo - Assuma que um usuário pode iniciar uma coleta
         collect.getCollaborators().add(collector);
+        // todo - Inicialize outros atributos padrões conforme necessário
         return collect;
     }
 }

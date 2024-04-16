@@ -35,7 +35,7 @@ public class UserService {
 
 	}
 
-	public ResponseEntity<User> deletebyId(Long id) {
+	public ResponseEntity<User> deleteById(Long id) {
 
 		if (userRepository.existsById(id)) {
 			userRepository.deleteById(id);
