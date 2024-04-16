@@ -1,5 +1,6 @@
 package br.com.cc.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +36,7 @@ public class Collect {
 
 	@ManyToOne
 	@JoinColumn(name = "complaint_id")
+	@JsonIgnore
 	private Complaint complaint;
 
 	@ManyToMany

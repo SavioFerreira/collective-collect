@@ -47,15 +47,21 @@ public class ComplaintService {
 	@Transactional
 	public Complaint save(Complaint complaint) {
 		Complaint savedComplaint = complaintRepository.save(complaint);
+		createAndSaveCollectForComplaint(savedComplaint);
+		return savedComplaint;
+	}
 
-		// Criar automaticamente uma coleta ao salvar uma nova denúncia
+	private void createAndSaveCollectForComplaint(Complaint complaint) {
 		Collect collect = new Collect();
-		collect.setComplaint(savedComplaint); // Associar a coleta à denúncia
-		collect.setStatus("Pendente"); // Definir um status inicial para a coleta
+		collect.setComplaint(complaint);
+		collect.setStatus("Pendente");
+		collect.setType(complaint.getType());
+		collect.setGravity(complaint.getGravity());
+		collect.setDate(complaint.getDate());
+		collect.setImage(complaint.getImage());
+		collect.setTitle(complaint.getTitle());
+		collect.setDescription(complaint.getDescription());
+		collect.setLocale(complaint.getLocale());
 		collectRepository.save(collect);
-
-		// Opcionalmente, atualizar a denúncia com a coleta criada
-		savedComplaint.setCollect(collect);
-		return complaintRepository.save(savedComplaint);
 	}
 }
