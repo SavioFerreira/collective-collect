@@ -7,15 +7,15 @@ import ColetaSvg from '@assets/garrafa.svg';
 import DenunciaSvg from '@assets/handsworld.svg';
 
 import { Home } from '@screens/Home';
-import { Denuncia } from '@screens/Denuncia';
-import { Coleta } from '@screens/Coleta';
+import { HomeDenuncia } from '@screens/HomeDenuncia';
+import { HomeColeta } from '@screens/HomeColeta';
 import { Profile } from '@screens/Profile';
 
 
 type AppRoutes = {
   home: undefined;
-  coleta: undefined;
-  denuncia: undefined;
+  coletas: undefined;
+  denuncias: undefined;
   profile: undefined;
 }
 
@@ -58,8 +58,8 @@ export function AppRoutes() {
       />
 
       <Screen 
-        name='coleta'
-        component={Coleta}
+        name='coletas'
+        component={HomeColeta}
         options={{
           tabBarIcon: ({color}) => (
             <ColetaSvg 
@@ -72,8 +72,8 @@ export function AppRoutes() {
       />
 
       <Screen 
-        name='denuncia'
-        component={Denuncia}
+        name='denuncias'
+        component={HomeDenuncia}
         options={{
           tabBarIcon: ({color}) => (
             <DenunciaSvg 
