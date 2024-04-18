@@ -45,6 +45,7 @@ public class UserService {
 	public User save(User user) {
 		return userRepository.save(user);
 	}
+
 	public Complaint registerComplaint(User user) {
 		Complaint complaint = UserActionFactory.createComplaint(user);
 
