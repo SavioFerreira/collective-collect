@@ -53,6 +53,7 @@ public class UserController {
 		dto.setId(user.getId());
 		dto.setName(user.getName());
 		dto.setEmail(user.getEmail());
+		dto.setAvatar(user.getAvatar());
 		return dto;
 	}
 
@@ -61,6 +62,7 @@ public class UserController {
 		user.setId(dto.getId());
 		user.setName(dto.getName());
 		user.setEmail(dto.getEmail());
+		user.setAvatar(dto.getAvatar());
 		return user;
 	}
 }

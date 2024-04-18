@@ -54,7 +54,7 @@ public class ComplaintService {
 	private void createAndSaveCollectForComplaint(Complaint complaint) {
 		Collect collect = new Collect();
 		collect.setComplaint(complaint);
-		collect.setStatus("Pendente");
+		collect.setStatus(complaint.getStatus());
 		collect.setType(complaint.getType());
 		collect.setGravity(complaint.getGravity());
 		collect.setDate(complaint.getDate());

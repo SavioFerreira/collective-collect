@@ -25,6 +25,12 @@ public class User {
 
 	private String password;
 
+	private String avatar;
+
+	private boolean isAdministrator;
+
+
+
 	public User(Long id, String name, String email) {
 	}
 
