@@ -1,6 +1,9 @@
 package br.com.cc.enums;
 
-public enum ComplaintType {
+import lombok.Getter;
+
+@Getter
+public enum WasteType {
     PLASTICO("Plástico"),
     VIDRO("Vidro"),
     METAL("Metal"),
@@ -14,6 +17,10 @@ public enum ComplaintType {
     CONSTRUCAO("Construção e Demolição"),
     VOLUMOSOS("Volumosos");
 
-    ComplaintType(String plástico) {
+    private final String typeDescription;
+
+    WasteType(String description) {
+        this.typeDescription = description;
     }
+
 }
