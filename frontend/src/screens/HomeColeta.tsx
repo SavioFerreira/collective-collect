@@ -1,17 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 import { HStack, VStack, FlatList, useToast, Text, Heading, Center, Icon } from "native-base";
-import { IconHeader } from "@components/IconHeader";
 
 import { Entypo } from '@expo/vector-icons';
+
+import { AppError } from '@utils/AppError';
 
 import { ColetaDTO } from '@dtos/ColetaDTO';
 import { api } from '@services/api'
 
+import { IconHeader } from "@components/IconHeader";
 import { Group } from '@components/Group';
-import { AppError } from '@utils/AppError';
 import { ColetaCard } from '@components/ColetaCard';
-import { useFocusEffect } from '@react-navigation/native';
 import { Loading } from '@components/Loading';
 
 export function HomeColeta() {
@@ -26,30 +27,27 @@ export function HomeColeta() {
       setIsLoading(true);
       const response = await api.get('/collects');
       setColetas(response.data);
-      //setGroups(response.data);
-      fetchColetas();
-
     } catch (error) {
       const isAppError = error instanceof AppError;
-      const title = isAppError ? error.message : 'Não foi possível carregar as coletas. Tente novamente mais tarde.';
+      const title = isAppError ? error.message : 'Não foi possível carregar as coletas';
+
       toast.show({
-        description: title
-      });
+        title: title,
+        placement: 'top',
+        bgColor: 'red.500'
+      })
     } finally {
       setIsLoading(false);
     }
   }
 
-  useEffect(() => {
-    fetchColetas();
-  }, []);
-
   useFocusEffect(
     useCallback(() => {
-
+      fetchColetas();
+       //const intervalId = setInterval(fetchColetas, 8000); 
+       //return () => clearInterval(intervalId);
     }, [groupSelected])
-  )
-
+  );
 
   return (
     <VStack flex={1} >
@@ -108,6 +106,12 @@ export function HomeColeta() {
                 onPress={() => { console.log(item.id) }}
                 data={item}
               />
+            )}
+            ListEmptyComponent={() => (
+              <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
+                Não há coletas disponíveis no momento. {'\n'}
+                Volte mais tarde.
+              </Text>
             )}
             showsVerticalScrollIndicator={false}
             pb={20}

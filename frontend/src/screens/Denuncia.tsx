@@ -1,7 +1,4 @@
-import { Box, Center, HStack, Heading, VStack } from "native-base";
-import { ScreenHeader } from "@components/ScreenHeader";
-
-import RecycleLogoSvg from '@assets/recycleCircle.svg'
+import { VStack } from "native-base";
 import { IconHeader } from "@components/IconHeader";
 
 export function Denuncia() {
