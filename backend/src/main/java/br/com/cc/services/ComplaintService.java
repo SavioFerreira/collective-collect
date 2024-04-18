@@ -28,27 +28,51 @@ public class ComplaintService {
 		return complaintRepository.findById(id);
 	}
 
+	@Transactional
+	public Complaint save(Complaint complaint) {
+		Complaint savedComplaint = complaintRepository.save(complaint);
+		createAndSaveCollectForComplaint(savedComplaint);
+		return savedComplaint;
+	}
+
+	@Transactional
 	public boolean deleteById(Long id) {
-		if (complaintRepository.existsById(id)) {
-			complaintRepository.deleteById(id);
+		Optional<Complaint> complaint = complaintRepository.findById(id);
+		if (complaint.isPresent()) {
+			Collect collect = collectRepository.findByComplaintId(id).orElse(null);
+			if (collect != null) {
+				collectRepository.delete(collect);
+			}
+			complaintRepository.delete(complaint.get());
 			return true;
 		}
 		return false;
 	}
 
 	public Complaint updateById(Long id, Complaint updateComplaint) {
-		if (complaintRepository.existsById(id)) {
-			updateComplaint.setId(id);
-			return complaintRepository.save(updateComplaint);
+		Optional<Complaint> existingComplaint = complaintRepository.findById(id);
+		if (existingComplaint.isPresent()) {
+			Complaint currentComplaint = existingComplaint.get();
+			updateComplaint.setId(currentComplaint.getId());
+			Complaint savedComplaint = complaintRepository.save(updateComplaint);
+			updateCollectForComplaint(savedComplaint);
+			return savedComplaint;
 		}
 		return null;
 	}
 
-	@Transactional
-	public Complaint save(Complaint complaint) {
-		Complaint savedComplaint = complaintRepository.save(complaint);
-		createAndSaveCollectForComplaint(savedComplaint);
-		return savedComplaint;
+	private void updateCollectForComplaint(Complaint complaint) {
+		collectRepository.findByComplaintId(complaint.getId()).ifPresent(collect -> {
+			collect.setStatus(complaint.getStatus());
+			collect.setType(complaint.getType());
+			collect.setGravity(complaint.getGravity());
+			collect.setDate(complaint.getDate());
+			collect.setImage(complaint.getImage());
+			collect.setTitle(complaint.getTitle());
+			collect.setDescription(complaint.getDescription());
+			collect.setLocale(complaint.getLocale());
+			collectRepository.save(collect);
+		});
 	}
 
 	private void createAndSaveCollectForComplaint(Complaint complaint) {

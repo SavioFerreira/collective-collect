@@ -31,7 +31,7 @@ public class User {
 
 
 
-	public User(Long id, String name, String email) {
+	public User(Long id, String name, String email, String avatar) {
 	}
 
 	public Complaint makeComplaint(){
