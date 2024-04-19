@@ -1,5 +1,6 @@
 package br.com.cc.entities;
 
+import br.com.cc.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,29 +19,24 @@ public class Collect {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String status;
-	private String type;
-	private String gravity;
+
+	@Enumerated(EnumType.STRING)
+	private Status status;
 
 	@CreationTimestamp
 	private LocalDateTime date;
-	private String image;
+	private String collectImage;
 
-	private String title;
-	private String description;
-	private String locale;
+	@Embedded
+	private WasteInfo wasteInfo;
 
 	@ManyToOne
-	@JoinColumn(name = "complaint_id")
+	@JoinColumn
 	@JsonIgnore
 	private Complaint complaint;
 
 	@ManyToMany
-	@JoinTable(
-			name = "collect_collaborator",
-			joinColumns = @JoinColumn(name = "collect_id"),
-			inverseJoinColumns = @JoinColumn(name = "user_id")
-	)
+	@JoinTable
 	private Set<User> collaborators = new HashSet<>();
 
 }

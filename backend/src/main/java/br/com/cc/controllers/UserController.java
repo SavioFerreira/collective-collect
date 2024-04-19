@@ -3,6 +3,7 @@ package br.com.cc.controllers;
 import br.com.cc.dto.UserDTO;
 import br.com.cc.entities.User;
 import br.com.cc.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,7 @@ public class UserController {
 	}
 
 	@PostMapping
-	public ResponseEntity<User> save(@RequestBody User user) {
+	public ResponseEntity<User> save(@Valid @RequestBody User user) {
 		User savedUser = userService.save(user);
 		return ResponseEntity.ok(savedUser);
 	}

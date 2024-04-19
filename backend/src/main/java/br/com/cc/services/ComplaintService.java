@@ -63,14 +63,10 @@ public class ComplaintService {
 
 	private void updateCollectForComplaint(Complaint complaint) {
 		collectRepository.findByComplaintId(complaint.getId()).ifPresent(collect -> {
-			collect.setStatus(complaint.getStatus());
-			collect.setType(complaint.getType());
-			collect.setGravity(complaint.getGravity());
 			collect.setDate(complaint.getDate());
-			collect.setImage(complaint.getImage());
-			collect.setTitle(complaint.getTitle());
-			collect.setDescription(complaint.getDescription());
-			collect.setLocale(complaint.getLocale());
+			collect.setStatus(complaint.getStatus());
+			collect.setWasteInfo(complaint.getWasteInfo());
+
 			collectRepository.save(collect);
 		});
 	}
@@ -79,13 +75,8 @@ public class ComplaintService {
 		Collect collect = new Collect();
 		collect.setComplaint(complaint);
 		collect.setStatus(complaint.getStatus());
-		collect.setType(complaint.getType());
-		collect.setGravity(complaint.getGravity());
 		collect.setDate(complaint.getDate());
-		collect.setImage(complaint.getImage());
-		collect.setTitle(complaint.getTitle());
-		collect.setDescription(complaint.getDescription());
-		collect.setLocale(complaint.getLocale());
+		collect.setWasteInfo(complaint.getWasteInfo());
 		collectRepository.save(collect);
 	}
 }

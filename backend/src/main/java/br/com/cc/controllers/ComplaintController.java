@@ -3,8 +3,10 @@ package br.com.cc.controllers;
 import br.com.cc.dto.ComplaintDTO;
 import br.com.cc.dto.UserDTO;import br.com.cc.entities.Complaint;
 import br.com.cc.entities.User;
+import br.com.cc.entities.WasteInfo;
 import br.com.cc.services.ComplaintService;
 import br.com.cc.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +40,7 @@ public class ComplaintController {
 	}
 
 	@PostMapping
-	public ResponseEntity<ComplaintDTO> save(@RequestBody ComplaintDTO complaintDto) {
+	public ResponseEntity<ComplaintDTO> save(@Valid @RequestBody ComplaintDTO complaintDto) {
 		Complaint complaint = convertToEntity(complaintDto);
 		Complaint saved = complaintService.save(complaint);
 		return ResponseEntity.ok(convertToDTO(saved));
@@ -46,11 +48,10 @@ public class ComplaintController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<ComplaintDTO> updateById(@PathVariable Long id, @RequestBody ComplaintDTO complaintDto) {
-		Complaint complaint = convertToEntity(complaintDto);
-		complaint.setId(id); // Ensure the complaint has the correct ID
-		Complaint updated = complaintService.updateById(id, complaint);
+		Complaint updated = complaintService.updateById(id, convertToEntity(complaintDto));
 		return updated != null ? ResponseEntity.ok(convertToDTO(updated)) : ResponseEntity.notFound().build();
 	}
+
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteById(@PathVariable Long id) {
@@ -60,15 +61,17 @@ public class ComplaintController {
 
 	private ComplaintDTO convertToDTO(Complaint complaint) {
 		ComplaintDTO dto = new ComplaintDTO();
+
 		dto.setId(complaint.getId());
 		dto.setStatus(complaint.getStatus());
-		dto.setType(complaint.getType());
-		dto.setGravity(complaint.getGravity());
 		dto.setDate(complaint.getDate());
-		dto.setImage(complaint.getImage());
-		dto.setTitle(complaint.getTitle());
-		dto.setDescription(complaint.getDescription());
-		dto.setLocale(complaint.getLocale());
+		dto.setImage(complaint.getWasteInfo().getImage());
+		dto.setType(complaint.getWasteInfo().getWasteType());
+		dto.setGravity(complaint.getWasteInfo().getGravity());
+		dto.setTitle(complaint.getWasteInfo().getTitle());
+		dto.setDescription(complaint.getWasteInfo().getDescription());
+		dto.setLocale(complaint.getWasteInfo().getLocale());
+
 		dto.setAuthor(convertUserToDTO(complaint.getAuthor()));
 		return dto;
 	}
@@ -85,16 +88,19 @@ public class ComplaintController {
 		Complaint complaint = new Complaint();
 		complaint.setId(dto.getId());
 		complaint.setStatus(dto.getStatus());
-		complaint.setType(dto.getType());
-		complaint.setGravity(dto.getGravity());
 		complaint.setDate(dto.getDate());
-		complaint.setImage(dto.getImage());
-		complaint.setTitle(dto.getTitle());
-		complaint.setDescription(dto.getDescription());
-		complaint.setLocale(dto.getLocale());
 
 		User author = userService.findById(dto.getAuthor().getId()).orElse(null);
 		complaint.setAuthor(author);
+
+		WasteInfo wasteInfo = new WasteInfo();
+		wasteInfo.setWasteType(dto.getType());
+		wasteInfo.setGravity(dto.getGravity());
+		wasteInfo.setTitle(dto.getTitle());
+		wasteInfo.setDescription(dto.getDescription());
+		wasteInfo.setLocale(dto.getLocale());
+		wasteInfo.setImage(dto.getImage());
+		complaint.setWasteInfo(wasteInfo);
 
 		return complaint;
 	}
