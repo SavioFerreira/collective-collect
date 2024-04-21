@@ -1,14 +1,4 @@
-insert into
-  "public"."user" ("name","email")
-values
-  ( 'savi', 'savi@email.com'),
-  ('zoro', 'zoro@email.com'),
-  ('luffy', 'luffy@email.comtblue'),
-  ('omega', 'omega@email.com'),
-  ('vertebra', 'vertebra@email.com'),
-  ('brook', 'brook@email.com'),
-  ('canis', 'scanis@email.com');
-  
+
 
  
 insert into
