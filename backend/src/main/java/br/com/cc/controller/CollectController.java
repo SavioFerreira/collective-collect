@@ -5,7 +5,7 @@ import br.com.cc.dto.UserDTO;
 import br.com.cc.entity.Collect;
 import br.com.cc.entity.User;
 import br.com.cc.entity.WasteInfo;
-import br.com.cc.service.CollectService;
+import br.com.cc.service.impl.CollectServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,22 +17,22 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/collects")
+@RequestMapping("/collect")
 public class CollectController {
 
 	@Autowired
-	private CollectService collectService;
+	private CollectServiceImpl collectServiceImpl;
 
 	@GetMapping
 	public List<CollectDTO> findAll(){
-		return collectService.findAll().stream()
+		return collectServiceImpl.findAll().stream()
 				.map(this::convertToDTO)
 				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<CollectDTO> findById(@PathVariable Long id) {
-		return collectService.findById(id)
+		return collectServiceImpl.findById(id)
 				.map(this::convertToDTO)
 				.map(ResponseEntity::ok)
 				.orElseGet(() -> ResponseEntity.notFound().build());
@@ -40,7 +40,7 @@ public class CollectController {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteById(@PathVariable Long id){
-		if (collectService.deleteById(id)) {
+		if (collectServiceImpl.deleteById(id)) {
 			return ResponseEntity.noContent().build();
 		}
 		return ResponseEntity.notFound().build();
@@ -49,7 +49,7 @@ public class CollectController {
 	@PutMapping("/{id}")
 	public ResponseEntity<CollectDTO> updateById(@PathVariable Long id, @RequestBody CollectDTO collectDto) {
 		Collect collect = convertToEntity(collectDto);
-		Optional<Collect> updatedOptional = collectService.updateById(id, collect);
+		Optional<Collect> updatedOptional = collectServiceImpl.updateById(id, collect);
 		return updatedOptional.map(this::convertToDTO)
 				.map(ResponseEntity::ok)
 				.orElseGet(() -> ResponseEntity.notFound().build());
@@ -58,7 +58,7 @@ public class CollectController {
 	@PostMapping
 	public ResponseEntity<CollectDTO> save(@Valid @RequestBody CollectDTO collectDto) {
 		Collect collect = convertToEntity(collectDto);
-		Collect saved = collectService.save(collect);
+		Collect saved = collectServiceImpl.create(collect);
 		return ResponseEntity.ok(convertToDTO(saved));
 	}
 

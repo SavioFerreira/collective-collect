@@ -26,15 +26,9 @@ public class User {
 	@Column(unique = true)
 	private String email;
 	private String password;
-	private String avatar;
 	private boolean isAdministrator;
 
 	@ManyToMany
 	private List<Rules> rules;
-
-	public User(Long id, String name, String email, String avatar) {
-
-	}
-
 
 }

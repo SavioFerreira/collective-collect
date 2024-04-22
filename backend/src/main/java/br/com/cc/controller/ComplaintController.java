@@ -4,8 +4,8 @@ import br.com.cc.dto.ComplaintDTO;
 import br.com.cc.dto.UserDTO;import br.com.cc.entity.Complaint;
 import br.com.cc.entity.User;
 import br.com.cc.entity.WasteInfo;
-import br.com.cc.service.ComplaintService;
-import br.com.cc.service.UserService;
+import br.com.cc.service.impl.ComplaintServiceImpl;
+import br.com.cc.service.impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,47 +15,47 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/complaints")
+@RequestMapping("/complaint")
 public class ComplaintController {
 
 	@Autowired
-	private ComplaintService complaintService;
+	private ComplaintServiceImpl complaintServiceImpl;
 
 	@Autowired
-	private UserService userService;
+	private UserServiceImpl userServiceImpl;
 
 	@GetMapping
 	public List<ComplaintDTO> findAll() {
-		return complaintService.findAll().stream()
+		return complaintServiceImpl.findAll().stream()
 				.map(this::convertToDTO)
 				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<ComplaintDTO> findById(@PathVariable Long id) {
-		return complaintService.findById(id)
+		return complaintServiceImpl.findById(id)
 				.map(this::convertToDTO)
 				.map(ResponseEntity::ok)
 				.orElse(ResponseEntity.notFound().build());
 	}
 
 	@PostMapping
-	public ResponseEntity<ComplaintDTO> save(@Valid @RequestBody ComplaintDTO complaintDto) {
+	public ResponseEntity<ComplaintDTO> create(@Valid @RequestBody ComplaintDTO complaintDto) {
 		Complaint complaint = convertToEntity(complaintDto);
-		Complaint saved = complaintService.save(complaint);
+		Complaint saved = complaintServiceImpl.create(complaint);
 		return ResponseEntity.ok(convertToDTO(saved));
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<ComplaintDTO> updateById(@PathVariable Long id, @RequestBody ComplaintDTO complaintDto) {
-		Complaint updated = complaintService.updateById(id, convertToEntity(complaintDto));
+		Complaint updated = complaintServiceImpl.updateById(id, convertToEntity(complaintDto));
 		return updated != null ? ResponseEntity.ok(convertToDTO(updated)) : ResponseEntity.notFound().build();
 	}
 
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-		boolean deleted = complaintService.deleteById(id);
+		boolean deleted = complaintServiceImpl.deleteById(id);
 		return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
 	}
 
@@ -90,7 +90,7 @@ public class ComplaintController {
 		complaint.setStatus(dto.getStatus());
 		complaint.setDate(dto.getDate());
 
-		User author = userService.findById(dto.getAuthor().getId()).orElse(null);
+		User author = userServiceImpl.findById(dto.getAuthor().getId()).orElse(null);
 		complaint.setAuthor(author);
 
 		WasteInfo wasteInfo = new WasteInfo();
