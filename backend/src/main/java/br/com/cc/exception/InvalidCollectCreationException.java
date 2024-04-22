@@ -1,4 +1,4 @@
-package br.com.cc.exceptions;
+package br.com.cc.exception;
 
 public class InvalidCollectCreationException extends RuntimeException {
 

@@ -1,7 +1,7 @@
-package br.com.cc.services;
+package br.com.cc.service;
 
-import br.com.cc.entities.Collect;
-import br.com.cc.repositories.CollectRepository;
+import br.com.cc.entity.Collect;
+import br.com.cc.repository.CollectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

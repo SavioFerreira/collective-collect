@@ -1,6 +1,6 @@
-package br.com.cc.repositories;
+package br.com.cc.repository;
 
-import br.com.cc.entities.Collect;
+import br.com.cc.entity.Collect;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;

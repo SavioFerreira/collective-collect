@@ -1,8 +1,8 @@
-package br.com.cc.factories;
+package br.com.cc.factory;
 
-import br.com.cc.entities.Collect;
-import br.com.cc.entities.Complaint;
-import br.com.cc.entities.User;
+import br.com.cc.entity.Collect;
+import br.com.cc.entity.Complaint;
+import br.com.cc.entity.User;
 
 public class UserActionFactory {
 

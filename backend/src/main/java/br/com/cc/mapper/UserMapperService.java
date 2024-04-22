@@ -1,17 +1,18 @@
-package br.com.cc.models;
+package br.com.cc.mapper;
 
 import br.com.cc.dto.UserDTO;
-import br.com.cc.entities.User;
-import br.com.cc.services.UserService;
+import br.com.cc.entity.User;
+import br.com.cc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-
-public interface UserModels {
+@Service
+public class UserMapperService {
 
     @Autowired
-    UserService userService = new UserService();
+    UserService userService;
 
-    default UserDTO convertUserToDTO(User user) {
+    public UserDTO convertUserToDTO(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
         dto.setName(user.getName());
@@ -19,7 +20,7 @@ public interface UserModels {
         return dto;
     }
 
-    default User convertUserToEntity(UserDTO dto) {
+    public User convertUserToEntity(UserDTO dto) {
         User user = new User();
         user.setId(dto.getId());
         user.setName(dto.getName());

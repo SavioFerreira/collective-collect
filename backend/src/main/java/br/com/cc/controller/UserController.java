@@ -1,19 +1,21 @@
-package br.com.cc.controllers;
+package br.com.cc.controller;
 
 import br.com.cc.dto.UserDTO;
-import br.com.cc.entities.User;
-import br.com.cc.services.UserService;
-import jakarta.validation.Valid;
+import br.com.cc.entity.User;
+import br.com.cc.service.UserServ;
+import br.com.cc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
+
+	@Autowired
+	UserServ userServ;
 
 	@Autowired
 	private UserService userService;
@@ -43,9 +45,15 @@ public class UserController {
 		return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.notFound().build();
 	}
 
+//	@PostMapping
+//	public ResponseEntity<User> save(@RequestBody User user) {
+//		User savedUser = userService.save(user);
+//		return ResponseEntity.ok(savedUser);
+//	}
+
 	@PostMapping
-	public ResponseEntity<User> save(@Valid @RequestBody User user) {
-		User savedUser = userService.save(user);
+	public ResponseEntity<User> create(@RequestBody User user) {
+		User savedUser = userServ.create(user);
 		return ResponseEntity.ok(savedUser);
 	}
 

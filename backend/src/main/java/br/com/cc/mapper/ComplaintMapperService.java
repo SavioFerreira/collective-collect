@@ -1,14 +1,19 @@
-package br.com.cc.models;
+package br.com.cc.mapper;
 
 import br.com.cc.dto.ComplaintDTO;
-import br.com.cc.entities.Complaint;
-import br.com.cc.entities.User;
-import br.com.cc.entities.WasteInfo;
-import br.com.cc.services.UserService;
+import br.com.cc.entity.Complaint;
+import br.com.cc.entity.User;
+import br.com.cc.entity.WasteInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public interface ComplaintModels extends UserModels{
+@Service
+public class ComplaintMapperService  {
 
-    default ComplaintDTO convertComplaintToDTO(Complaint complaint) {
+    @Autowired
+    private UserMapperService userMapperService;
+
+    public ComplaintDTO convertComplaintToDTO(Complaint complaint) {
         ComplaintDTO dto = new ComplaintDTO();
 
         dto.setId(complaint.getId());
@@ -21,16 +26,16 @@ public interface ComplaintModels extends UserModels{
         dto.setDescription(complaint.getWasteInfo().getDescription());
         dto.setLocale(complaint.getWasteInfo().getLocale());
 
-        dto.setAuthor(convertUserToDTO(complaint.getAuthor()));
+        dto.setAuthor(userMapperService.convertUserToDTO(complaint.getAuthor()));
         return dto;
     }
 
-    default Complaint convertComplaintDtoToEntity(ComplaintDTO dto) {
+    public Complaint convertComplaintDtoToEntity(ComplaintDTO dto) {
         Complaint complaint = new Complaint();
         complaint.setId(dto.getId());
         complaint.setStatus(dto.getStatus());
         complaint.setDate(dto.getDate());
-        User author = userService.findById(dto.getAuthor().getId()).orElse(null);
+        User author = userMapperService.userService.findById(dto.getAuthor().getId()).orElse(null);
         complaint.setAuthor(author);
 
         WasteInfo wasteInfo = new WasteInfo();

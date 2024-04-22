@@ -1,16 +1,16 @@
-package br.com.cc.services;
+package br.com.cc.service;
 
 import java.util.List;
 import java.util.Optional;
 
-import br.com.cc.entities.Collect;
-import br.com.cc.entities.Complaint;
-import br.com.cc.factories.UserActionFactory;
+import br.com.cc.entity.Collect;
+import br.com.cc.entity.Complaint;
+import br.com.cc.factory.UserActionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.cc.entities.User;
-import br.com.cc.repositories.UserRepository;
+import br.com.cc.entity.User;
+import br.com.cc.repository.UserRepository;
 
 @Service
 public class UserService {

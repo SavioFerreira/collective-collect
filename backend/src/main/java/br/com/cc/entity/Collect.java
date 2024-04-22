@@ -1,21 +1,20 @@
-package br.com.cc.entities;
+package br.com.cc.entity;
 
-import br.com.cc.enums.Gravity;
 import br.com.cc.enums.Status;
-import br.com.cc.enums.WasteType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Complaint {
+public class Collect {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,18 +25,18 @@ public class Complaint {
 
 	@CreationTimestamp
 	private LocalDateTime date;
+	private String collectImage;
 
 	@Embedded
 	private WasteInfo wasteInfo;
 
 	@ManyToOne
-	@NotNull
-	@JoinColumn
-	private User author;
-
-	@OneToOne
 	@JoinColumn
 	@JsonIgnore
-	private Collect collect;
+	private Complaint complaint;
+
+	@ManyToMany
+	@JoinTable
+	private Set<User> collaborators = new HashSet<>();
 
 }

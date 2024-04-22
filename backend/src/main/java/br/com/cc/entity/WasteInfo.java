@@ -1,4 +1,4 @@
-package br.com.cc.entities;
+package br.com.cc.entity;
 
 
 import br.com.cc.enums.Gravity;

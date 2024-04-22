@@ -1,17 +1,23 @@
-package br.com.cc.models;
+package br.com.cc.mapper;
 
 import br.com.cc.dto.CollectDTO;
 import br.com.cc.dto.UserDTO;
-import br.com.cc.entities.Collect;
-import br.com.cc.entities.User;
-import br.com.cc.entities.WasteInfo;
+import br.com.cc.entity.Collect;
+import br.com.cc.entity.User;
+import br.com.cc.entity.WasteInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public interface CollectModels extends UserModels {
+@Service
+public class CollectMapperService {
 
-    default CollectDTO convertCollectToDTO(Collect collect) {
+    @Autowired
+    private UserMapperService userMapperService;
+
+    public CollectDTO convertCollectToDTO(Collect collect) {
         CollectDTO dto = new CollectDTO();
         dto.setId(collect.getId());
         dto.setStatus(collect.getStatus());
@@ -29,7 +35,7 @@ public interface CollectModels extends UserModels {
         return dto;
     }
 
-    default Collect convertCollectDtoToEntity(CollectDTO dto) {
+    public Collect convertCollectDtoToEntity(CollectDTO dto) {
         Collect collect = new Collect();
         collect.setId(dto.getId());
         collect.setStatus(dto.getStatus());
@@ -48,10 +54,10 @@ public interface CollectModels extends UserModels {
         return collect;
     }
 
-    private Set<UserDTO> convertToUserDTOSet(Set<User> users) {
+    public Set<UserDTO> convertToUserDTOSet(Set<User> users) {
 
         return users.stream()
-                .map(this::convertUserToDTO)
+                .map(userMapperService::convertUserToDTO)
                 .collect(Collectors.toSet());
     }
 
