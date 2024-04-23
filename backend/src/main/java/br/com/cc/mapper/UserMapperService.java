@@ -2,7 +2,7 @@ package br.com.cc.mapper;
 
 import br.com.cc.dto.UserDTO;
 import br.com.cc.entity.User;
-import br.com.cc.service.impl.UserServiceImpl;
+import br.com.cc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class UserMapperService {
 
     @Autowired
-    UserServiceImpl userServiceImpl;
+    UserService userService;
 
     public UserDTO convertUserToDTO(User user) {
         UserDTO dto = new UserDTO();
