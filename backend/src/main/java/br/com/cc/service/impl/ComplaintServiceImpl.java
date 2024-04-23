@@ -34,6 +34,10 @@ public class ComplaintServiceImpl implements ComplaintService {
 	@Override
 	@Transactional
 	public Complaint create(Complaint complaint) {
+
+		if(complaint.getId() != null) {
+			throw new RuntimeException("para criar uma denúncia, você não pode ter um ID!");
+		}
 		Complaint savedComplaint = complaintRepository.save(complaint);
 		createAndSaveCollectForComplaint(savedComplaint);
 		return savedComplaint;
@@ -64,7 +68,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 			updateCollectForComplaint(savedComplaint);
 			return savedComplaint;
 		}
-		return null;
+		throw new RuntimeException("Digite um ID válido!");
 	}
 
 	private void updateCollectForComplaint(Complaint complaint) {
