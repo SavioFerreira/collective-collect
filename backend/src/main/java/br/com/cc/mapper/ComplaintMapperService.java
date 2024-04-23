@@ -35,7 +35,7 @@ public class ComplaintMapperService  {
         complaint.setId(dto.getId());
         complaint.setStatus(dto.getStatus());
         complaint.setDate(dto.getDate());
-        User author = userMapperService.userServiceImpl.findById(dto.getAuthor().getId()).orElse(null);
+        User author = userMapperService.userService.findById(dto.getAuthor().getId()).orElse(null);
         complaint.setAuthor(author);
 
         WasteInfo wasteInfo = new WasteInfo();
