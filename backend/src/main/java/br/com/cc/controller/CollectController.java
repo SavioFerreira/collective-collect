@@ -5,10 +5,11 @@ import br.com.cc.dto.UserDTO;
 import br.com.cc.entity.Collect;
 import br.com.cc.entity.User;
 import br.com.cc.entity.WasteInfo;
-import br.com.cc.service.impl.CollectServiceImpl;
+import br.com.cc.service.CollectService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,44 +22,49 @@ import java.util.stream.Collectors;
 public class CollectController {
 
 	@Autowired
-	private CollectServiceImpl collectServiceImpl;
+	private CollectService collectService;
 
+	@PreAuthorize("hasRole('COLLECT_SELECT')")
 	@GetMapping
 	public List<CollectDTO> findAll(){
-		return collectServiceImpl.findAll().stream()
+		return collectService.findAll().stream()
 				.map(this::convertToDTO)
 				.collect(Collectors.toList());
 	}
 
+	@PreAuthorize("hasRole('COLLECT_SELECT')")
 	@GetMapping("/{id}")
 	public ResponseEntity<CollectDTO> findById(@PathVariable Long id) {
-		return collectServiceImpl.findById(id)
+		return collectService.findById(id)
 				.map(this::convertToDTO)
 				.map(ResponseEntity::ok)
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
+	@PreAuthorize("hasRole('COLLECT_DELETE')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteById(@PathVariable Long id){
-		if (collectServiceImpl.deleteById(id)) {
+		if (collectService.deleteById(id)) {
 			return ResponseEntity.noContent().build();
 		}
 		return ResponseEntity.notFound().build();
 	}
 
+	@PreAuthorize("hasRole('COLLECT_UPDATE')")
 	@PutMapping("/{id}")
 	public ResponseEntity<CollectDTO> updateById(@PathVariable Long id, @RequestBody CollectDTO collectDto) {
 		Collect collect = convertToEntity(collectDto);
-		Optional<Collect> updatedOptional = collectServiceImpl.updateById(id, collect);
+		Optional<Collect> updatedOptional = collectService.updateById(id, collect);
 		return updatedOptional.map(this::convertToDTO)
 				.map(ResponseEntity::ok)
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
+	@PreAuthorize("hasRole('COLLECT_CREATE')")
 	@PostMapping
-	public ResponseEntity<CollectDTO> save(@Valid @RequestBody CollectDTO collectDto) {
+	public ResponseEntity<CollectDTO> create(@Valid @RequestBody CollectDTO collectDto) {
 		Collect collect = convertToEntity(collectDto);
-		Collect saved = collectServiceImpl.create(collect);
+		Collect saved = collectService.create(collect);
 		return ResponseEntity.ok(convertToDTO(saved));
 	}
 
