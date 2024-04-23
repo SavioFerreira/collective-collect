@@ -45,6 +45,10 @@ public class CollectServiceImpl implements CollectService {
 
 	@Override
 	public Collect create(Collect collect) {
+
+		if(collect.getComplaint().getId() == null) {
+			throw new RuntimeException("não é possível criar uma coleta sem uma denúncia vinculada!");
+		}
 		return collectRepository.save(collect);
 	}
 }
