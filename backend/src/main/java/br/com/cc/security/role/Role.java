@@ -1,4 +1,4 @@
-package br.com.cc.security.rules;
+package br.com.cc.security.role;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Rules {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
