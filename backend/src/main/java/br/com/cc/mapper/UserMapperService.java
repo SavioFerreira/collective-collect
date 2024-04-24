@@ -1,7 +1,6 @@
 package br.com.cc.mapper;
-
-import br.com.cc.dto.UserDTO;
 import br.com.cc.entity.User;
+import br.com.cc.dto.UserDTO;
 import br.com.cc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,7 @@
 package br.com.cc.mapper;
-
+import br.com.cc.entity.User;
 import br.com.cc.dto.ComplaintDTO;
 import br.com.cc.entity.Complaint;
-import br.com.cc.entity.User;
 import br.com.cc.entity.WasteInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
