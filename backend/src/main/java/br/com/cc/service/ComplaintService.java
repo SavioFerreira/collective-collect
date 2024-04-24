@@ -1,7 +1,5 @@
 package br.com.cc.service;
-
 import br.com.cc.entity.Complaint;
-
 import java.util.List;
 import java.util.Optional;
 

@@ -1,5 +1,4 @@
 package br.com.cc.service.impl;
-
 import br.com.cc.entity.Collect;
 import br.com.cc.entity.Complaint;
 import br.com.cc.repository.CollectRepository;
@@ -8,7 +7,6 @@ import br.com.cc.service.ComplaintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 

@@ -1,11 +1,9 @@
 package br.com.cc.service.impl;
-
 import br.com.cc.entity.Collect;
 import br.com.cc.repository.CollectRepository;
 import br.com.cc.service.CollectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 

@@ -1,8 +1,5 @@
 package br.com.cc.service;
-
 import br.com.cc.entity.Collect;
-import br.com.cc.entity.User;
-
 import java.util.List;
 import java.util.Optional;
 
