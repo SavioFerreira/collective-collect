@@ -1,4 +1,4 @@
-package br.com.cc.dto;
+package br.com.cc.dto.auth;
 
 import br.com.cc.enums.AuthUserRole;
 import jakarta.validation.constraints.NotNull;

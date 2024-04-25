@@ -1,9 +1,9 @@
 package br.com.cc.controller;
 import br.com.cc.security.TokenService;
 import br.com.cc.entity.User;
-import br.com.cc.dto.AuthenticationDto;
-import br.com.cc.dto.LoginResponseDto;
-import br.com.cc.dto.RegisterDto;
+import br.com.cc.dto.auth.AuthenticationDto;
+import br.com.cc.dto.auth.LoginResponseDto;
+import br.com.cc.dto.auth.RegisterDto;
 import br.com.cc.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
