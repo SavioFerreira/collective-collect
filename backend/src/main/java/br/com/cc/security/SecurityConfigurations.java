@@ -1,5 +1,6 @@
 package br.com.cc.security;
 
+import br.com.cc.enums.AuthUserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,12 +27,14 @@ public class SecurityConfigurations {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/profile/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/complaint/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/collect/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/user/**").hasRole("ADMIN")
+                        .requestMatchers("/auth/login", "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/complaint/*", "/api/collect/*").authenticated()
+                        .requestMatchers("/api/user/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/complaint/*").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                        .requestMatchers(HttpMethod.PUT, "/api/complaint/*").hasAnyAuthority("ROLE_ADMIN", "ROLE_AUTHOR")
+                        .requestMatchers(HttpMethod.POST, "/api/collect/*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/collect/*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/complaint/**", "/api/collect/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
