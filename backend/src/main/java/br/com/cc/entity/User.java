@@ -1,4 +1,5 @@
 package br.com.cc.entity;
+
 import br.com.cc.enums.AuthUserRole;
 import lombok.*;
 import java.util.Collection;

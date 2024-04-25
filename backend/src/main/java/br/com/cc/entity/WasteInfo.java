@@ -1,6 +1,5 @@
 package br.com.cc.entity;
 
-
 import br.com.cc.enums.Gravity;
 import br.com.cc.enums.WasteType;
 import jakarta.persistence.Embeddable;
@@ -16,10 +15,8 @@ public class WasteInfo {
     private String description;
     private String locale;
     private String image;
-
     @Enumerated(EnumType.STRING)
     private Gravity gravity;
-
     @Enumerated(EnumType.STRING)
     private WasteType wasteType;
 }

@@ -37,5 +37,4 @@ public class Complaint {
 	@JoinColumn
 	@JsonIgnore
 	private Collect collect;
-
 }

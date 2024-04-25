@@ -15,28 +15,21 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 public class Collect {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	@Enumerated(EnumType.STRING)
 	private Status status;
-
 	@CreationTimestamp
 	private LocalDateTime date;
 	private String collectImage;
-
 	@Embedded
 	private WasteInfo wasteInfo;
-
 	@ManyToOne
 	@JoinColumn
 	@JsonIgnore
 	private Complaint complaint;
-
 	@ManyToMany
 	@JoinTable
 	private Set<User> collaborators = new HashSet<>();
-
 }
