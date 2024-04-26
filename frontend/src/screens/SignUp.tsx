@@ -48,7 +48,7 @@ export function SignUp() {
   async function handleSignUp({ name, email, password }: FormDataProps) {
     try {
       setIsloading(true);
-       await api.post('/users', {name, email, password} );
+       await api.post('/auth/register', {name, email, password} );
 
        toast.show({
         title: `Obrigado, ${name}. Conta criada com sucesso.`,
