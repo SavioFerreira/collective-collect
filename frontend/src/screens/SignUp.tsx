@@ -4,8 +4,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-//import { useAuth } from '@hooks/useAuth';
-//import { api } from '@services/api';
+import { useAuth } from '@hooks/useAuth';
+import { api } from '@services/api';
 
 import LogoSvg from '@assets/logo.svg';
 import BackgroundImg from '@assets/background.png';
@@ -39,36 +39,36 @@ export function SignUp() {
 
   const navigation = useNavigation();
   const toast = useToast();
-  //const { singIn } = useAuth();
+  const { singIn } = useAuth();
 
   function handleGoBack() {
     navigation.goBack();
   }
 
   async function handleSignUp({ name, email, password }: FormDataProps) {
-    // try {
-    //   setIsloading(true);
-    //    await api.post('/users', {name, email, password} );
+    try {
+      setIsloading(true);
+       await api.post('/users', {name, email, password} );
 
-    //    toast.show({
-    //     title: `Obrigado, ${name}. Conta criada com sucesso.`,
-    //     placement: 'top',
-    //     bgColor: 'green.600',
-    //   });
+       toast.show({
+        title: `Obrigado, ${name}. Conta criada com sucesso.`,
+        placement: 'top',
+        bgColor: 'green.600',
+      });
 
-    //   await singIn(email, password);
+      await singIn(email, password);
 
-    // } catch(error) {
-    //   setIsloading(false);
-    //   const isAppError = error instanceof AppError;
-    //   const title = isAppError ? error.message : 'Não foi possível criar a conta. Tente novamente mais tarde.';
+    } catch(error) {
+      setIsloading(false);
+      const isAppError = error instanceof AppError;
+      const title = isAppError ? error.message : 'Não foi possível criar a conta. Tente novamente mais tarde.';
 
-    //   toast.show({
-    //     title: title,
-    //     placement: 'top',
-    //     bgColor: 'red.500',
-    //   });
-    // }
+      toast.show({
+        title: title,
+        placement: 'top',
+        bgColor: 'red.500',
+      });
+    }
   }
 
   return (

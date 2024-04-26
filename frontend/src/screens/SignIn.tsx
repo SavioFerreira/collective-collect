@@ -1,7 +1,7 @@
 import { VStack, Image, Text, Center, Heading, ScrollView, Box, useToast, View, HStack } from 'native-base';
 
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
-//import { api } from '@services/api'
+import { api } from '@services/api'
 
 import LogoSvg from '@assets/logo.svg'
 import BackgroundImg from '@assets/background.png';
@@ -17,10 +17,9 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-//import { useAuth } from '@hooks/useAuth';
-//import { AppError } from '@utils/AppError';
-import { useState } from 'react';
+import { useAuth } from '@hooks/useAuth';
 import { AppError } from '@utils/AppError';
+import { useState } from 'react';
 
 type FormData = {
   email: string;
@@ -35,7 +34,7 @@ const signInSchema = yup.object({
 export function SignIn() {
   const [isLoading, setIsloading] = useState(false);
 
-  //const { singIn } = useAuth();
+  const { singIn } = useAuth();
 
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
   const toast = useToast();
@@ -46,21 +45,21 @@ export function SignIn() {
 
 
   async function handleSignIn({ email, password }: FormData) {
-    // try {
-    //   setIsloading(true);
-    //   await singIn(email, password);
+    try {
+      setIsloading(true);
+      await singIn(email, password);
 
-    // } catch(error) {
-    //   const isAppError = error instanceof AppError;
-    //   const title = isAppError ? error.message : 'Não foi possível acessar sua conta. Tente novamente mais tarde.'
+    } catch(error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError ? error.message : 'Não foi possível acessar sua conta. Tente novamente mais tarde.'
 
-    //   setIsloading(false);
-    //   toast.show({
-    //     title: title,
-    //     placement: 'top',
-    //     bgColor: 'red.500',
-    //   });
-    // }
+      setIsloading(false);
+      toast.show({
+        title: title,
+        placement: 'top',
+        bgColor: 'red.500',
+      });
+    }
   }
 
   function handleNewAccount() {
