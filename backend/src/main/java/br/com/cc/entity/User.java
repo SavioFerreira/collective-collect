@@ -24,7 +24,7 @@ public class User implements UserDetails {
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
-    private AuthUserRole role;
+    private AuthUserRole role = AuthUserRole.USER;
 
     public User(String name, String password, String email, AuthUserRole role) {
         this.name = name;

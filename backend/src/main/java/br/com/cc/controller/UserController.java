@@ -20,10 +20,9 @@ public class UserController {
 	private UserMapperService userMapperService;
 
 	@PostMapping
-	public ResponseEntity<UserDTO> create(@RequestBody UserDTO userDTO) {
-		User user = userMapperService.convertUserToEntity(userDTO);
+	public ResponseEntity<User> create(@RequestBody User user) {
 		User saved = userService.create(user);
-		return ResponseEntity.ok(userMapperService.convertUserToDTO(saved));
+		return ResponseEntity.ok(saved);
 	}
 
 	@GetMapping
