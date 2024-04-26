@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ComplaintDTO {
     private Long id;
+    private Long collectId;
     private Status status;
     private WasteType type;
     private Gravity gravity;
