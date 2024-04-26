@@ -3,6 +3,7 @@ import br.com.cc.entity.User;
 import br.com.cc.dto.ComplaintDTO;
 import br.com.cc.entity.Complaint;
 import br.com.cc.entity.WasteInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +13,16 @@ public class ComplaintMapperService  {
     @Autowired
     private UserMapperService userMapperService;
 
+
+
     public ComplaintDTO convertComplaintToDTO(Complaint complaint) {
         ComplaintDTO dto = new ComplaintDTO();
 
+        if (complaint.getCollect() != null) {
+            dto.setCollectId(complaint.getCollect().getId());
+        } else {
+            dto.setCollectId(null);
+        }
         dto.setId(complaint.getId());
         dto.setStatus(complaint.getStatus());
         dto.setDate(complaint.getDate());
