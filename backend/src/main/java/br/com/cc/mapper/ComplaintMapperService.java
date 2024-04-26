@@ -17,12 +17,7 @@ public class ComplaintMapperService  {
 
     public ComplaintDTO convertComplaintToDTO(Complaint complaint) {
         ComplaintDTO dto = new ComplaintDTO();
-
-        if (complaint.getCollect() != null) {
-            dto.setCollectId(complaint.getCollect().getId());
-        } else {
-            dto.setCollectId(null);
-        }
+        dto.setCollectId(complaint.getCollect() != null ? complaint.getCollect().getId() : null);
         dto.setId(complaint.getId());
         dto.setStatus(complaint.getStatus());
         dto.setDate(complaint.getDate());
