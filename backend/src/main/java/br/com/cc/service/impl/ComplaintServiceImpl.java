@@ -74,8 +74,9 @@ public class ComplaintServiceImpl implements ComplaintService {
 			collect.setDate(complaint.getDate());
 			collect.setStatus(complaint.getStatus());
 			collect.setWasteInfo(complaint.getWasteInfo());
-
-			collectRepository.save(collect);
+			Collect savedCollect = collectRepository.save(collect);
+			complaint.setCollect(savedCollect);
+			complaintRepository.save(complaint);
 		});
 	}
 
@@ -85,6 +86,8 @@ public class ComplaintServiceImpl implements ComplaintService {
 		collect.setStatus(complaint.getStatus());
 		collect.setDate(complaint.getDate());
 		collect.setWasteInfo(complaint.getWasteInfo());
-		collectRepository.save(collect);
+		Collect savedCollect = collectRepository.save(collect);
+		complaint.setCollect(savedCollect);
+		complaintRepository.save(complaint);
 	}
 }
