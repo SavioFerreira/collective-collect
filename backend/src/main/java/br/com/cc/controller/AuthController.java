@@ -1,4 +1,6 @@
 package br.com.cc.controller;
+import br.com.cc.enums.AuthUserRole;
+import br.com.cc.exception.AppError;
 import br.com.cc.security.TokenService;
 import br.com.cc.entity.User;
 import br.com.cc.dto.auth.AuthenticationDto;
@@ -6,9 +8,11 @@ import br.com.cc.dto.auth.LoginResponseDto;
 import br.com.cc.dto.auth.RegisterDto;
 import br.com.cc.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,20 +32,43 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDto data){
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.name(), data.password());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+        try {
+            User existUser = (User) repository.findByEmail(data.email());
+            if (existUser == null) {
+                AppError appError = new AppError("error", "E-mail e/ou senha incorreta.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(appError);
+            }
 
-        var token = tokenService.generateToken((User) auth.getPrincipal());
+            var userEmailPassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
+            var auth = this.authenticationManager.authenticate(userEmailPassword);
 
-        return ResponseEntity.ok(new LoginResponseDto(token));
+            var token = tokenService.generateToken((User) auth.getPrincipal());
+
+            return ResponseEntity.ok(new LoginResponseDto(token));
+        } catch (AuthenticationException e) {
+            AppError appError = new AppError("error", "E-mail e/ou senha incorreta.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(appError);
+        } catch (Exception e) {
+            AppError appError = new AppError("error", "Erro interno no servidor.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(appError);
+        }
     }
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDto data){
-        if(this.repository.findByName(data.name()) != null) return ResponseEntity.badRequest().build();
+        User existUser = (User) repository.findByEmail(data.email());
+
+        if(existUser != null) {
+            AppError appError = new AppError("error", "Este email já está sendo utilizado!");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(appError);
+        }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.name(), encryptedPassword, data.email(), data.role());
+        User newUser = new User(data.name(), encryptedPassword, data.email().toLowerCase(), data.role());
+
+        if(newUser.getRole() == null) {
+            newUser.setRole(AuthUserRole.USER);
+        }
 
         this.repository.save(newUser);
 
