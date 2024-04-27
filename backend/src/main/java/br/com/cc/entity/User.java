@@ -18,13 +18,12 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String name;
     @Column(unique = true)
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
-    private AuthUserRole role = AuthUserRole.USER;
+    private AuthUserRole role;
 
     public User(String name, String password, String email, AuthUserRole role) {
         this.name = name;
@@ -46,7 +45,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     @Override

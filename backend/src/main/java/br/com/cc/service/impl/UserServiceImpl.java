@@ -22,11 +22,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
-        User existUser = (User) userRepository.findByName(user.getName());
+        User existUser = (User) userRepository.findByEmail(user.getEmail());
         String encryptedPassword;
 
         if(existUser != null) {
-            throw new Error("Este usuário já existe");
+            throw new Error("Este email já está cadastrado");
         }
 
         user.setPassword(encryptedPassword = new BCryptPasswordEncoder().encode(user.getPassword()));
