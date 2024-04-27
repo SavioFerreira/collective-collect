@@ -64,7 +64,7 @@ export function SignUp() {
       const title = isAppError ? error.message : 'Não foi possível criar a conta. Tente novamente mais tarde.';
 
       toast.show({
-        title: title,
+        title: title + "\n\n" + error,
         placement: 'top',
         bgColor: 'red.500',
       });
