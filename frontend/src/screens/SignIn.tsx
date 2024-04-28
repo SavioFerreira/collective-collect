@@ -33,8 +33,9 @@ const signInSchema = yup.object({
 
 export function SignIn() {
   const [isLoading, setIsloading] = useState(false);
+  const { singIn, user } = useAuth();
 
-  const { singIn } = useAuth();
+  console.log(" --> signin -> " + user.id)
 
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
   const toast = useToast();
