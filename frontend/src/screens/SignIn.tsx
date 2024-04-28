@@ -47,6 +47,7 @@ export function SignIn() {
   async function handleSignIn({ email, password }: FormData) {
     try {
       setIsloading(true);
+      
       await singIn(email, password);
 
     } catch(error) {
