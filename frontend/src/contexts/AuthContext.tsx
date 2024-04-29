@@ -27,7 +27,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     setUser(userData);
   }
-
+  
   async function storageUserAndTokenSave(userData: UserDTO, token: string) {
     try {
       setIsLoadingUserStorageData(true);
@@ -43,11 +43,19 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   async function singIn(email: string, password: string) {
     try {
-      const { data } = await api.post('/auth/login', { email, password });
+      const data = await api.post('/auth/login', { email, password });
+      console.log(data.status)
+      console.log(" 1 ")
+      console.log(data.statusText)
+      console.log(" 2 ")
+      console.log(api.defaults.headers.common['Authorization'] = `Bearer ${data.data.token}`)
+      console.log(" 3 ")
+      console.log(data.data.auth)
+      console.log(" 4 ")
 
-      if (data.user && data.token) {
-        await storageUserAndTokenSave(data.user, data.token);
-        userAndTokenUpdate(data.user, data.token);
+      if (data.data.auth && data.data.token) {
+        await storageUserAndTokenSave(data.data.auth, data.data.token);
+        userAndTokenUpdate(data.data.auth, data.data.token);
       }
     } catch (error) {
       throw error;
