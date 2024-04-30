@@ -1,14 +1,14 @@
 import { TouchableOpacity } from "react-native";
 import { HStack, Heading, Text, VStack, Icon, Pressable } from "native-base";
+import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from '@expo/vector-icons';
 
-import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "@hooks/useAuth";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
-
 import AvatarSvg from '@assets/avatar.svg';
 
 export function HomeHeader(){
-
+  const {user, signOut}  = useAuth();
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   function handleOpenProfile() {
@@ -40,11 +40,11 @@ export function HomeHeader(){
         </Text>
 
         <Heading color="white" fontSize="lg" fontFamily="heading">
-          Sávio
+         {user.name.replace(user.name.charAt(0), user.name.charAt(0).toLocaleUpperCase())}
         </Heading>
       </VStack>
 
-      <TouchableOpacity  onPress={() => {}}>
+      <TouchableOpacity  onPress={signOut}>
         <Icon 
           as={MaterialIcons}
           name="logout"

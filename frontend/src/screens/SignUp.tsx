@@ -32,7 +32,7 @@ const signUpSchema = yup.object({
 
 export function SignUp() {
   const [isLoading, setIsloading] = useState(false);
-
+  
   const { control, handleSubmit, reset, formState: { errors } } = useForm<FormDataProps>({
     resolver: yupResolver(signUpSchema)
   });

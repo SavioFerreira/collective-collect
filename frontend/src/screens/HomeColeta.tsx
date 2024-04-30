@@ -25,17 +25,11 @@ export function HomeColeta() {
   async function fetchColetas() {
     try {
       setIsLoading(true);
-      const response = await api.get('/collects');
+      const response = await api.get('api/collect');
       setColetas(response.data);
     } catch (error) {
       const isAppError = error instanceof AppError;
       const title = isAppError ? error.message : 'Não foi possível carregar as coletas';
-
-      toast.show({
-        title: title,
-        placement: 'top',
-        bgColor: 'red.500'
-      })
     } finally {
       setIsLoading(false);
     }
@@ -44,8 +38,8 @@ export function HomeColeta() {
   useFocusEffect(
     useCallback(() => {
       fetchColetas();
-       //const intervalId = setInterval(fetchColetas, 8000); 
-       //return () => clearInterval(intervalId);
+       const intervalId = setInterval(fetchColetas, 10000); 
+       return () => clearInterval(intervalId);
     }, [groupSelected])
   );
 
