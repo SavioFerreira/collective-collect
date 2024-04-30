@@ -29,7 +29,8 @@ public class User implements UserDetails {
         this.name = name;
         this.password = password;
         this.email = email;
-        this.role = role;
+        if (role == null) this.role = AuthUserRole.USER;
+        else this.role = role;
     }
 
     @Override
