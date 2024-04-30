@@ -43,19 +43,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   async function singIn(email: string, password: string) {
     try {
-      const data = await api.post('/auth/login', { email, password });
-      console.log(data.status)
-      console.log(" 1 ")
-      console.log(data.statusText)
-      console.log(" 2 ")
-      console.log(api.defaults.headers.common['Authorization'] = `Bearer ${data.data.token}`)
-      console.log(" 3 ")
-      console.log(data.data.auth)
-      console.log(" 4 ")
-
-      if (data.data.auth && data.data.token) {
-        await storageUserAndTokenSave(data.data.auth, data.data.token);
-        userAndTokenUpdate(data.data.auth, data.data.token);
+      const {data} = await api.post('/auth/login', { email, password });
+      if (data.user && data.token) {
+        await storageUserAndTokenSave(data.user, data.token);
+        userAndTokenUpdate(data.user, data.token);
       }
     } catch (error) {
       throw error;
