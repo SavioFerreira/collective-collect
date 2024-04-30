@@ -14,9 +14,6 @@ export function Home() {
       <ScrollView>
         <HistoryCard />
         <Center h="32" pt={5}>
-          {/* <Heading color="white">
-            Coleta Coletiva
-          </Heading> */}
           <LogoHomeSvg 
           height={120}
           width={240}
