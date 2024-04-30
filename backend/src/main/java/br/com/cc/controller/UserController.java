@@ -1,12 +1,17 @@
 package br.com.cc.controller;
-import br.com.cc.entity.User;
+
 import br.com.cc.dto.UserDTO;
+import br.com.cc.entity.User;
+import br.com.cc.exception.AppError;
 import br.com.cc.mapper.UserMapperService;
 import br.com.cc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -43,11 +48,22 @@ public class UserController {
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<UserDTO> updateById(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-		User user = userMapperService.convertUserToEntity(userDTO);
-		User updatedUser = userService.updateById(id, user);
-		return updatedUser != null ? ResponseEntity.ok(userMapperService.convertUserToDTO(updatedUser)) : ResponseEntity.notFound().build();
+//	@PutMapping("/{id}")
+//	public ResponseEntity<UserDTO> updateById(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+//		User user = userMapperService.convertUserToEntity(userDTO);
+//		User updatedUser = userService.updateById(id, user);
+//		return updatedUser != null ? ResponseEntity.ok(userMapperService.convertUserToDTO(updatedUser)) : ResponseEntity.notFound().build();
+//	}
+
+	@PatchMapping("/{id}")
+	public ResponseEntity<UserDTO> updateById(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+		User updatedUser = userService.updateById(id, updates);
+		if (updatedUser != null) {
+			UserDTO userDTO = userMapperService.convertUserToDTO(updatedUser);
+			return ResponseEntity.ok(userDTO);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 	@DeleteMapping("/{id}")
