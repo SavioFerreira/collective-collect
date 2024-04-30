@@ -1,5 +1,7 @@
 package br.com.cc.dto.auth;
 
-public record LoginResponseDto(String token) {
+import br.com.cc.dto.UserDTO;
+
+public record LoginResponseDto(UserDTO user, String token) {
     
 }

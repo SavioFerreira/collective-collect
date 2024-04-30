@@ -1,6 +1,8 @@
 package br.com.cc.controller;
+import br.com.cc.dto.UserDTO;
 import br.com.cc.enums.AuthUserRole;
 import br.com.cc.exception.AppError;
+import br.com.cc.mapper.UserMapperService;
 import br.com.cc.security.TokenService;
 import br.com.cc.entity.User;
 import br.com.cc.dto.auth.AuthenticationDto;
@@ -30,6 +32,9 @@ public class AuthController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    UserMapperService userMapperService;
+
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDto data){
         try {
@@ -41,10 +46,11 @@ public class AuthController {
 
             var userEmailPassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
             var auth = this.authenticationManager.authenticate(userEmailPassword);
-
             var token = tokenService.generateToken((User) auth.getPrincipal());
 
-            return ResponseEntity.ok(new LoginResponseDto(token));
+            UserDTO userDTO = userMapperService.convertUserToDTO(existUser);
+            return ResponseEntity.ok(new LoginResponseDto(userDTO, token));
+
         } catch (AuthenticationException e) {
             AppError appError = new AppError("error", "E-mail e/ou senha incorreta.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(appError);
@@ -59,12 +65,12 @@ public class AuthController {
         User existUser = (User) repository.findByEmail(data.email());
 
         if(existUser != null) {
-            AppError appError = new AppError("error", "Este email já está sendo utilizado!");
+            AppError appError = new AppError("error", "Este email não está disponível!");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(appError);
         }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.name(), encryptedPassword, data.email().toLowerCase(), data.role());
+        User newUser = new User(data.name().toLowerCase(), encryptedPassword, data.email().toLowerCase(), data.role());
 
         if(newUser.getRole() == null) {
             newUser.setRole(AuthUserRole.USER);

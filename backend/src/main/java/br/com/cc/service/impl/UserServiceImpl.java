@@ -3,14 +3,22 @@ package br.com.cc.service.impl;
 import br.com.cc.entity.User;
 import br.com.cc.entity.Collect;
 import br.com.cc.entity.Complaint;
+import br.com.cc.enums.AuthUserRole;
+import br.com.cc.exception.AppError;
 import br.com.cc.factory.UserActionFactory;
+import br.com.cc.mapper.UserMapperService;
 import br.com.cc.repository.UserRepository;
 import br.com.cc.service.UserService;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -23,13 +31,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(User user) {
         User existUser = (User) userRepository.findByEmail(user.getEmail());
-        String encryptedPassword;
 
         if(existUser != null) {
-            throw new Error("Este email já está cadastrado");
+            AppError appError = new AppError("Este email já está cadastrado");
+            throw new Error(appError.getMessage());
         }
 
-        user.setPassword(encryptedPassword = new BCryptPasswordEncoder().encode(user.getPassword()));
+        String encryptedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
+        user.setPassword(encryptedPassword);
         User createdUser = userRepository.save(user);
         return createdUser;
     }
@@ -46,18 +55,45 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean deleteById(Long id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-            return true;
+        Optional<User> user = userRepository.findById(id);
+
+        if (user.isPresent()) {
+            User currentUser = user.get();
+            if (currentUser.getRole().equals(AuthUserRole.ADMIN)) {
+                AppError appError = new AppError("O usuário " + currentUser.getName() + "é administrador e não pode ser removido");
+                throw new Error(appError.getMessage());
+            } else {
+                userRepository.deleteById(id);
+                return true;
+            }
         }
         return false;
     }
 
+//    @Override
+//    public User updateById(Long id, User updateUser) {
+//        if (userRepository.existsById(id)) {
+//            updateUser.setId(id);
+//            return userRepository.save(updateUser);
+//        }
+//        return null;
+//    }
+
+
     @Override
-    public User updateById(Long id, User updateUser) {
-        if (userRepository.existsById(id)) {
-            updateUser.setId(id);
-            return userRepository.save(updateUser);
+    public User updateById(Long id, Map<String, Object> updates) {
+        Optional<User> existingUserOpt = userRepository.findById(id);
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+            BeanWrapper wrapper = new BeanWrapperImpl(existingUser);
+
+            updates.forEach((key, value) -> {
+                if (wrapper.isWritableProperty(key)) {
+                    wrapper.setPropertyValue(key, value);
+                }
+            });
+
+            return userRepository.save(existingUser);
         }
         return null;
     }
