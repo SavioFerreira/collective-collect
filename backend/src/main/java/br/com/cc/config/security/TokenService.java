@@ -1,4 +1,4 @@
-package br.com.cc.security;
+package br.com.cc.config.security;
 
 import br.com.cc.entity.User;
 import com.auth0.jwt.JWT;

@@ -1,9 +1,8 @@
 package br.com.cc.controller;
 import br.com.cc.dto.UserDTO;
-import br.com.cc.enums.AuthUserRole;
 import br.com.cc.exception.AppError;
 import br.com.cc.mapper.UserMapperService;
-import br.com.cc.security.TokenService;
+import br.com.cc.config.security.TokenService;
 import br.com.cc.entity.User;
 import br.com.cc.dto.auth.AuthenticationDto;
 import br.com.cc.dto.auth.LoginResponseDto;

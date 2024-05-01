@@ -1,6 +1,5 @@
-package br.com.cc.security;
+package br.com.cc.config.security;
 
-import br.com.cc.enums.AuthUserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

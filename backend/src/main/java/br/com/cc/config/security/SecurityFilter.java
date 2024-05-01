@@ -1,4 +1,4 @@
-package br.com.cc.security;
+package br.com.cc.config.security;
 
 import java.io.IOException;
 import br.com.cc.repository.UserRepository;
