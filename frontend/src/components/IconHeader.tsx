@@ -1,9 +1,6 @@
 import { TouchableOpacity } from "react-native";
-import { HStack, Heading, Text, VStack, Icon, Pressable } from "native-base";
-import { MaterialIcons } from '@expo/vector-icons';
+import { HStack, Heading, VStack } from "native-base";
 
-import { useNavigation } from "@react-navigation/native";
-import { AppNavigatorRoutesProps } from "@routes/app.routes";
 
 import RecycleIconSvg from '@assets/recycleLogo.svg';
 

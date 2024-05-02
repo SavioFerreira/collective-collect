@@ -10,15 +10,17 @@ import { AppError } from '@utils/AppError';
 import { api } from '@services/api';
 import { ColetaDTO } from '@dtos/ColetaDTO';
 
-import BodySvg from '@assets/body.svg';
-import SeriesSvg from '@assets/series.svg';
-import RepetitionsSvg from '@assets/repetitions.svg';
+import RecicleLogoSvg from '@assets/recycleLogo.svg';
+import SeriesSvg from '@assets/recycleLogo.svg';
+import RepetitionsSvg from '@assets/recycleLogo.svg';
 
 import { Button } from '@components/Button';
+import { useAuth } from '@hooks/useAuth';
+import { IconHeader } from '@components/IconHeader';
 
-type RouteParamsProps = {
-  exerciseId: string;
-}
+// type RouteParamsProps = {
+//   exerciseId: string;
+// }
 
 export function Coleta() {
   const [coleta, setcoleta] = useState<ColetaDTO>({} as ColetaDTO);
@@ -26,89 +28,117 @@ export function Coleta() {
   const route = useRoute();
   const toast = useToast();
 
-  const { exerciseId } = route.params as RouteParamsProps;
+  const { user } = useAuth();
+
+  //const { exerciseId } = route.params as RouteParamsProps;
 
   function handleGoBack() {
-    navigation.goBack();
+    navigation.navigate('coletas');
+  }
+
+  async function fetchColetaDetails() {
+    try {
+      const response = await api.get(`/collects/${user.id}`);
+      setcoleta(response.data);
+
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError ? error.message : 'Não foi possível carregar os detalhes do exercícios';
+
+      toast.show({
+        title: title,
+        placement: 'top',
+        bgColor: 'red.500'
+      })
     }
+  }
 
-    async function fetchColetaDetails() {
-      try {
-        const response = await api.get(`/collects/${exerciseId}`);
-        setcoleta(response.data);
-
-      } catch (error) {
-        const isAppError = error instanceof AppError;
-        const title = isAppError ? error.message : 'Não foi possível carregar os detalhes do exercícios';
-  
-        toast.show({
-          title: title,
-          placement: 'top',
-          bgColor: 'red.500'
-        })
-      } 
-    }
-
-    useEffect(() => {
-        fetchColetaDetails();
-    }, [exerciseId]);
+  useEffect(() => {
+    fetchColetaDetails();
+  }, [user.id]);
 
   return (
     <VStack flex={1}>
-      <VStack px={8} bg="gray.600" pt={10}>
+      <VStack px={8} bg="darkBlue.300" pt={10}>
         <TouchableOpacity onPress={handleGoBack}>
-          <Icon as={Feather} name="arrow-left" color="green.500" size={8}/>
+          <Icon as={Feather} name="arrow-left" color="green.700" size={10} />
         </TouchableOpacity>
 
-        <HStack justifyContent="space-between" mt={6} mb={8} alignItems="center">
-          <Heading color="gray.100" fontSize="lg" fontFamily="heading" flexShrink={1}>
+        <HStack justifyContent="space-between" alignItems="center">
+          <Heading color="white" fontSize="xl" fontFamily="heading" flexShrink={1}>
             {coleta.title}
+            Titulo da coleta
           </Heading>
 
           <HStack alignItems="center">
-            <BodySvg />
+            <RecicleLogoSvg height={50} width={50} />
 
-            <Text color="gray.200" ml={1} textTransform="capitalize">
+            <Text color="white" ml={3} textTransform="capitalize">
               {coleta.type}
+              tipo da coleta
             </Text>
           </HStack>
         </HStack>
       </VStack>
+
       <ScrollView>
         <VStack p={8}>
-          <Box  rounded="lg" mb={3} overflow="hidden">
-            <Image 
-              w="full"
-              h={80}
-              source={{ uri: `${api.defaults.baseURL}/colects/${coleta.image}`}}
-              alt="imagem da coleta"
-              resizeMode="cover"
-            />
+          <Box>
+            <Box rounded="lg" mb={3} overflow="hidden" borderWidth={1}>
+              <Image
+                w="full"
+                h={80}
+                source={{ uri: `${api.defaults.baseURL}/colects/${coleta.image}` }}
+                alt="imagem da coleta"
+                resizeMode="cover"
+              />
+              <Box bg="blue.700" rounded="md" pb={4} px={4}>
+                <HStack alignItems="center" justifyContent="space-around" mb={5} mt={5} borderWidth={1}>
+                  <HStack>
+                    <SeriesSvg />
+                    <Text color="gray.200" ml={2}>
+                      {coleta.gravity} gravidade
+                    </Text>
+                  </HStack>
+
+                  <HStack>
+                    <RepetitionsSvg />
+                    <Text color="gray.200" ml={2}>
+                      {coleta.status} status
+                    </Text>
+                  </HStack>
+                </HStack>
+              </Box>
+            </Box>
           </Box>
 
-          <Box bg="gray.600" rounded="md" pb={4} px={4}>
-            <HStack alignItems="center" justifyContent="space-around" mb={5} mt={5}>
-              <HStack>
-                <SeriesSvg />
-                <Text color="gray.200" ml={2}>
-                  {coleta.gravity} gravidade
-                </Text>
+
+          <Box borderWidth={1} mt={5}  h={250}>
+            <Box bg="blue.700" rounded="md" pb={4} px={4}>
+              <HStack alignItems="center" justifyContent="space-around" mb={5} mt={5} borderWidth={1}>
+                <HStack>
+                  <SeriesSvg />
+                  <Text color="gray.200" ml={2}>
+                    {coleta.gravity} foto antes
+                  </Text>
+                </HStack>
+
+                <HStack>
+                  <RepetitionsSvg />
+                  <Text color="gray.200" ml={2}>
+                    {coleta.status} foto depois
+                  </Text>
+                </HStack>
               </HStack>
-  
-              <HStack>
-                <RepetitionsSvg />
-                <Text color="gray.200" ml={2}>
-                {coleta.status} status
-                </Text>
-              </HStack>
-            </HStack>
-  
-            <Button 
+
+            </Box>
+
+            <Button
               title="Marcar como realizado"
             />
           </Box>
         </VStack>
       </ScrollView>
     </VStack>
-  ) 
+  )
 }
