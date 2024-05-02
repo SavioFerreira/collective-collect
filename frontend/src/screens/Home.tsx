@@ -15,7 +15,7 @@ export function Home() {
       <ScrollView>
         <NewsCard />
         <HistoryCard />
-        <VStack px={5} m={5} borderRadius="lg" bg="cyan.200" >
+        <VStack px={5} m={5} borderRadius="lg" bg="blue.500" >
           <Center h="32">
             <LogoHomeSvg
               height={120}

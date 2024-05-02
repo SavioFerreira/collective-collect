@@ -6,13 +6,13 @@ import NewsSvg from '@assets/news.svg';
 
 export function NewsCard() {
   return (
-    <VStack px={5} m={5} borderRadius="lg" bg="emerald.500" >
+    <VStack px={5} m={5} borderRadius="lg" bg="blue.500" >
       <HStack pt={2} justifyContent="space-around">
         <TouchableOpacity activeOpacity={.7} onPress={() => { }}>
           <Icon
             as={Entypo}
             name="help-with-circle"
-            color="green.800"
+            color="darkBlue.700"
             size={8}
             mb={10}
           />
@@ -24,7 +24,7 @@ export function NewsCard() {
           <Icon
             as={Entypo}
             name="info-with-circle"
-            color="green.800"
+            color="cyan.300"
             size={8}
             mb={3}
           />
