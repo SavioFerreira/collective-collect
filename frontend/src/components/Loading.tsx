@@ -7,7 +7,7 @@ export function Loading() {
           color={'green.500'} 
           bg={'darkBlue.200'}
         >
-          <Spinner color="darkBlue.500" size={24} />
+          <Spinner color="darkBlue.500" size={34} />
         </Center>
 
     );
