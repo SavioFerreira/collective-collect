@@ -14,12 +14,12 @@ export function HistoryCard() {
   const ICON_WIDTH = 45;
   return (
     <VStack px={5} mr={5} ml={5} borderRadius="lg" bg="blue.500" >
-      <Heading color="darkBlue.700" alignSelf="center" mb={2} >
+      <Text color="white" alignSelf="center"fontFamily="heading" fontSize="lg" mb={2} >
         Jornada
-      </Heading>
+      </Text>
 
       <TouchableOpacity activeOpacity={.7} onPress={() => { }}>
-        <HStack bg="darkBlue.700" alignItems="center" p={2} pr={4} rounded="md" mb={3}>
+        <HStack bg="darkBlue.300" alignItems="center" p={2} pr={4} rounded="md" mb={3}>
           <WastehomeSvg
             width={ICON_WIDTH}
             height={ICON_HEIGHT}
@@ -45,7 +45,7 @@ export function HistoryCard() {
       </TouchableOpacity>
 
       <TouchableOpacity activeOpacity={.7} onPress={() => { }}>
-        <HStack bg="darkBlue.700" alignItems="center" p={2} pr={4} rounded="md" mb={3}>
+        <HStack bg="darkBlue.300" alignItems="center" p={2} pr={4} rounded="md" mb={3}>
           <CoopHomeSvg
             width={ICON_WIDTH}
             height={ICON_HEIGHT}
