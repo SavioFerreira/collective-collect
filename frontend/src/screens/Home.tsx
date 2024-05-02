@@ -1,10 +1,11 @@
-import { Center, Pressable, VStack, Alert, ScrollView,  Heading } from "native-base";
+import { Center, Pressable, VStack, Alert, ScrollView, Image } from "native-base";
 
-import HandsWorldSvg from '@assets/handsworld.svg';
 import LogoHomeSvg from '@assets/coletaColetiva.svg';
+import BackHomeImg from '@assets/homeBackImage.png';
 
 import { HomeHeader } from "@components/HomeHeader";
 import { HistoryCard } from "@components/HistoryCard";
+import { NewsCard } from "@components/NewsCard";
 
 export function Home() {
 
@@ -12,22 +13,16 @@ export function Home() {
     <VStack flex={1}>
       <HomeHeader />
       <ScrollView>
+        <NewsCard />
         <HistoryCard />
-        <Center h="32" pt={5}>
-          <LogoHomeSvg 
-          height={120}
-          width={240}
-          />
-        </Center>
-        <Center  h="40">
-          <Pressable>
-            <HandsWorldSvg
-              height={160}
-              width={160}
+        <VStack px={5} m={5} borderRadius="lg" bg="cyan.200" >
+          <Center h="32">
+            <LogoHomeSvg
+              height={120}
+              width={240}
             />
-          </Pressable>
-        </Center>
-
+          </Center>
+        </VStack>
       </ScrollView>
 
     </VStack>
