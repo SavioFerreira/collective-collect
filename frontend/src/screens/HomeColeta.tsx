@@ -4,9 +4,6 @@ import { TouchableOpacity } from 'react-native';
 import { HStack, VStack, FlatList, useToast, Text, Heading, Icon } from "native-base";
 
 import { Entypo } from '@expo/vector-icons';
-
-import { AppError } from '@utils/AppError';
-
 import { ColetaDTO } from '@dtos/ColetaDTO';
 import { api } from '@services/api'
 
@@ -15,29 +12,43 @@ import { Group } from '@components/Group';
 import { ColetaCard } from '@components/ColetaCard';
 import { Loading } from '@components/Loading';
 import { AppNavigatorRoutesProps } from '@routes/app.routes';
+import { ResiduoType } from 'src/enums/ResiduoType';
 
 export function HomeColeta() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [coletas, setColetas] = useState<ColetaDTO[]>([]);
-  const [groups, setGroups] = useState<string[]>(['OUTROS', 'PlÁSTICO', 'METAL', 'ALVENARIA', 'ORGÂNICO']);
-  const [groupSelected, setGroupSelected] = useState('OUTROS');
-  const toast = useToast();
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [types, setTypes] = useState(Object.values(ResiduoType));
+  const [coletas, setColetas] = useState<ColetaDTO[]>([]);
+  const [allColetas, setAllColetas] = useState<ColetaDTO[]>([]);
+
+  const [typeSelected, setTypeSelected] = useState(types[0]);
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   function handleOpenColetaDetails() {
     navigation.navigate('detalhesColeta');
   }
 
+  const applyFilter = useCallback(() => {
+    const filteredColetas = typeSelected === ResiduoType.TODOS ? allColetas : allColetas.filter(coleta => coleta.type === typeSelected);
+    setColetas(filteredColetas);
+  }, [typeSelected, allColetas]);
+
+  const handleTypeSelected = useCallback((item: ResiduoType) => {
+    setTypeSelected(item);
+  }, []);
+
+  useEffect(() => {
+    applyFilter();
+  }, [typeSelected, applyFilter]);
 
   async function fetchColetas() {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      const response = await api.get('api/collect');
-      setColetas(response.data);
+      const { data } = await api.get('api/collect');
+      setAllColetas(data);
+      applyFilter();
     } catch (error) {
-      const isAppError = error instanceof AppError;
-      const title = isAppError ? error.message : 'Não foi possível carregar as coletas';
+      console.error("Erro ao carregar coletas:", error);
     } finally {
       setIsLoading(false);
     }
@@ -46,8 +57,9 @@ export function HomeColeta() {
   useFocusEffect(
     useCallback(() => {
       fetchColetas();
-    }, [groupSelected])
+    }, [])
   );
+
 
   return (
     <VStack flex={1} >
@@ -68,13 +80,13 @@ export function HomeColeta() {
           </TouchableOpacity>
         </HStack>
         <FlatList
-          data={groups}
+          data={types}
           keyExtractor={item => item}
           renderItem={({ item }) => (
             <Group
               name={item}
-              isActive={groupSelected === item}
-              onPress={() => setGroupSelected(item)}
+              isActive={typeSelected === item}
+              onPress={() => handleTypeSelected(item)}
             />
           )}
           horizontal

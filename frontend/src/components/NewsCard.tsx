@@ -30,7 +30,7 @@ export function NewsCard() {
           />
         </TouchableOpacity>
       </HStack>
-      <Center m={0}>
+      <Center m={-4} mb={2}>
         <NewsSvg
           height={100}
           width={200} />

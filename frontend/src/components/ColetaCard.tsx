@@ -3,10 +3,8 @@ import { Heading, HStack, Text, VStack, Icon } from 'native-base';
 import * as icons from '@expo/vector-icons/';
 
 import { ColetaDTO } from '@dtos/ColetaDTO';
-import { ResiduoIcon } from 'src/enums/ResiduoIcon';
 
-import { MaterialCommunityIcons, MaterialIcons, FontAwesome, FontAwesome5, FontAwesome6, Feather, Octicons } from '@expo/vector-icons/';
-import { color } from 'native-base/lib/typescript/theme/styled-system';
+import { MaterialCommunityIcons, MaterialIcons, FontAwesome, FontAwesome6, Feather, Octicons } from '@expo/vector-icons/';
 
 
 
