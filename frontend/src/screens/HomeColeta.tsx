@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
-import { HStack, VStack, FlatList, useToast, Text, Heading, Center, Icon } from "native-base";
+import { HStack, VStack, FlatList, useToast, Text, Heading, Icon } from "native-base";
 
 import { Entypo } from '@expo/vector-icons';
 
@@ -14,6 +14,7 @@ import { IconHeader } from "@components/IconHeader";
 import { Group } from '@components/Group';
 import { ColetaCard } from '@components/ColetaCard';
 import { Loading } from '@components/Loading';
+import { AppNavigatorRoutesProps } from '@routes/app.routes';
 
 export function HomeColeta() {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +22,13 @@ export function HomeColeta() {
   const [groups, setGroups] = useState<string[]>(['OUTROS', 'PlÁSTICO', 'METAL', 'ALVENARIA', 'ORGÂNICO']);
   const [groupSelected, setGroupSelected] = useState('OUTROS');
   const toast = useToast();
+
+  const navigation = useNavigation<AppNavigatorRoutesProps>();
+
+  function handleOpenColetaDetails() {
+    navigation.navigate('detalhesColeta');
+  }
+
 
   async function fetchColetas() {
     try {
@@ -38,8 +46,6 @@ export function HomeColeta() {
   useFocusEffect(
     useCallback(() => {
       fetchColetas();
-       const intervalId = setInterval(fetchColetas, 10000); 
-       return () => clearInterval(intervalId);
     }, [groupSelected])
   );
 
@@ -47,16 +53,16 @@ export function HomeColeta() {
     <VStack flex={1} >
       <IconHeader title="Coletas" />
 
-      <VStack px={2} py={2} backgroundColor={'blue.400'} m={4} borderRadius="lg">
+      <VStack px={2} py={2} backgroundColor={'blue.500'} m={4} borderRadius="lg">
         <HStack justifyContent="space-between">
-          <Heading color="darkBlue.600" fontSize="xl" fontFamily="heading" mb={2} ml={'24'}>
-            Tipos de resíduos
+          <Heading color="darkBlue.700" fontSize="xl" fontFamily="heading" mb={2} ml={'24'}>
+            Tipos de resíduo
           </Heading>
           <TouchableOpacity activeOpacity={.7} onPress={() => { }}>
             <Icon
               as={Entypo}
               name="help-with-circle"
-              color="purple.700"
+              color="darkBlue.700"
               size={7}
             />
           </TouchableOpacity>
@@ -83,33 +89,35 @@ export function HomeColeta() {
       </VStack>
 
       {isLoading ? <Loading /> :
-        <VStack flex={1} px={1} backgroundColor={'blue.400'} m={4} borderRadius="lg">
-          <HStack justifyContent="space-between" m={5}>
-            <Heading color="darkBlue.600" fontSize="lg" fontFamily="heading">
+        <VStack flex={1} px={1} backgroundColor={'blue.500'} m={4} borderRadius="lg">
+          <HStack justifyContent="space-between" m={4}>
+            <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading">
               Coletas disponíveis
             </Heading>
-            <Text color="darkBlue.600" fontSize="lg" fontFamily="heading">
+            <Text color="darkBlue.700" fontSize="lg" fontFamily="heading">
               {coletas.length}
             </Text>
           </HStack>
-          <FlatList
-            data={coletas}
-            keyExtractor={item => item.id.toString()}
-            renderItem={({ item }) => (
-              <ColetaCard
-                onPress={() => { console.log(item.id) }}
-                data={item}
-              />
-            )}
-            ListEmptyComponent={() => (
-              <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
-                Não há coletas disponíveis no momento. {'\n'}
-                Volte mais tarde.
-              </Text>
-            )}
-            showsVerticalScrollIndicator={false}
-            pb={20}
-          />
+          <VStack m={4}>
+            <FlatList
+              data={coletas}
+              keyExtractor={item => item.id.toString()}
+              renderItem={({ item }) => (
+                <ColetaCard
+                  onPress={handleOpenColetaDetails}
+                  data={item}
+                />
+              )}
+              ListEmptyComponent={() => (
+                <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
+                  Não há coletas disponíveis no momento. {'\n'}
+                  Volte mais tarde.
+                </Text>
+              )}
+              showsVerticalScrollIndicator={false}
+              pb={20}
+            />
+          </VStack>
         </VStack>
       }
     </VStack>
