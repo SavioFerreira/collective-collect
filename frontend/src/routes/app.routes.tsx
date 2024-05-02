@@ -10,6 +10,8 @@ import { Home } from '@screens/Home';
 import { HomeDenuncia } from '@screens/HomeDenuncia';
 import { HomeColeta } from '@screens/HomeColeta';
 import { Profile } from '@screens/Profile';
+import { Coleta } from '@screens/Coleta';
+import { Denuncia } from '@screens/Denuncia';
 
 
 type AppRoutes = {
@@ -17,6 +19,8 @@ type AppRoutes = {
   coletas: undefined;
   denuncias: undefined;
   profile: undefined;
+  detalhesColeta: undefined
+  detalhesDenuncia: undefined
 }
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
@@ -42,53 +46,65 @@ export function AppRoutes() {
         paddingTop: sizes[2],
       }
     }} >
-  
-      <Screen 
+
+      <Screen
         name='home'
         component={Home}
         options={{
-          tabBarIcon: ({color}) => (
-            <HomeSvg 
-              fill={color} 
-              width={iconSize} 
+          tabBarIcon: ({ color }) => (
+            <HomeSvg
+              fill={color}
+              width={iconSize}
               height={iconSize}
             />
           )
         }}
       />
 
-      <Screen 
+      <Screen
         name='coletas'
         component={HomeColeta}
         options={{
-          tabBarIcon: ({color}) => (
-            <ColetaSvg 
-              fill={color} 
-              width={iconSize} 
+          tabBarIcon: ({ color }) => (
+            <ColetaSvg
+              fill={color}
+              width={iconSize}
               height={iconSize}
             />
           )
         }}
       />
 
-      <Screen 
+      <Screen
         name='denuncias'
         component={HomeDenuncia}
         options={{
-          tabBarIcon: ({color}) => (
-            <DenunciaSvg 
+          tabBarIcon: ({ color }) => (
+            <DenunciaSvg
               fill={color}
-              width={50} 
+              width={50}
               height={50}
             />
           )
         }}
       />
 
-      <Screen 
+      <Screen
         name='profile'
         component={Profile}
-        options={{tabBarButton: () => null}}
+        options={{ tabBarButton: () => null }}
+      />
+
+      <Screen
+        name='detalhesColeta'
+        component={Coleta}
+        options={{ tabBarButton: () => null }}
+      />
+
+      <Screen
+        name='detalhesDenuncia'
+        component={Denuncia}
+        options={{ tabBarButton: () => null }}
       />
     </Navigator>
   );
