@@ -1,11 +1,16 @@
 package br.com.cc.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Status {
-    DISPONIVEL("Disponível"),
+
     PENDENTE("Pendente"),
     APROVADO("Aprovado"),
     REJEITADO("Rejeitado"),
-    EM_ANALISE("Em Análise");
+    EM_ANALISE("Em Análise"),
+    OCORRENDO("Ocorrendo"),
+    DISPONIVEL("Disponível");
 
     private final String description;
 

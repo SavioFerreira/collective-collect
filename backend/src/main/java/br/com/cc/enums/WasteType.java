@@ -9,11 +9,11 @@ public enum WasteType {
     METAL("Metal"),
     MADEIRA("Madeira"),
     ORGANICO("Orgânico"),
-    ELETRONICOS("Eletrônicos"),
+    ELETRONICO("Eletrônico"),
     PAPEL("Papel/Papelão"),
-    PERIGOSOS("Perigosos"),
-    CONSTRUCAO("Construção e Demolição"),
-    VOLUMOSOS("Volumosos");
+    PERIGOSO("Perigoso"),
+    ENTULHO("Entulho"),
+    INDEFINIDO("Indefinido");
 
     private final String typeDescription;
 

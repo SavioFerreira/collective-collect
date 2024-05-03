@@ -1,5 +1,8 @@
 package br.com.cc.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum AuthUserRole {
     ADMIN("admin"),
     AUTHOR("author"),
