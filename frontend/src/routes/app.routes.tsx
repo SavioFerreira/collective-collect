@@ -19,7 +19,7 @@ type AppRoutes = {
   coletas: undefined;
   denuncias: undefined;
   profile: undefined;
-  detalhesColeta: undefined
+  detalhesColeta: {collectId: string};
   detalhesDenuncia: undefined
 }
 

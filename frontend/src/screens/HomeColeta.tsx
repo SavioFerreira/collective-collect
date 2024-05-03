@@ -24,8 +24,8 @@ export function HomeColeta() {
   const [typeSelected, setTypeSelected] = useState(types[0]);
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
-  function handleOpenColetaDetails() {
-    navigation.navigate('detalhesColeta');
+  function handleOpenColetaDetails(collectId: string) {
+    navigation.navigate('detalhesColeta', {collectId});
   }
 
   const applyFilter = useCallback(() => {
@@ -116,7 +116,7 @@ export function HomeColeta() {
               keyExtractor={item => item.id.toString()}
               renderItem={({ item }) => (
                 <ColetaCard
-                  onPress={handleOpenColetaDetails}
+                  onPress={() => handleOpenColetaDetails(item.id.toString())}
                   data={item}
                 />
               )}

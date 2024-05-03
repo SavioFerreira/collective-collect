@@ -6,6 +6,8 @@ export type ColetaDTO = {
 		gravity: string,
 		date: string,
 		image: string,
+		collectImage: string,
+		complaintImage: string,
 		title: string,
 		description:string,
 		locale: string,
