@@ -13,6 +13,7 @@ import { ColetaCard } from '@components/ColetaCard';
 import { Loading } from '@components/Loading';
 import { AppNavigatorRoutesProps } from '@routes/app.routes';
 import { ResiduoType } from 'src/enums/ResiduoType';
+import { AppError } from '@utils/AppError';
 
 export function HomeColeta() {
 
@@ -23,6 +24,7 @@ export function HomeColeta() {
 
   const [typeSelected, setTypeSelected] = useState(types[0]);
   const navigation = useNavigation<AppNavigatorRoutesProps>();
+  const toast = useToast();
 
   function handleOpenColetaDetails(collectId: string) {
     navigation.navigate('detalhesColeta', {collectId});
@@ -48,7 +50,13 @@ export function HomeColeta() {
       setAllColetas(data);
       applyFilter();
     } catch (error) {
-      console.error("Erro ao carregar coletas:", error);
+      const isAppError = error instanceof AppError;
+      const title = isAppError ? error.message : 'Não foi possível carregar os detalhes do exercícios';
+      toast.show({
+        title: title,
+        placement: 'top',
+        bgColor: 'red.500'
+      })
     } finally {
       setIsLoading(false);
     }

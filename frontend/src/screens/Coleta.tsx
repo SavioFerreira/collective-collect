@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { HStack, Heading, Icon, VStack, Text, Image, Box, ScrollView, useToast, Pressable } from 'native-base';
 import { TouchableOpacity } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { AppNavigatorRoutesProps } from '@routes/app.routes'
@@ -10,15 +10,17 @@ import { AppError } from '@utils/AppError';
 import { api } from '@services/api';
 import { ColetaDTO } from '@dtos/ColetaDTO';
 
-import RepetitionsSvg from '@assets/recycleLogo.svg';
+import RecicleLogoSvg from '@assets/recycleLogo.svg';
 
 import { getGravityIcon, getStatusIcon, getTypeIcon } from '@utils/Icons';
+import { Loading } from '@components/Loading';
 
 type RouteParamsProps = {
   collectId: string;
 }
 
 export function Coleta() {
+  const [isLoading, setIsLoading] = useState(true);
   const [coleta, setcoleta] = useState<ColetaDTO>({} as ColetaDTO);
   const navigation = useNavigation<AppNavigatorRoutesProps>();
   const route = useRoute();
@@ -29,9 +31,9 @@ export function Coleta() {
   const statusIcon = getStatusIcon(coleta.status);
   const typeIcon = getTypeIcon(coleta.type);
 
-  const statusTitle = coleta.status.toLocaleLowerCase().replace("_",  " ");
-  const typeTitle = coleta.type.toLocaleLowerCase().replace("_",  " ");
-  const gravityTitle = coleta.gravity.toLocaleLowerCase().replace("_",  " ");
+  const statusTitle = coleta.status != undefined ? coleta.status.toLocaleLowerCase().replace("_", " ") : " ";
+  const typeTitle = coleta.type != undefined ? coleta.type.toLocaleLowerCase().replace("_", " ") : " ";
+  const gravityTitle = coleta.gravity != undefined ? coleta.gravity.toLocaleLowerCase().replace("_", " ") : " ";
 
   const { collectId } = route.params as RouteParamsProps;
 
@@ -41,6 +43,7 @@ export function Coleta() {
 
   async function fetchColetaDetails() {
     try {
+      setIsLoading(true);
       const response = await api.get(`/api/collect/${collectId}`);
       setcoleta(response.data);
 
@@ -53,6 +56,8 @@ export function Coleta() {
         placement: 'top',
         bgColor: 'red.500'
       })
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -62,61 +67,73 @@ export function Coleta() {
 
   return (
     <VStack flex={1}>
-      <VStack px={5} bg="darkBlue.300" pt={10} pb={2}>
+      <VStack px={5} bg="darkBlue.300" pt={10} pb={1}>
         <TouchableOpacity onPress={handleGoBack}>
-          <Icon as={Feather} name="arrow-left" color="green.700" size={10} />
+          <Icon as={Feather} name="arrow-left" color="green.700" size={12} pt={1}/>
         </TouchableOpacity>
 
-        <HStack justifyContent="space-between" alignItems="center">
+        <HStack justifyContent="space-evenly" alignItems="center">
           <HStack alignItems="center">
-            <Heading color="white" fontSize="lg" fontFamily="heading" numberOfLines={1} mr={5}>
-              Denuncia nº{coleta.complaintId}  do tipo {typeTitle.replace(typeTitle.charAt(0), typeTitle.charAt(0).toLocaleUpperCase())}
+            <Heading color="blue.700" fontSize="xl" fontFamily="heading" numberOfLines={1} ml={10} mr={10}>
+              Coleta nº{coleta.id}
             </Heading>
-            <Icon
-              as={typeIcon.Component}
-              name={typeIcon.name}
-              color="white"
-              size={10}
-            />
+            <HStack alignItems="center" >
+             <RecicleLogoSvg height={45} width={45}/>
+            </HStack>
           </HStack>
         </HStack>
       </VStack>
 
+      {isLoading ? <Loading /> :
       <ScrollView>
-        <VStack p={5}>
+        <VStack p={5} pt={3}>
 
           <Box rounded="lg" mb={3} overflow="hidden">
-            <Box position="relative">
+            <Box bg="green.700" mt={2} pt={1} pb={2} px={4} borderRadius="lg" borderBottomRadius={0} mb={1}>
+              <Text fontFamily="heading" fontSize="md" color="yellow.400" mb={2} alignSelf="center">
+                Titulo da coleta
+              </Text>
+              <Text minH={3} maxH={16} fontStyle="italic" lineHeight={18} numberOfLines={3} color="warmGray.100" fontSize="md" textAlign="justify" alignSelf="center">
+                {coleta.title}
+              </Text>
+            </Box>
+            <Box position="relative" mb={1}>
               <Image
                 w="full"
                 h={64}
-                source={{ uri: coleta.image }}
+                source={{ uri: `${coleta.complaintImage}`}}
                 alt="imagem da coleta"
                 resizeMode="cover"
                 borderWidth={2}
-                borderRadius="lg"
-                borderBottomRadius={0}
                 borderColor="green.800"
               />
               <Box position="absolute" bottom={0} left={0} p={2} bgColor="rgba(7, 33, 51, 0.5)" w="full">
-                <HStack maxW={80} minW={80}>
-                  <RepetitionsSvg style={{ alignSelf: "center" }} />
-                  <Text color="white" fontStyle="italic" ml={2} numberOfLines={2}>
+                <HStack maxW={80} minW={80} alignItems="center">
+                  <Icon
+                    as={FontAwesome6}
+                    name={"map-location-dot"}
+                    color="yellow.400"
+                    size="xl"
+                  />
+                  <Text color="yellow.200" fontStyle="italic" ml={2} numberOfLines={2}>
                     Local: {coleta.locale}
                   </Text>
                 </HStack>
               </Box>
             </Box>
-            <Box bg="green.700" mt={2} pt={2} pb={2} px={4}>
+            <Box bg="green.700" mb={1} pt={2} pb={2} px={4}>
 
-              <Text fontFamily="heading" fontSize="md" color="white" mb={1}>
+              <Text fontFamily="heading" fontSize="md" color="yellow.400" mb={1}>
                 Descrição:
               </Text>
-              <Text minH={20} maxH={20} fontStyle="italic" lineHeight={18} numberOfLines={4} color="warmGray.100" fontSize="md" textAlign="justify">
-                {coleta.description}
+              <Text minH={10} maxH={20} fontStyle="italic" lineHeight={18} numberOfLines={4} color="warmGray.100" fontSize="md" textAlign="justify">
+                {coleta.description} 
+              </Text>
+              <Text fontFamily="body" fontSize="xs" color="yellow.400" alignSelf="flex-end">
+                denuncia nº{coleta.complaintId}
               </Text>
             </Box>
-            <Box bg="green.700" mt={2} pt={2} pb={2} px={2}>
+            <Box bg="green.700" pt={2} pb={2} px={2}>
               <HStack justifyContent="space-around">
                 <HStack>
                   <Icon
@@ -146,8 +163,8 @@ export function Coleta() {
           </Box>
 
           <Pressable
-            bgColor="blue.500"
-            _pressed={{ bg: "blue.400" }}
+            bgColor="blue.600"
+            _pressed={{ bg: "blue.500" }}
             size="20"
             w="full"
             h={16}
@@ -164,6 +181,7 @@ export function Coleta() {
 
         </VStack>
       </ScrollView>
+      }
     </VStack>
   )
 }
