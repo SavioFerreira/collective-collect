@@ -1,6 +1,7 @@
 package br.com.cc.service.impl;
 import br.com.cc.entity.Collect;
 import br.com.cc.entity.Complaint;
+import br.com.cc.enums.Status;
 import br.com.cc.repository.CollectRepository;
 import br.com.cc.repository.ComplaintRepository;
 import br.com.cc.service.ComplaintService;
@@ -36,6 +37,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 		if(complaint.getId() != null) {
 			throw new RuntimeException("para criar uma denúncia, você não pode ter um ID!");
 		}
+		complaint.setStatus(Status.DISPONIVEL);
 		Complaint savedComplaint = complaintRepository.save(complaint);
 		createAndSaveCollectForComplaint(savedComplaint);
 		return savedComplaint;
@@ -83,7 +85,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 	private void createAndSaveCollectForComplaint(Complaint complaint) {
 		Collect collect = new Collect();
 		collect.setComplaint(complaint);
-		collect.setStatus(complaint.getStatus());
+		collect.setStatus(Status.DISPONIVEL);
 		collect.setDate(complaint.getDate());
 		collect.setWasteInfo(complaint.getWasteInfo());
 		Collect savedCollect = collectRepository.save(collect);

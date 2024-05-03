@@ -13,8 +13,6 @@ public class ComplaintMapperService  {
     @Autowired
     private UserMapperService userMapperService;
 
-
-
     public ComplaintDTO convertComplaintToDTO(Complaint complaint) {
         ComplaintDTO dto = new ComplaintDTO();
         dto.setCollectId(complaint.getCollect() != null ? complaint.getCollect().getId() : null);
