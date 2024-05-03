@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons, MaterialIcons, FontAwesome, FontAwesome6, Feather, Octicons } from '@expo/vector-icons/';
+import { MaterialCommunityIcons, MaterialIcons, FontAwesome, FontAwesome6, Feather, Octicons, Entypo } from '@expo/vector-icons/';
 
 type IconInfo = {
     name: string;
@@ -10,6 +10,7 @@ type IconInfo = {
     [key: string]: IconInfo;
   };
 
+ 
   export function getTypeIcon(residuoType: string): IconInfo {
     const iconMap: IconMap = {
       PLASTICO: { name: 'bottle-water', Component: FontAwesome6 },
@@ -17,11 +18,11 @@ type IconInfo = {
       METAL: { name: 'table-cog', Component: MaterialCommunityIcons },
       MADEIRA: { name: 'tree', Component: FontAwesome },
       ORGANICO: { name: 'fruit-watermelon', Component: MaterialCommunityIcons },
-      ELETRONICOS: { name: 'phonelink', Component: MaterialIcons },
+      ELETRONICO: { name: 'phonelink', Component: MaterialIcons },
       PAPEL: { name: 'newspaper', Component: FontAwesome6 }, 
-      PERIGOSOS: { name: 'radioactive-circle', Component: MaterialCommunityIcons },
-      CONSTRUCAO: { name: 'toy-brick-outline', Component: MaterialCommunityIcons },
-      VOLUMOSOS: { name: 'couch', Component: FontAwesome6 }
+      PERIGOSO: { name: 'radioactive-circle', Component: MaterialCommunityIcons },
+      ENTULHO: { name: 'toy-brick-outline', Component: MaterialCommunityIcons },
+      INDEFINIDO: { name: 'trash', Component: Entypo }
     };
     return iconMap[residuoType] || { name: 'alert-circle', Component: Feather };
   };
@@ -39,11 +40,13 @@ type IconInfo = {
 
   export function getStatusIcon(status: string): IconInfo {
     const iconMap: IconMap = {
+
       DISPONIVEL: { name: 'pending-actions', Component: MaterialIcons, color:"blue.300" },
       PENDENTE: { name: 'pending-actions', Component: MaterialIcons, color:"gray.200" },
       APROVADO: { name: 'check-circle-o', Component: FontAwesome, color:"emerald.500" },
       REJEITADO: { name: 'alert-triangle', Component: Feather, color:"red.700" },
-      EM_ANALISE: { name: 'unverified', Component: Octicons, color:"amber.300" }
+      EM_ANALISE: { name: 'unverified', Component: Octicons, color:"amber.300" },
+      OCORRENDO: { name: 'unverified', Component: Octicons, color:"amber.300" }
     };
     return iconMap[status] || { name: 'alert-circle', Component: Feather };
   };

@@ -31,7 +31,7 @@ export function HistoryCard() {
           </VStack>
 
           <Text fontSize="md" fontFamily="heading" color="white" mt={1} mr={2} numberOfLines={1}>
-            {2}
+            {0}
           </Text>
 
           <Icon
@@ -57,7 +57,7 @@ export function HistoryCard() {
           </VStack>
 
           <Text fontSize="md" fontFamily="heading" color="white" mt={1} mr={2} numberOfLines={1}>
-            {3}
+            {0}
           </Text>
 
           <Icon
