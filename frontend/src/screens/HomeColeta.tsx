@@ -39,10 +39,6 @@ export function HomeColeta() {
     setTypeSelected(item);
   }, []);
 
-  useEffect(() => {
-    applyFilter();
-  }, [typeSelected, applyFilter]);
-
   async function fetchColetas() {
     setIsLoading(true);
     try {
@@ -61,6 +57,10 @@ export function HomeColeta() {
       setIsLoading(false);
     }
   }
+
+  useEffect(() => {
+    applyFilter();
+  }, [typeSelected, applyFilter]);
 
   useFocusEffect(
     useCallback(() => {

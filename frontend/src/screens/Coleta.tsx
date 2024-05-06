@@ -174,7 +174,7 @@ export function Coleta() {
             onPress={() => { }}
           >
             <Text fontFamily="heading" fontSize="lg" color="white">
-              Iniciar Coleta
+              Cadastrar
             </Text>
           </Pressable>
 
