@@ -56,7 +56,7 @@ export function SignIn() {
 
       setIsloading(false);
       toast.show({
-        title: title + "\n\n" + error,
+        title: title,
         placement: 'top',
         bgColor: 'red.500',
       });

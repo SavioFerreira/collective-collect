@@ -1,12 +1,15 @@
 package br.com.cc.controller;
+
 import br.com.cc.dto.CollectDTO;
 import br.com.cc.entity.Collect;
+import br.com.cc.exception.collect.CollectNotFoundException;
 import br.com.cc.mapper.CollectMapperService;
 import br.com.cc.service.CollectService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,7 +25,7 @@ public class CollectController {
 	private CollectMapperService collectMapperService;
 
 	@GetMapping
-	public List<CollectDTO> findAll(){
+	public List<CollectDTO> findAll() {
 		return collectService.findAll().stream()
 				.map(collectMapperService::convertCollectToDTO)
 				.collect(Collectors.toList());
@@ -30,27 +33,32 @@ public class CollectController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<CollectDTO> findById(@PathVariable Long id) {
-		return collectService.findById(id)
-				.map(collectMapperService::convertCollectToDTO)
-				.map(ResponseEntity::ok)
-				.orElseGet(() -> ResponseEntity.notFound().build());
+		Optional<Collect> optionalCollect = collectService.findById(id);
+		if (optionalCollect.isPresent()) {
+			return ResponseEntity.ok(collectMapperService.convertCollectToDTO(optionalCollect.get()));
+		} else {
+			throw new CollectNotFoundException("Coleta não encontrada com o ID: " + id);
+		}
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteById(@PathVariable Long id){
+	public ResponseEntity<Void> deleteById(@PathVariable Long id) {
 		if (collectService.deleteById(id)) {
 			return ResponseEntity.noContent().build();
+		} else {
+			throw new CollectNotFoundException("Não foi possível encontrar e excluir a coleta com o ID: " + id);
 		}
-		return ResponseEntity.notFound().build();
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<CollectDTO> updateById(@PathVariable Long id, @RequestBody CollectDTO collectDto) {
 		Collect collect = collectMapperService.convertCollectDtoToEntity(collectDto);
 		Optional<Collect> updatedOptional = collectService.updateById(id, collect);
-		return updatedOptional.map(collectMapperService::convertCollectToDTO)
-				.map(ResponseEntity::ok)
-				.orElseGet(() -> ResponseEntity.notFound().build());
+		if (updatedOptional.isPresent()) {
+			return ResponseEntity.ok(collectMapperService.convertCollectToDTO(updatedOptional.get()));
+		} else {
+			throw new CollectNotFoundException("Não foi possível encontrar e atualizar a coleta com o ID: " + id);
+		}
 	}
 
 	@PostMapping

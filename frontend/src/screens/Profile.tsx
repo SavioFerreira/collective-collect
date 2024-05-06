@@ -5,7 +5,6 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
 import  BackgroundImg  from '@assets/background.png';
-import  BackgroundAuthImg  from '@assets/backgroundAuth.png';
 
 import { ScreenHeader } from '@components/ScreenHeader';
 import { UserPhoto } from '@components/UserPhoto';
@@ -16,7 +15,7 @@ const PHOTO_SIZE = 150;
 
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
-  const [userPhoto, setUserPhoto] = useState('https://github.com/savioferreira.png');
+  const [userPhoto, setUserPhoto] = useState<string>();
   const toast = useToast();
 
 

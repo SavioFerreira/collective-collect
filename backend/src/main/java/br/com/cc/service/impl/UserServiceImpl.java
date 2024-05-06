@@ -4,7 +4,8 @@ import br.com.cc.entity.Collect;
 import br.com.cc.entity.Complaint;
 import br.com.cc.entity.User;
 import br.com.cc.enums.AuthUserRole;
-import br.com.cc.exception.AppError;
+import br.com.cc.exception.user.InvalidUserAdminDeletionException;
+import br.com.cc.infra.AppError;
 import br.com.cc.factory.UserActionFactory;
 import br.com.cc.repository.UserRepository;
 import br.com.cc.service.UserService;
@@ -29,8 +30,7 @@ public class UserServiceImpl implements UserService {
         User existUser = (User) userRepository.findByEmail(user.getEmail());
 
         if(existUser != null) {
-            AppError appError = new AppError("Este email já está cadastrado");
-            throw new RuntimeException(appError.getMessage());
+            throw new RuntimeException();
         }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
@@ -56,8 +56,7 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent()) {
             User currentUser = user.get();
             if (currentUser.getRole().equals(AuthUserRole.ADMIN)) {
-                AppError appError = new AppError("O usuário " + "\"" + currentUser.getName() +"\"" + " é administrador e não pode ser removido");
-                throw new RuntimeException(appError.getMessage());
+                throw new InvalidUserAdminDeletionException();
             } else {
                 userRepository.deleteById(id);
                 return true;

@@ -1,6 +1,10 @@
 package br.com.cc.controller;
 import br.com.cc.dto.UserDTO;
-import br.com.cc.exception.AppError;
+import br.com.cc.exception.user.InvalidUserCreationException;
+import br.com.cc.exception.user.InvalidUserEmailException;
+import br.com.cc.exception.user.InvalidUserEmailPasswordException;
+import br.com.cc.exception.user.UserNotFoundException;
+import br.com.cc.infra.AppError;
 import br.com.cc.mapper.UserMapperService;
 import br.com.cc.config.security.TokenService;
 import br.com.cc.entity.User;
@@ -35,44 +39,42 @@ public class AuthController {
     UserMapperService userMapperService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDto data){
-        try {
-            User existUser = (User) repository.findByEmail(data.email());
-            if (existUser == null) {
-                AppError appError = new AppError("error", "E-mail e/ou senha incorreta.");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(appError);
-            }
+    public ResponseEntity login(@RequestBody @Valid AuthenticationDto data) {
+        User existUser = (User) repository.findByEmail(data.email());
 
+        if (existUser == null) {
+            throw new UserNotFoundException();
+        }
+
+        try {
             var userEmailPassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
-            var auth = this.authenticationManager.authenticate(userEmailPassword);
+            var auth = authenticationManager.authenticate(userEmailPassword);
             var token = tokenService.generateToken((User) auth.getPrincipal());
 
             UserDTO userDTO = userMapperService.convertUserToDTO(existUser);
             return ResponseEntity.ok(new LoginResponseDto(userDTO, token));
-
         } catch (AuthenticationException e) {
-            AppError appError = new AppError("error", "E-mail e/ou senha incorreta.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(appError);
-        } catch (Exception e) {
-            AppError appError = new AppError("error", "Erro interno no servidor.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(appError);
+            throw new InvalidUserEmailPasswordException();
         }
     }
 
+
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDto data){
+    public ResponseEntity register(@RequestBody @Valid RegisterDto data) {
         User existUser = (User) repository.findByEmail(data.email());
 
-        if(existUser != null) {
-            AppError appError = new AppError("error", "Este email não está disponível!");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(appError);
+        if (existUser != null) {
+            throw new InvalidUserEmailException();
         }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         User newUser = new User(data.name().toLowerCase(), encryptedPassword, data.email().toLowerCase(), data.role());
 
-        this.repository.save(newUser);
-
-        return ResponseEntity.ok().build();
+        try {
+            repository.save(newUser);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new InvalidUserCreationException("Não foi possível criar esse Usuário!");
+        }
     }
 }

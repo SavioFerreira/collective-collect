@@ -2,11 +2,9 @@ package br.com.cc.controller;
 
 import br.com.cc.dto.UserDTO;
 import br.com.cc.entity.User;
-import br.com.cc.exception.AppError;
 import br.com.cc.mapper.UserMapperService;
 import br.com.cc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
