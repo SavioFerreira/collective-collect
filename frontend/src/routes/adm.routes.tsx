@@ -1,43 +1,91 @@
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { DrawerContentScrollView, DrawerItem, createDrawerNavigator } from '@react-navigation/drawer';
 import { Feather } from '@expo/vector-icons';
-
 import { AppRoutes } from './app.routes';
-import { useTheme } from 'native-base';
+import { Center, HStack, Heading, Spacer, Text, VStack, useTheme } from 'native-base';
 import { ValidaColeta } from '@screens/ValidaColeta';
 import { ValidaDenuncia } from '@screens/ValidaDenuncia';
 
-const { Navigator, Screen } = createDrawerNavigator();
+import BackWorldSvg from '@assets/handsworld.svg';
+import LogoCollectiveCollectSvg from '@assets/logo.svg';
+import LogoRecicleSvg from '@assets/recycleLogo.svg';
+import { useState } from 'react';
+
+type AdmRoutes = {
+    cc: undefined;
+    validaColeta: undefined;
+    validaDenuncia: undefined;
+}
+
+const { Navigator, Screen } = createDrawerNavigator<AdmRoutes>();
 
 export default function AdmRoutes() {
     const { sizes, colors } = useTheme();
     return (
-        <Navigator screenOptions={{ headerShown: false }}>
-            <Screen
-                name='admin'
-                component={AppRoutes}
-                options={{
-                    drawerIcon: ({ color, size }) => <Feather name='sliders' color={color} size={size} />,
-                    drawerLabel: 'Administrador'
-                }}
-            />
+        <Navigator
+            initialRouteName='cc'
+            drawerContent={props => {
+                const { routeNames, index } = props.state;
+                const focused = routeNames[index];
+                return (
+                    <DrawerContentScrollView showsVerticalScrollIndicator={false} {...props} style={{ backgroundColor: colors.darkBlue[800], borderWidth: 2, borderColor: colors.green[400] }}>
 
-            <Screen
-                name='validaColeta'
-                component={ValidaColeta}
-                options={{
-                    drawerIcon: ({ color, size }) => <Feather name='tool' color={color} size={size} />,
-                    drawerLabel: 'Validação Coleta'
-                }}
-            />
+                        <HStack justifyContent="center">
+                            <Text textAlign="center" fontSize="lg" fontFamily="heading" mb={3} mr={2} color={colors.green[400]}>
+                                Admin control
+                            </Text>
+                            <LogoRecicleSvg />
+                        </HStack>
+                        <VStack mb='130%'>
+                            <DrawerItem
+                                label={'Coleta Coletiva'}
+                                onPress={() => { props.navigation.navigate('cc') }}
+                                icon={({ color, size }) => <Feather name='sliders' color={color} size={size} />}
+                                focused={focused === 'cc'}
+                                activeBackgroundColor={colors.darkBlue[700]}
+                                inactiveBackgroundColor={colors.darkBlue[200]}
+                                inactiveTintColor={colors.green[700]}
+                                activeTintColor={colors.green[500]}
+                            />
+                            <DrawerItem
+                                label={'validaColeta'}
+                                onPress={() => { props.navigation.navigate('validaColeta') }}
+                                icon={({ color, size }) => <Feather name='tool' color={color} size={size} />}
+                                focused={focused === 'validaColeta'}
+                                activeBackgroundColor={colors.darkBlue[700]}
+                                inactiveBackgroundColor={colors.darkBlue[200]}
+                                inactiveTintColor={colors.green[700]}
+                                activeTintColor={colors.green[500]}
+                            />
+                            <DrawerItem
+                                label={'validaDenuncia'}
+                                onPress={() => { props.navigation.navigate('validaDenuncia') }}
+                                icon={({ color, size }) => <Feather name='tool' color={color} size={size} />}
+                                focused={focused === 'validaDenuncia'}
+                                activeBackgroundColor={colors.darkBlue[700]}
+                                inactiveBackgroundColor={colors.darkBlue[200]}
+                                inactiveTintColor={colors.green[700]}
+                                activeTintColor={colors.green[500]}
+                            />
+                        </VStack>
+                        <Center>
+                            <LogoCollectiveCollectSvg
+                                width={190}
+                                height={190}
+                            />
+                        </Center>
 
-            <Screen
-                name='validaDenuncia'
-                component={ValidaDenuncia}
-                options={{
-                    drawerIcon: ({ color, size }) => <Feather name='tool' color={color} size={size} />,
-                    drawerLabel: 'Validação Denuncia'
-                }}
-            />
+                    </DrawerContentScrollView>
+                );
+            }}
+            screenOptions={{
+                headerShown: false,
+                drawerPosition: 'left',
+                drawerType: 'front',
+            }}
+        >
+            <Screen name='cc' component={AppRoutes} />
+            <Screen name='validaColeta' component={ValidaColeta} />
+            <Screen name='validaDenuncia' component={ValidaDenuncia} />
         </Navigator>
-    )
+    );
 }

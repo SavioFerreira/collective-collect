@@ -1,4 +1,4 @@
-import { RoleType } from "src/enums/RoleType"
+import { RoleType } from "src/enums/RoleTypesEnum"
 
 export type UserDTO = {
     id: number,

@@ -12,7 +12,7 @@ import { Group } from '@components/Group';
 import { ColetaCard } from '@components/ColetaCard';
 import { Loading } from '@components/Loading';
 import { AppNavigatorRoutesProps } from '@routes/app.routes';
-import { ResiduoType } from 'src/enums/ResiduoType';
+import { ResiduoType } from 'src/enums/ResiduoTypesEnum';
 import { AppError } from '@utils/AppError';
 
 export function HomeColeta() {

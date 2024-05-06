@@ -6,7 +6,7 @@ import { useAuth } from '@hooks/useAuth';
 import { AppRoutes } from './app.routes';
 import { Loading } from '@components/Loading';
 import AdmRoutes from './adm.routes';
-import { RoleType } from 'src/enums/RoleType';
+import { RoleType } from 'src/enums/RoleTypesEnum';
 
 export function Routes() {
   const { colors } = useTheme();
