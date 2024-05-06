@@ -1,5 +1,6 @@
 package br.com.cc.dto;
 
+import br.com.cc.enums.AuthUserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -17,4 +18,6 @@ public class UserDTO {
 
     @Email(message = "Email deve ser válido.")
     private String email;
+
+    private AuthUserRole role;
 }
