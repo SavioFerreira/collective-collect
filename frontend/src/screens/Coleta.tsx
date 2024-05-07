@@ -15,6 +15,8 @@ import RecicleLogoSvg from '@assets/recycleLogo.svg';
 import { getGravityIcon, getStatusIcon, getTypeIcon } from '@utils/Icons';
 import { Loading } from '@components/Loading';
 
+import BackgroundImg from '@assets/backColeta.png';
+
 type RouteParamsProps = {
   collectId: string;
 }
@@ -87,6 +89,13 @@ export function Coleta() {
       {isLoading ? <Loading /> :
       <ScrollView>
         <VStack p={5} pt={3}>
+        <Image
+          source={BackgroundImg}
+          defaultSource={BackgroundImg}
+          alt="Céu azul"
+          resizeMode="contain"
+          position="absolute"
+        />
 
           <Box rounded="lg" mb={3} overflow="hidden">
             <Box bg="green.700" mt={2} pt={1} pb={2} px={4} borderRadius="lg" borderBottomRadius={0} mb={1}>
@@ -163,8 +172,8 @@ export function Coleta() {
           </Box>
 
           <Pressable
-            bgColor="blue.600"
-            _pressed={{ bg: "blue.500" }}
+            bgColor="orange.500"
+            _pressed={{ bg: "orange.300" }}
             size="20"
             w="full"
             h={16}

@@ -4,6 +4,8 @@ import { Input } from "@components/Input";
 import BackDenunciaImg from '@assets/mapBackGround.png';
 import { Button } from "@components/Button";
 
+import BackgroundImg from '@assets/backColeta.png';
+
 export function HomeDenuncia() {
   return (
     <VStack flex={1}>
@@ -34,27 +36,6 @@ export function HomeDenuncia() {
           borderRadius="lg"
           
         />
-        {/* <VStack
-          p={5}
-          m={10}
-          bgColor="transparent"
-          borderRadius="lg"
-          w="80%"
-          h="50%"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <ScrollView width="100%">
-            <Input
-              bgColor="blue.300"
-              h="12"
-            />
-            <Input
-              bgColor="blue.300"
-              h="12"
-            />
-          </ScrollView>
-        </VStack> */}
       </VStack>
 
     </VStack>
