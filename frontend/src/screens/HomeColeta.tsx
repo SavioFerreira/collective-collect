@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
-import { HStack, VStack, FlatList, useToast, Text, Heading, Icon } from "native-base";
+import { HStack, VStack, FlatList, useToast, Text, Heading, Icon, ScrollView, View, Box } from "native-base";
 
 import { Entypo } from '@expo/vector-icons';
 import { ColetaDTO } from '@dtos/ColetaDTO';
@@ -14,6 +14,7 @@ import { Loading } from '@components/Loading';
 import { AppNavigatorRoutesProps } from '@routes/app.routes';
 import { ResiduoType } from 'src/enums/ResiduoTypesEnum';
 import { AppError } from '@utils/AppError';
+import { HistoryCard } from '@components/HistoryCard';
 
 export function HomeColeta() {
 
@@ -27,7 +28,7 @@ export function HomeColeta() {
   const toast = useToast();
 
   function handleOpenColetaDetails(collectId: string) {
-    navigation.navigate('detalhesColeta', {collectId});
+    navigation.navigate('detalhesColeta', { collectId });
   }
 
   const applyFilter = useCallback(() => {
@@ -70,76 +71,87 @@ export function HomeColeta() {
 
 
   return (
-    <VStack flex={1} >
+    <VStack flex={1}>
       <IconHeader title="Coletas" />
-
-      <VStack px={2} py={2} backgroundColor={'blue.500'} m={4} borderRadius="lg">
-        <HStack justifyContent="space-between">
-          <Heading color="darkBlue.700" fontSize="xl" fontFamily="heading" mb={2} ml={'24'}>
-            Tipos de resíduo
-          </Heading>
-          <TouchableOpacity activeOpacity={.7} onPress={() => { }}>
-            <Icon
-              as={Entypo}
-              name="help-with-circle"
-              color="darkBlue.700"
-              size={7}
-            />
-          </TouchableOpacity>
-        </HStack>
-        <FlatList
-          data={types}
-          keyExtractor={item => item}
-          renderItem={({ item }) => (
-            <Group
-              name={item}
-              isActive={typeSelected === item}
-              onPress={() => handleTypeSelected(item)}
-            />
-          )}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          _contentContainerStyle={{
-            px: 5,
-          }}
-          my={16}
-          maxH={16}
-          mb={1} mt={1}
-        />
-      </VStack>
-
-      {isLoading ? <Loading /> :
-        <VStack flex={1} px={1} backgroundColor={'blue.500'} m={4} borderRadius="lg">
-          <HStack justifyContent="space-between" m={4}>
-            <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading">
-              Coletas disponíveis
+        <VStack px={2} py={2} backgroundColor={'blue.500'} m={4} borderRadius="lg">
+          <HStack justifyContent="space-between">
+            <Heading color="darkBlue.700" fontSize="xl" fontFamily="heading" mb={2} ml={'24'}>
+              Tipos de resíduo
             </Heading>
-            <Text color="darkBlue.700" fontSize="lg" fontFamily="heading">
-              {coletas.length}
-            </Text>
+            <TouchableOpacity activeOpacity={.7} onPress={() => { }}>
+              <Icon
+                as={Entypo}
+                name="help-with-circle"
+                color="darkBlue.700"
+                size={7}
+              />
+            </TouchableOpacity>
           </HStack>
-          <VStack m={4}>
-            <FlatList
-              data={coletas}
-              keyExtractor={item => item.id.toString()}
-              renderItem={({ item }) => (
-                <ColetaCard
-                  onPress={() => handleOpenColetaDetails(item.id.toString())}
-                  data={item}
-                />
-              )}
-              ListEmptyComponent={() => (
-                <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
-                  Não há coletas disponíveis no momento. {'\n'}
-                  Volte mais tarde.
-                </Text>
-              )}
-              showsVerticalScrollIndicator={false}
-              pb={20}
-            />
-          </VStack>
+          <FlatList
+            data={types}
+            keyExtractor={item => item}
+            renderItem={({ item }) => (
+              <Group
+                name={item}
+                isActive={typeSelected === item}
+                onPress={() => handleTypeSelected(item)}
+              />
+            )}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            _contentContainerStyle={{
+              px: 5,
+            }}
+            my={16}
+            maxH={16}
+            mb={1} mt={1}
+          />
         </VStack>
-      }
+        {isLoading ? <Loading /> :
+          <VStack px={2} backgroundColor={'blue.500'} mr={4} ml={4} borderRadius="lg" maxH="50%" minH="50%">
+
+            <HStack justifyContent="space-between" m={4}>
+              <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading">
+                Coletas disponíveis
+              </Heading>
+              <Text color="darkBlue.700" fontSize="lg" fontFamily="heading">
+                {coletas.length}
+              </Text>
+            </HStack>
+            <VStack mr={4} ml={4}>
+
+              <FlatList
+                data={coletas}
+                keyExtractor={item => item.id.toString()}
+                renderItem={({ item }) => (
+                  <ColetaCard
+                    onPress={() => handleOpenColetaDetails(item.id.toString())}
+                    data={item}
+                  />
+                )}
+                ListEmptyComponent={() => (
+                  <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
+                    Não há coletas disponíveis no momento. {'\n'}
+                    Volte mais tarde.
+                  </Text>
+                )}
+                showsVerticalScrollIndicator={false}
+                pb={2}
+              />
+
+            </VStack>
+          </VStack>
+        }
+        <VStack mt={4}>
+          <ScrollView>
+            <VStack px={3} backgroundColor={'blue.500'} mr={4} ml={4} borderRadius="lg" pb={16}>
+              <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading" m={4}>
+                Coletas cadastradas
+              </Heading>
+             
+            </VStack>
+          </ScrollView>
+        </VStack>
     </VStack>
   );
 };
