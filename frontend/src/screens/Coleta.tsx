@@ -15,7 +15,6 @@ import RecicleLogoSvg from '@assets/recycleLogo.svg';
 import { getGravityIcon, getStatusIcon, getTypeIcon } from '@utils/Icons';
 import { Loading } from '@components/Loading';
 
-import { CadastroConfirm } from '@components/CadastroConfirm';
 import { ColetaCadastro } from '@components/ColetaCadastro';
 
 type RouteParamsProps = {
@@ -24,23 +23,18 @@ type RouteParamsProps = {
 
 export function Coleta() {
   const [isLoading, setIsLoading] = useState(true);
-  const [coleta, setcoleta] = useState<ColetaDTO>({} as ColetaDTO);
   const navigation = useNavigation<AppNavigatorRoutesProps>();
-  const [isModalVisible, SetIsModalVisible] = useState(false);
+  const [coleta, setcoleta] = useState<ColetaDTO>({} as ColetaDTO);
   const route = useRoute();
   const toast = useToast();
-
-  const [showCadastro, setShowCadastro] = useState(false);
+  const { collectId } = route.params as RouteParamsProps;
 
   const gravityIcon = getGravityIcon(coleta.gravity);
   const statusIcon = getStatusIcon(coleta.status);
-  const typeIcon = getTypeIcon(coleta.type);
-
   const statusTitle = coleta.status != undefined ? coleta.status.toLocaleLowerCase().replace("_", " ") : " ";
-  const typeTitle = coleta.type != undefined ? coleta.type.toLocaleLowerCase().replace("_", " ") : " ";
   const gravityTitle = coleta.gravity != undefined ? coleta.gravity.toLocaleLowerCase().replace("_", " ") : " ";
 
-  const { collectId } = route.params as RouteParamsProps;
+  const [isModalVisible, SetIsModalVisible] = useState(false);
 
   function handleGoBack() {
     navigation.navigate('coletas');
@@ -50,43 +44,9 @@ export function Coleta() {
     SetIsModalVisible(true);
   }
 
-  const handleCompleteRegistration = async () => {
-    
-    if (validarDadosDaColeta()) {
-      try {
-        const result = await registrarEmColeta();  
-        toast.show({
-          description: "Coleta registrada com sucesso!",
-          duration: 4000
-        });
-        SetIsModalVisible(false); 
-      } catch (error) {
-        toast.show({
-          description: "Erro ao registrar a coleta.",
-          duration: 4000
-        });
-      }
-    } else {
-      toast.show({
-        description: "Por favor, verifique os dados inseridos.",
-        duration: 4000
-      });
-    }
+  const closeColetaModal = () => {
+    SetIsModalVisible(!isModalVisible);
   };
-
-
-function validarDadosDaColeta(): boolean {
-
-  return true; 
-}
-
-async function registrarEmColeta(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve();
-    }, 2000);
-  });
-}
 
   async function fetchColetaDetails() {
     try {
@@ -209,16 +169,32 @@ async function registrarEmColeta(): Promise<void> {
               </Box>
             </Box>
 
-            <CadastroConfirm onOpenModal={openColetaModal} />
+            <Pressable
+              bgColor="orange.500"
+              _pressed={{ bg: "orange.700" }}
+              size="20"
+              w="full"
+              h={16}
+              borderRadius="md"
+              alignItems="center"
+              justifyContent="center"
+              onPress={openColetaModal}
+            >
+              <Text fontFamily="heading" fontSize="lg" color="white">
+                Cadastrar
+              </Text>
+            </Pressable>
+
             <View>
               <Modal
                 visible={isModalVisible}
-                onRequestClose={() => SetIsModalVisible(false)}
+                animationType="slide"
+                onRequestClose={closeColetaModal}
                 transparent={true}
               >
-                <Flex flex={1} alignItems="center" justifyContent="center" bg="rgba(0, 2, 14, 0.918)">
+                <Flex flex={1} alignItems="center" justifyContent="center" bg="darkBlue.300">
                   <View bgColor="blue.500" p={5} pb={3} justifyContent="flex-end" borderRadius="lg" w="90%" maxW="90%" h="50%" maxH="70%" shadow={1}>
-                    <ColetaCadastro />
+                    <ColetaCadastro onRegister={closeColetaModal} />
                   </View>
                 </Flex>
               </Modal>
