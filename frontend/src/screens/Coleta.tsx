@@ -15,9 +15,8 @@ import RecicleLogoSvg from '@assets/recycleLogo.svg';
 import { getGravityIcon, getStatusIcon, getTypeIcon } from '@utils/Icons';
 import { Loading } from '@components/Loading';
 
-import BackgroundImg from '@assets/backColeta.png';
-import { WorkingView } from '@components/WorkingView';
-import { Cadastro } from '@components/Cadastro';
+import { CadastroConfirm } from '@components/CadastroConfirm';
+import { ColetaCadastro } from '@components/ColetaCadastro';
 
 type RouteParamsProps = {
   collectId: string;
@@ -31,6 +30,7 @@ export function Coleta() {
   const route = useRoute();
   const toast = useToast();
 
+  const [showCadastro, setShowCadastro] = useState(false);
 
   const gravityIcon = getGravityIcon(coleta.gravity);
   const statusIcon = getStatusIcon(coleta.status);
@@ -45,6 +45,48 @@ export function Coleta() {
   function handleGoBack() {
     navigation.navigate('coletas');
   }
+
+  function openColetaModal() {
+    SetIsModalVisible(true);
+  }
+
+  const handleCompleteRegistration = async () => {
+    
+    if (validarDadosDaColeta()) {
+      try {
+        const result = await registrarEmColeta();  
+        toast.show({
+          description: "Coleta registrada com sucesso!",
+          duration: 4000
+        });
+        SetIsModalVisible(false); 
+      } catch (error) {
+        toast.show({
+          description: "Erro ao registrar a coleta.",
+          duration: 4000
+        });
+      }
+    } else {
+      toast.show({
+        description: "Por favor, verifique os dados inseridos.",
+        duration: 4000
+      });
+    }
+  };
+
+
+function validarDadosDaColeta(): boolean {
+
+  return true; 
+}
+
+async function registrarEmColeta(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, 2000);
+  });
+}
 
   async function fetchColetaDetails() {
     try {
@@ -167,45 +209,16 @@ export function Coleta() {
               </Box>
             </Box>
 
-            <Pressable
-              bgColor="orange.500"
-              _pressed={{ bg: "orange.700" }}
-              size="20"
-              w="full"
-              h={16}
-              borderRadius="md"
-              alignItems="center"
-              justifyContent="center"
-              onPress={() => SetIsModalVisible(true)}
-            >
-              <Text fontFamily="heading" fontSize="lg" color="white">
-                Cadastrar
-              </Text>
-            </Pressable>
-            <View> 
+            <CadastroConfirm onOpenModal={openColetaModal} />
+            <View>
               <Modal
                 visible={isModalVisible}
                 onRequestClose={() => SetIsModalVisible(false)}
-                transparent={true} // Permite fundo transparente para o modal
+                transparent={true}
               >
-                <Flex flex={1} alignItems="center" justifyContent="center" bg="rgba(26, 129, 214, 0.568)">
-                  <View bgColor="green.700" p={5} pb={24} justifyContent="flex-end" borderRadius="lg" w="90%" maxW="90%" h="77%" maxH="80%" shadow={1}>
-                    <Cadastro />
-                    <Pressable
-                      bgColor="green.500"
-                      _pressed={{ bg: "green.400" }}
-                      size="20"
-                      w="full"
-                      h={16}
-                      borderRadius="md"
-                      alignItems="center"
-                      justifyContent="center"
-                      onPress={() => SetIsModalVisible(false)}
-                    >
-                      <Text fontFamily="heading" fontSize="lg" color="white">
-                        Concluir
-                      </Text>
-                    </Pressable>
+                <Flex flex={1} alignItems="center" justifyContent="center" bg="rgba(0, 2, 14, 0.918)">
+                  <View bgColor="blue.500" p={5} pb={3} justifyContent="flex-end" borderRadius="lg" w="90%" maxW="90%" h="50%" maxH="70%" shadow={1}>
+                    <ColetaCadastro />
                   </View>
                 </Flex>
               </Modal>
