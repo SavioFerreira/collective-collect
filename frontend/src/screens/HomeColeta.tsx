@@ -107,6 +107,16 @@ export function HomeColeta() {
             mb={1} mt={1}
           />
         </VStack>
+        <VStack mb={4}>
+          <ScrollView>
+            <VStack px={3} backgroundColor={'blue.500'} mr={4} ml={4} borderRadius="lg" pb={10}>
+              <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading" m={4}>
+                Coletas cadastradas
+              </Heading>
+             
+            </VStack>
+          </ScrollView>
+        </VStack>
         {isLoading ? <Loading /> :
           <VStack px={2} backgroundColor={'blue.500'} mr={4} ml={4} borderRadius="lg" maxH="50%" minH="50%">
 
@@ -142,16 +152,6 @@ export function HomeColeta() {
             </VStack>
           </VStack>
         }
-        <VStack mt={4}>
-          <ScrollView>
-            <VStack px={3} backgroundColor={'blue.500'} mr={4} ml={4} borderRadius="lg" pb={16}>
-              <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading" m={4}>
-                Coletas cadastradas
-              </Heading>
-             
-            </VStack>
-          </ScrollView>
-        </VStack>
     </VStack>
   );
 };

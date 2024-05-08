@@ -193,7 +193,7 @@ export function Coleta() {
                 transparent={true}
               >
                 <Flex flex={1} alignItems="center" justifyContent="center" bg="rgba(74, 169, 255, 0.87)">
-                  <View bgColor="blue.500" p={5} pb={3} justifyContent="flex-end" borderRadius="lg" w="90%" maxW="90%" h="55%" maxH="70%" shadow={1}>
+                  <View bgColor="blue.500" p={5} pb={3} justifyContent="flex-end" borderRadius="lg" w="90%" maxW="90%" h="60%" maxH="70%" shadow={1}>
                     <Icon alignSelf="flex-end" size={8}  color="green.400"
                       as={Feather} 
                       name="x-circle"

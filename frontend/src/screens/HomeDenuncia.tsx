@@ -3,8 +3,8 @@ import { IconHeader } from "@components/IconHeader";
 import BackDenunciaImg from '@assets/mapBackGround.png';
 import { Feather } from '@expo/vector-icons';
 import { Modal } from "react-native";
-import { ColetaCadastro } from "@components/ColetaCadastro";
 import { useState } from "react";
+import { DenunciaCadastro } from "@components/DenunciaCadastro";
 
 export function HomeDenuncia() {
   const [isModalVisible, SetIsModalVisible] = useState(false);
@@ -62,13 +62,13 @@ export function HomeDenuncia() {
           transparent={true}
         >
           <Flex flex={1} alignItems="center" justifyContent="center" bg="rgba(74, 169, 255, 0.87)">
-            <View bgColor="blue.500" p={5} pb={3} justifyContent="flex-end" borderRadius="lg" w="90%" maxW="90%" h="55%" maxH="70%" shadow={1}>
+            <View bgColor="blue.500" p={5} pb={3} justifyContent="flex-end" borderRadius="lg" w="90%" maxW="90%" h="80%" maxH="80%" shadow={1}>
               <Icon alignSelf="flex-end" size={8} color="green.400"
                 as={Feather}
                 name="x-circle"
                 onPress={closeColetaModal}
               />
-              <ColetaCadastro onRegister={closeColetaModal} />
+              <DenunciaCadastro onRegister={closeColetaModal} />
             </View>
           </Flex>
         </Modal>

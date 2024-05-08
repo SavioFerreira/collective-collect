@@ -15,7 +15,7 @@ const PHOTO_SIZE = 150;
 
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
-  const [userPhoto, setUserPhoto] = useState<string>();
+  const [userPhoto, setUserPhoto] = useState('https://imgflip.com/s/meme/Futurama-Fry.jpg');
   const toast = useToast();
 
 
