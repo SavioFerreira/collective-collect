@@ -149,38 +149,7 @@ export function SignIn() {
             borderRadius={12}
             onPress={handleNewAccount}
           />
-          <Text
-            color="rgba(15, 29, 230, 0.993)"
-            fontSize="lg" mb={2} mt={3}
-            fontFamily="heading"
-          >
-            Fazer login com
-          </Text>
         </Center>
-
-        <HStack justifyContent="space-evenly" mr={24} ml={24} >
-          <FaceBookIconSvg
-            onPress={() => {
-              toast.show({
-                title: 'Em breve o login com Facebook estará disponível',
-                placement: 'bottom',
-                bgColor: 'darkBlue.600',
-
-              });
-            }}
-          />
-          <GoogleIconSvg
-            onPress={() => {
-              toast.show({
-                title: 'Em breve o login com Google estará disponível',
-                placement: 'bottom',
-                bgColor: 'darkBlue.600',
-                
-              });
-            }}
-          />
-        </HStack>
-
       </VStack>
     </ScrollView>
   );
