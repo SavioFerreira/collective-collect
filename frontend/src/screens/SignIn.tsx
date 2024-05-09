@@ -70,8 +70,8 @@ export function SignIn() {
         <Image
           source={BackgroundImg}
           defaultSource={BackgroundImg}
-          alt="Céu azul"
-          resizeMode="contain"
+          alt="sky"
+          resizeMode="cover"
           position="absolute"
         />
         <Center mt={16} mb={8}>

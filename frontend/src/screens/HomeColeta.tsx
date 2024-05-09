@@ -72,79 +72,78 @@ export function HomeColeta() {
   return (
     <VStack flex={1}>
       <IconHeader title="Coletas" />
-        <VStack px={2}  mr={4} ml={4} mt={2
-          
-        } borderRadius="lg">
-          <HStack justifyContent="space-between">
-            <Heading color="darkBlue.700" fontSize="xl" fontFamily="heading" mb={2} ml={'24'}>
-              Tipos de resíduo
+      <VStack px={2} mr={4} ml={4} mt={2} borderRadius="lg">
+        <HStack justifyContent="space-between">
+          <Heading color="darkBlue.700" fontSize="xl" fontFamily="heading" mb={2} ml={'24'}>
+            Tipos de resíduo
+          </Heading>
+          <TouchableOpacity activeOpacity={.7} onPress={() => { }}>
+            <Icon
+              as={Entypo}
+              name="help-with-circle"
+              color="darkBlue.700"
+              size={7}
+            />
+          </TouchableOpacity>
+        </HStack>
+        <FlatList
+          data={types}
+          keyExtractor={item => item}
+          renderItem={({ item }) => (
+            <Group
+              name={item}
+              isActive={typeSelected === item}
+              onPress={() => handleTypeSelected(item)}
+            />
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          _contentContainerStyle={{
+            px: 5,
+          }}
+          my={16}
+          maxH={16}
+          mb={1} mt={1}
+        />
+      </VStack>
+      <VStack mb={4}>
+      </VStack>
+      {isLoading ? <Loading /> :
+        <VStack px={2} bg="rgba(74, 167, 255, 0.295)" mr={4} ml={4} borderRadius="lg" h="65%">
+
+          <HStack justifyContent="space-between" m={4}>
+            <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading">
+              Coletas disponíveis
             </Heading>
-            <TouchableOpacity activeOpacity={.7} onPress={() => { }}>
-              <Icon
-                as={Entypo}
-                name="help-with-circle"
-                color="darkBlue.700"
-                size={7}
-              />
-            </TouchableOpacity>
+            <Text color="darkBlue.700" fontSize="lg" fontFamily="heading">
+              {coletas.length}
+            </Text>
           </HStack>
-          <FlatList
-            data={types}
-            keyExtractor={item => item}
-            renderItem={({ item }) => (
-              <Group
-                name={item}
-                isActive={typeSelected === item}
-                onPress={() => handleTypeSelected(item)}
-              />
-            )}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            _contentContainerStyle={{
-              px: 5,
-            }}
-            my={16}
-            maxH={16}
-            mb={1} mt={1}
-          />
-        </VStack>
-        <VStack mb={4}>
-        </VStack>
-        {isLoading ? <Loading /> :
-          <VStack px={2} bg="rgba(74, 167, 255, 0.295)" mr={4} ml={4} borderRadius="lg" maxH="50%" minH="50%">
+          <VStack mr={4} ml={4}>
 
-            <HStack justifyContent="space-between" m={4}>
-              <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading">
-                Coletas disponíveis
-              </Heading>
-              <Text color="darkBlue.700" fontSize="lg" fontFamily="heading">
-                {coletas.length}
-              </Text>
-            </HStack>
-            <VStack mr={4} ml={4}>
+            <FlatList
+              data={coletas}
+              keyExtractor={item => item.id.toString()}
+              renderItem={({ item }) => (
+                <ColetaCard
+                  onPress={() => handleOpenColetaDetails(item.id.toString())}
+                  data={item}
+                />
+              )}
+              ListEmptyComponent={() => (
+                <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
+                  Não há coletas disponíveis no momento. {'\n'}
+                  Volte mais tarde.
+                </Text>
+              )}
+              showsVerticalScrollIndicator={false}
+              pb={2}
+              h="85%"
+            />
 
-              <FlatList
-                data={coletas}
-                keyExtractor={item => item.id.toString()}
-                renderItem={({ item }) => (
-                  <ColetaCard
-                    onPress={() => handleOpenColetaDetails(item.id.toString())}
-                    data={item}
-                  />
-                )}
-                ListEmptyComponent={() => (
-                  <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
-                    Não há coletas disponíveis no momento. {'\n'}
-                    Volte mais tarde.
-                  </Text>
-                )}
-                showsVerticalScrollIndicator={false}
-                pb={2}
-              />
-
-            </VStack>
           </VStack>
-        }
+        </VStack>
+      }
     </VStack>
   );
 };
