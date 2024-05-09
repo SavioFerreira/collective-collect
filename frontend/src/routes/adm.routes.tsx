@@ -22,61 +22,61 @@ export default function AdmRoutes() {
     const { sizes, colors } = useTheme();
     return (
         <Navigator
-            // initialRouteName='cc'
-            // drawerContent={props => {
-            //     const { routeNames, index } = props.state;
-            //     const focused = routeNames[index];
-            //     return (
-            //         <DrawerContentScrollView showsVerticalScrollIndicator={false} {...props} style={{ backgroundColor: colors.darkBlue[800], borderWidth: 2, borderColor: colors.green[400] }}>
+            initialRouteName='cc'
+            drawerContent={props => {
+                const { routeNames, index } = props.state;
+                const focused = routeNames[index];
+                return (
+                    <DrawerContentScrollView showsVerticalScrollIndicator={false} {...props} style={{ backgroundColor: colors.darkBlue[800], borderWidth: 2, borderColor: colors.green[400] }}>
 
-            //             <HStack justifyContent="center">
-            //                 <Text textAlign="center" fontSize="lg" fontFamily="heading" mb={3} mr={2} color={colors.green[400]}>
-            //                     Admin control
-            //                 </Text>
-            //                 <LogoRecicleSvg />
-            //             </HStack>
-            //             <VStack mb='130%'>
-            //                 <DrawerItem
-            //                     label={'Coleta Coletiva'}
-            //                     onPress={() => { props.navigation.navigate('cc') }}
-            //                     icon={({ color, size }) => <Feather name='sliders' color={color} size={size} />}
-            //                     focused={focused === 'cc'}
-            //                     activeBackgroundColor={colors.darkBlue[700]}
-            //                     inactiveBackgroundColor={colors.darkBlue[200]}
-            //                     inactiveTintColor={colors.green[700]}
-            //                     activeTintColor={colors.green[500]}
-            //                 />
-            //                 <DrawerItem
-            //                     label={'validaColeta'}
-            //                     onPress={() => { props.navigation.navigate('validaColeta') }}
-            //                     icon={({ color, size }) => <Feather name='tool' color={color} size={size} />}
-            //                     focused={focused === 'validaColeta'}
-            //                     activeBackgroundColor={colors.darkBlue[700]}
-            //                     inactiveBackgroundColor={colors.darkBlue[200]}
-            //                     inactiveTintColor={colors.green[700]}
-            //                     activeTintColor={colors.green[500]}
-            //                 />
-            //                 <DrawerItem
-            //                     label={'validaDenuncia'}
-            //                     onPress={() => { props.navigation.navigate('validaDenuncia') }}
-            //                     icon={({ color, size }) => <Feather name='tool' color={color} size={size} />}
-            //                     focused={focused === 'validaDenuncia'}
-            //                     activeBackgroundColor={colors.darkBlue[700]}
-            //                     inactiveBackgroundColor={colors.darkBlue[200]}
-            //                     inactiveTintColor={colors.green[700]}
-            //                     activeTintColor={colors.green[500]}
-            //                 />
-            //             </VStack>
-            //             <Center>
-            //                 <LogoCollectiveCollectSvg
-            //                     width={190}
-            //                     height={190}
-            //                 />
-            //             </Center>
+                        <HStack justifyContent="center">
+                            <Text textAlign="center" fontSize="lg" fontFamily="heading" mb={3} mr={2} color={colors.green[400]}>
+                                Admin control
+                            </Text>
+                            <LogoRecicleSvg />
+                        </HStack>
+                        <VStack mb='130%'>
+                            <DrawerItem
+                                label={'Coleta Coletiva'}
+                                onPress={() => { props.navigation.navigate('cc') }}
+                                icon={({ color, size }) => <Feather name='sliders' color={color} size={size} />}
+                                focused={focused === 'cc'}
+                                activeBackgroundColor={colors.darkBlue[700]}
+                                inactiveBackgroundColor={colors.darkBlue[200]}
+                                inactiveTintColor={colors.green[700]}
+                                activeTintColor={colors.green[500]}
+                            />
+                            <DrawerItem
+                                label={'validaColeta'}
+                                onPress={() => { props.navigation.navigate('validaColeta') }}
+                                icon={({ color, size }) => <Feather name='tool' color={color} size={size} />}
+                                focused={focused === 'validaColeta'}
+                                activeBackgroundColor={colors.darkBlue[700]}
+                                inactiveBackgroundColor={colors.darkBlue[200]}
+                                inactiveTintColor={colors.green[700]}
+                                activeTintColor={colors.green[500]}
+                            />
+                            <DrawerItem
+                                label={'validaDenuncia'}
+                                onPress={() => { props.navigation.navigate('validaDenuncia') }}
+                                icon={({ color, size }) => <Feather name='tool' color={color} size={size} />}
+                                focused={focused === 'validaDenuncia'}
+                                activeBackgroundColor={colors.darkBlue[700]}
+                                inactiveBackgroundColor={colors.darkBlue[200]}
+                                inactiveTintColor={colors.green[700]}
+                                activeTintColor={colors.green[500]}
+                            />
+                        </VStack>
+                        <Center>
+                            <LogoCollectiveCollectSvg
+                                width={190}
+                                height={190}
+                            />
+                        </Center>
 
-            //         </DrawerContentScrollView>
-            //     );
-            // }}
+                    </DrawerContentScrollView>
+                );
+            }}
             screenOptions={{
                 headerShown: false,
                 drawerPosition: 'left',
