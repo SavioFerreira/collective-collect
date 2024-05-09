@@ -1,13 +1,10 @@
-import { VStack, Image, Text, Center, Heading, ScrollView, Box, useToast, View, HStack } from 'native-base';
+import { VStack, Image, Text, Center, ScrollView, useToast, View } from 'native-base';
 
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
-import { api } from '@services/api'
 
 import LogoSvg from '@assets/logo.svg'
 import BackgroundImg from '@assets/background.png';
 import AcesseSuaContaSvg from '@assets/acesseConta.svg';
-import FaceBookIconSvg from '@assets/facebookIcon.svg';
-import GoogleIconSvg from '@assets/googleIcon.svg';
 
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';

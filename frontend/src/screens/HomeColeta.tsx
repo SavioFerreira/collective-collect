@@ -14,7 +14,6 @@ import { Loading } from '@components/Loading';
 import { AppNavigatorRoutesProps } from '@routes/app.routes';
 import { ResiduoType } from 'src/enums/ResiduoTypesEnum';
 import { AppError } from '@utils/AppError';
-import { HistoryCard } from '@components/HistoryCard';
 
 export function HomeColeta() {
 
@@ -73,7 +72,9 @@ export function HomeColeta() {
   return (
     <VStack flex={1}>
       <IconHeader title="Coletas" />
-        <VStack px={2} py={2} backgroundColor={'blue.500'} m={4} borderRadius="lg">
+        <VStack px={2}  mr={4} ml={4} mt={2
+          
+        } borderRadius="lg">
           <HStack justifyContent="space-between">
             <Heading color="darkBlue.700" fontSize="xl" fontFamily="heading" mb={2} ml={'24'}>
               Tipos de resíduo
@@ -108,17 +109,9 @@ export function HomeColeta() {
           />
         </VStack>
         <VStack mb={4}>
-          <ScrollView>
-            <VStack px={3} backgroundColor={'blue.500'} mr={4} ml={4} borderRadius="lg" pb={10}>
-              <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading" m={4}>
-                Coletas cadastradas
-              </Heading>
-             
-            </VStack>
-          </ScrollView>
         </VStack>
         {isLoading ? <Loading /> :
-          <VStack px={2} backgroundColor={'blue.500'} mr={4} ml={4} borderRadius="lg" maxH="50%" minH="50%">
+          <VStack px={2} bg="rgba(74, 167, 255, 0.295)" mr={4} ml={4} borderRadius="lg" maxH="50%" minH="50%">
 
             <HStack justifyContent="space-between" m={4}>
               <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading">

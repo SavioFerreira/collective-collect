@@ -1,7 +1,5 @@
 import { VStack, ScrollView, Heading, Center } from "native-base";
 
-import { HomeHeader } from "@components/HomeHeader";
-import { HistoryCard } from "@components/HistoryCard";
 import { ScreenHeader } from "@components/ScreenHeader";
 
 export function ValidaColeta() {

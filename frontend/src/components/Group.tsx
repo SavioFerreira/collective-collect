@@ -11,20 +11,20 @@ export function Group({name, isActive, ...rest}: Props) {
       mr={2}
       w={'32'}
       h={10}
-      bg="darkBlue.300"
+      bg="darkBlue.700"
       rounded="md"
       justifyContent="center"
       alignItems="center"
       overflow="hidden"
       isPressed={isActive}
       _pressed={{
-        borderColor: "darkBlue.700",
+        borderColor: "darkBlue.900",
         borderWidth: 2
       }}
       {...rest}
     >
       <Text
-        color={isActive ? "darkBlue.700" : "white"}
+        color={isActive ? "orange.400" : "white"}
         textTransform="uppercase"
         fontSize="sm"
         fontWeight="thin"

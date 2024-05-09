@@ -15,7 +15,7 @@ import RecicleLogoSvg from '@assets/recycleLogo.svg';
 import { getGravityIcon, getStatusIcon, getTypeIcon } from '@utils/Icons';
 import { Loading } from '@components/Loading';
 
-import { ColetaCadastro } from '@components/ColetaCadastro';
+import { ColetaCadastro } from '@utils/ColetaCadastro';
 
 type RouteParamsProps = {
   collectId: string;

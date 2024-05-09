@@ -1,7 +1,6 @@
 import { Center, Pressable, VStack, Alert, ScrollView, Image } from "native-base";
 
 import LogoHomeSvg from '@assets/coletaColetiva.svg';
-import BackHomeImg from '@assets/homeBackImage.png';
 
 import { HomeHeader } from "@components/HomeHeader";
 import { HistoryCard } from "@components/HistoryCard";

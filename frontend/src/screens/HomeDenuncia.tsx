@@ -1,19 +1,21 @@
-import { Center, Heading, VStack, Image, Pressable, Text, View, Flex, Icon, HStack } from "native-base";
-import { IconHeader } from "@components/IconHeader";
-import BackDenunciaImg from '@assets/mapBackGround.png';
-import { Feather } from '@expo/vector-icons';
-import { Modal } from "react-native";
 import { useState } from "react";
-import { DenunciaCadastro } from "@components/DenunciaCadastro";
+import { Modal } from "react-native";
+import { VStack, Image, Pressable, Text, View, Flex, Icon, HStack } from "native-base";
+import { Feather } from '@expo/vector-icons';
+
+import { IconHeader } from "@components/IconHeader";
+import { DenunciaCadastro } from "@utils/DenunciaCadastro";
+
+import BackDenunciaImg from '@assets/mapBackGround.png';
 
 export function HomeDenuncia() {
   const [isModalVisible, SetIsModalVisible] = useState(false);
 
-  function openColetaModal() {
+  function openDenunciaModal() {
     SetIsModalVisible(true);
   }
 
-  const closeColetaModal = () => {
+  function closeDenunciaModal() {
     SetIsModalVisible(!isModalVisible);
   };
 
@@ -46,7 +48,7 @@ export function HomeDenuncia() {
           borderRadius="md"
           alignItems="center"
           justifyContent="center"
-          onPress={openColetaModal}
+          onPress={openDenunciaModal}
         >
           <Text fontFamily="heading" fontSize="lg" color="white">
             Nova denúncia
@@ -58,7 +60,7 @@ export function HomeDenuncia() {
         <Modal
           visible={isModalVisible}
           animationType="slide"
-          onRequestClose={closeColetaModal}
+          onRequestClose={closeDenunciaModal}
           transparent={true}
         >
           <Flex flex={1} alignItems="center" justifyContent="center" bg="rgba(74, 169, 255, 0.87)">
@@ -66,9 +68,9 @@ export function HomeDenuncia() {
               <Icon alignSelf="flex-end" size={8} color="green.400"
                 as={Feather}
                 name="x-circle"
-                onPress={closeColetaModal}
+                onPress={closeDenunciaModal}
               />
-              <DenunciaCadastro onRegister={closeColetaModal} />
+              <DenunciaCadastro onRegister={closeDenunciaModal}/>
             </View>
           </Flex>
         </Modal>
