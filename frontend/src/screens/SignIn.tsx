@@ -1,13 +1,10 @@
-import { VStack, Image, Text, Center, Heading, ScrollView, Box, useToast, View, HStack } from 'native-base';
+import { VStack, Image, Text, Center, ScrollView, useToast, View } from 'native-base';
 
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
-import { api } from '@services/api'
 
 import LogoSvg from '@assets/logo.svg'
 import BackgroundImg from '@assets/background.png';
 import AcesseSuaContaSvg from '@assets/acesseConta.svg';
-import FaceBookIconSvg from '@assets/facebookIcon.svg';
-import GoogleIconSvg from '@assets/googleIcon.svg';
 
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
@@ -73,8 +70,8 @@ export function SignIn() {
         <Image
           source={BackgroundImg}
           defaultSource={BackgroundImg}
-          alt="Céu azul"
-          resizeMode="contain"
+          alt="sky"
+          resizeMode="cover"
           position="absolute"
         />
         <Center mt={16} mb={8}>
@@ -149,38 +146,7 @@ export function SignIn() {
             borderRadius={12}
             onPress={handleNewAccount}
           />
-          <Text
-            color="rgba(15, 29, 230, 0.993)"
-            fontSize="lg" mb={2} mt={3}
-            fontFamily="heading"
-          >
-            Fazer login com
-          </Text>
         </Center>
-
-        <HStack justifyContent="space-evenly" mr={24} ml={24} >
-          <FaceBookIconSvg
-            onPress={() => {
-              toast.show({
-                title: 'Em breve o login com Facebook estará disponível',
-                placement: 'bottom',
-                bgColor: 'darkBlue.600',
-
-              });
-            }}
-          />
-          <GoogleIconSvg
-            onPress={() => {
-              toast.show({
-                title: 'Em breve o login com Google estará disponível',
-                placement: 'bottom',
-                bgColor: 'darkBlue.600',
-                
-              });
-            }}
-          />
-        </HStack>
-
       </VStack>
     </ScrollView>
   );

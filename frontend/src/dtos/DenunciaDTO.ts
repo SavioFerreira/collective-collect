@@ -1,6 +1,6 @@
 export type DenunciaDTO = {
 
-	id: number,
+	id: number | undefined,
 	author: {
 		id: number;
 	},
@@ -10,6 +10,6 @@ export type DenunciaDTO = {
 	date: string,
 	gravity: string,
 	image: string,
-	status: string,
+	status: string | undefined,
 	type: string,
 }

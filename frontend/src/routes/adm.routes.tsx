@@ -5,10 +5,8 @@ import { Center, HStack, Heading, Spacer, Text, VStack, useTheme } from 'native-
 import { ValidaColeta } from '@screens/ValidaColeta';
 import { ValidaDenuncia } from '@screens/ValidaDenuncia';
 
-import BackWorldSvg from '@assets/handsworld.svg';
 import LogoCollectiveCollectSvg from '@assets/logo.svg';
 import LogoRecicleSvg from '@assets/recycleLogo.svg';
-import { useState } from 'react';
 
 type AdmRoutes = {
     cc: undefined;
@@ -58,7 +56,7 @@ export default function AdmRoutes() {
                             />
                             <DrawerItem
                                 label={'validaDenuncia'}
-                                onPress={() => { props.navigation.navigate('validaDenuncia') }}
+                                onPress={() => { props.navigation.navigate('validaDenuncia')}}
                                 icon={({ color, size }) => <Feather name='tool' color={color} size={size} />}
                                 focused={focused === 'validaDenuncia'}
                                 activeBackgroundColor={colors.darkBlue[700]}

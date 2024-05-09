@@ -1,25 +1,72 @@
-import { Center, Heading, VStack, ScrollView, Image, HStack } from "native-base";
+import { useCallback, useState } from "react";
+import { Modal, TouchableOpacity } from "react-native";
+import { VStack, Image, Pressable, Text, View, Flex, Icon, HStack, Heading, FlatList } from "native-base";
+
+import { Feather } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
+
 import { IconHeader } from "@components/IconHeader";
-import { Input } from "@components/Input";
+import { DenunciaCadastro } from "@utils/DenunciaCadastro";
+
 import BackDenunciaImg from '@assets/mapBackGround.png';
-import { Button } from "@components/Button";
+import { Group } from "@components/Group";
+import { ResiduoType } from "src/enums/ResiduoTypesEnum";
 
 export function HomeDenuncia() {
+  const [isModalVisible, SetIsModalVisible] = useState(false);
+  const [types, setTypes] = useState(Object.values(ResiduoType));
+  const [typeSelected, setTypeSelected] = useState(types[0]);
+
+  function openDenunciaModal() {
+    SetIsModalVisible(true);
+  }
+
+  function closeDenunciaModal() {
+    SetIsModalVisible(!isModalVisible);
+  };
+
+  const handleTypeSelected = useCallback((item: ResiduoType) => {
+    setTypeSelected(item);
+  }, []);
+
+
   return (
     <VStack flex={1}>
       <IconHeader title="Denuncias" />
-
-      <Center py={3}>
-        <Heading color="darkBlue.600" fontFamily="heading" fontSize="lg">
-          Fazer denúncia
-        </Heading>
-      </Center>
-
-      <HStack px={5} justifyContent="space-between">
-        <Button h={12} w={40} borderWidth={1} borderColor="darkBlue.500" title="Captura" variant="outline" />
-        <Button h={12} w={40} borderWidth={1} borderColor="darkBlue.500" title="Gravidade" variant="outline" />
-      </HStack>
-      
+      <VStack px={2} mr={4} ml={4} mt={2} borderRadius="lg">
+        <HStack justifyContent="space-between">
+          <Heading color="darkBlue.700" fontSize="xl" fontFamily="heading" mb={2} ml={'5'}>
+            Filtrar por tipo de Resíduos 
+          </Heading>
+          <TouchableOpacity activeOpacity={.7} onPress={() => { }}>
+            <Icon
+              as={Entypo}
+              name="help-with-circle"
+              color="darkBlue.700"
+              size={7}
+            />
+          </TouchableOpacity>
+        </HStack>
+        <FlatList
+          data={types}
+          keyExtractor={item => item}
+          renderItem={({ item }) => (
+            <Group
+              name={item}
+              isActive={typeSelected === item}
+              onPress={() => handleTypeSelected(item)}
+            />
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          _contentContainerStyle={{
+            px: 5,
+          }}
+          my={16}
+          maxH={16}
+          mb={1} mt={1}
+        />
+      </VStack>
       <VStack flex={1} alignItems="center" justifyContent="center" m={5}>
         <Image
           source={BackDenunciaImg}
@@ -32,30 +79,46 @@ export function HomeDenuncia() {
           borderWidth={2}
           borderColor="darkBlue.500"
           borderRadius="lg"
-          
+
         />
-        {/* <VStack
-          p={5}
-          m={10}
-          bgColor="transparent"
-          borderRadius="lg"
-          w="80%"
-          h="50%"
+      </VStack>
+      <HStack mb={5} px={5}>
+        <Pressable
+          bgColor="green.500"
+          _pressed={{ bg: "green.600" }}
+          size="20"
+          w="full"
+          h={16}
+          borderRadius="md"
           alignItems="center"
           justifyContent="center"
+          onPress={openDenunciaModal}
         >
-          <ScrollView width="100%">
-            <Input
-              bgColor="blue.300"
-              h="12"
-            />
-            <Input
-              bgColor="blue.300"
-              h="12"
-            />
-          </ScrollView>
-        </VStack> */}
-      </VStack>
+          <Text fontFamily="heading" fontSize="lg" color="white">
+            Nova denúncia
+          </Text>
+        </Pressable>
+      </HStack>
+
+      <View>
+        <Modal
+          visible={isModalVisible}
+          animationType="slide"
+          onRequestClose={closeDenunciaModal}
+          transparent={true}
+        >
+          <Flex flex={1} alignItems="center" justifyContent="center" bg="rgba(74, 169, 255, 0.87)">
+            <View bgColor="blue.500" p={5} pb={3} justifyContent="flex-end" borderRadius="lg" w="90%" maxW="90%" h="80%" maxH="80%" shadow={1}>
+              <Icon alignSelf="flex-end" size={8} color="green.400"
+                as={Feather}
+                name="x-circle"
+                onPress={closeDenunciaModal}
+              />
+              <DenunciaCadastro onRegister={closeDenunciaModal}/>
+            </View>
+          </Flex>
+        </Modal>
+      </View>
 
     </VStack>
   );

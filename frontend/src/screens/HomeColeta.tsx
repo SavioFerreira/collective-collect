@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
-import { HStack, VStack, FlatList, useToast, Text, Heading, Icon } from "native-base";
+import { HStack, VStack, FlatList, useToast, Text, Heading, Icon, ScrollView, View, Box } from "native-base";
 
 import { Entypo } from '@expo/vector-icons';
 import { ColetaDTO } from '@dtos/ColetaDTO';
@@ -27,7 +27,7 @@ export function HomeColeta() {
   const toast = useToast();
 
   function handleOpenColetaDetails(collectId: string) {
-    navigation.navigate('detalhesColeta', {collectId});
+    navigation.navigate('detalhesColeta', { collectId });
   }
 
   const applyFilter = useCallback(() => {
@@ -70,10 +70,9 @@ export function HomeColeta() {
 
 
   return (
-    <VStack flex={1} >
+    <VStack flex={1}>
       <IconHeader title="Coletas" />
-
-      <VStack px={2} py={2} backgroundColor={'blue.500'} m={4} borderRadius="lg">
+      <VStack px={2} mr={4} ml={4} mt={2} borderRadius="lg">
         <HStack justifyContent="space-between">
           <Heading color="darkBlue.700" fontSize="xl" fontFamily="heading" mb={2} ml={'24'}>
             Tipos de resíduo
@@ -107,9 +106,11 @@ export function HomeColeta() {
           mb={1} mt={1}
         />
       </VStack>
-
+      <VStack mb={4}>
+      </VStack>
       {isLoading ? <Loading /> :
-        <VStack flex={1} px={1} backgroundColor={'blue.500'} m={4} borderRadius="lg">
+        <VStack px={2} bg="rgba(74, 167, 255, 0.295)" mr={4} ml={4} borderRadius="lg" h="65%">
+
           <HStack justifyContent="space-between" m={4}>
             <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading">
               Coletas disponíveis
@@ -118,7 +119,8 @@ export function HomeColeta() {
               {coletas.length}
             </Text>
           </HStack>
-          <VStack m={4}>
+          <VStack mr={4} ml={4}>
+
             <FlatList
               data={coletas}
               keyExtractor={item => item.id.toString()}
@@ -135,8 +137,10 @@ export function HomeColeta() {
                 </Text>
               )}
               showsVerticalScrollIndicator={false}
-              pb={20}
+              pb={2}
+              h="85%"
             />
+
           </VStack>
         </VStack>
       }
