@@ -9,6 +9,10 @@ import { api } from '@services/api';
 import { AppError } from './AppError';
 import { useAuth } from '@hooks/useAuth';
 
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+
+
 type Props = {
     onRegister: () => void;
 }
@@ -21,10 +25,12 @@ export function DenunciaCadastro({ onRegister }: Props) {
     const [isLoading, setIsloading] = useState(false);
     const [description, setDescription] = useState<string>("");
     const [locale, setLocale] = useState<string>("");
-    const [complaintImage, setComplaintImage] = useState<string>("");
     const [wasteType, setWasteType] = useState<ResiduoType | undefined>(undefined);
     const [gravityType, setGravityType] = useState<ResiduoGravity | undefined>(undefined);
     const title = "Resíduos de " + wasteType?.toLocaleLowerCase();
+
+    const [imageIsLoading, setImageIsLoading] = useState(false);
+    const [imageComplaint, SetImageComplaint] = useState('https://imgflip.com/s/meme/Futurama-Fry.jpg');
 
     const [date, setDate] = useState<Date>(new Date());
     const [time, setTime] = useState<Date>(new Date());
@@ -39,6 +45,68 @@ export function DenunciaCadastro({ onRegister }: Props) {
         setGravityType(itemValue as ResiduoGravity);
     };
 
+    async function handleImageComplaintSelect() {
+        setImageIsLoading(true);
+        try {
+            const photoSelected = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                quality: 1,
+                aspect: [4, 4],
+                allowsEditing: true,
+            });
+
+            if (photoSelected.canceled) return;
+            if (photoSelected.assets[0].uri) {
+                SetImageComplaint(photoSelected.assets[0].uri);
+                console.log("Imagem da camera ou galeria! ")
+                console.log(imageComplaint)
+            }
+
+        } catch (error) {
+            throw error;
+        } finally {
+            setImageIsLoading(false);
+        }
+    }
+
+    async function getCameraPermission() {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+            alert('Desculpe, precisamos de permissões de câmera para fazer isso funcionar!');
+            return false;
+        }
+        return true;
+    }
+
+    async function handleImageComplaintCatch() {
+        const hasPermission = await getCameraPermission();
+        if (!hasPermission) {
+            return;
+        }
+
+        try {
+            setImageIsLoading(true);
+            const photoCaptured = await ImagePicker.launchCameraAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                quality: 1,
+                allowsEditing: true,
+            });
+
+            if (photoCaptured.canceled) return;
+            if (photoCaptured.assets[0].uri) {
+                SetImageComplaint(photoCaptured.assets[0].uri);
+                console.log("Imagem da camera ou galeria! ")
+                console.log(imageComplaint)
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Erro ao capturar a imagem.');
+        } finally {
+            setImageIsLoading(false);
+        }
+    }
+
+
     async function handleCreateComplaint() {
         if (!title || title.length === 0 ||
             !description || description.length === 0 ||
@@ -48,14 +116,10 @@ export function DenunciaCadastro({ onRegister }: Props) {
             return
         }
 
-        const complaintDate = date.toLocaleDateString('pt-BR');
-        const complaintTime = time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false });
-        setComplaintImage('vazio absoluto');
-
         const complaintData: DenunciaDTO = {
             id: undefined,
             author: {
-                id: user.id 
+                id: user.id
             },
             title: title,
             description: description,
@@ -64,13 +128,12 @@ export function DenunciaCadastro({ onRegister }: Props) {
             status: undefined,
             locale: locale,
             date: `${date.toISOString()}`,
-            image: complaintImage,
+            image: imageComplaint
         };
 
         const result = handleFetchComplaint(complaintData);
         if (await result === 'success') {
             onRegister();
-            console.log("\n\nCheguei, então funcionou\n\n")
             toast.show({
                 title: `Obrigado, ${user.name}. Sua denúncia foi registrada com sucesso!`,
                 placement: 'top',
@@ -82,11 +145,11 @@ export function DenunciaCadastro({ onRegister }: Props) {
 
     async function handleFetchComplaint(complaint: DenunciaDTO) {
         try {
-            
+
             setIsloading(true);
             await api.post('/api/complaint', complaint);
             return 'success'
-            
+
         } catch (error) {
             setIsloading(false);
             const isAppError = error instanceof AppError;
@@ -199,7 +262,7 @@ export function DenunciaCadastro({ onRegister }: Props) {
                             <VStack>
                                 <Pressable
                                     _pressed={{ opacity: 60 }}
-                                    onPress={() => { console.log('Cliclou na camera do pressable') }}>
+                                    onPress={handleImageComplaintCatch}>
                                     <Icon alignSelf="center" size={9} color="green.400"
                                         as={MaterialCommunityIcons}
                                         name="camera-marker-outline"
@@ -215,7 +278,7 @@ export function DenunciaCadastro({ onRegister }: Props) {
                             <VStack>
                                 <Pressable
                                     _pressed={{ opacity: 60 }}
-                                    onPress={() => { console.log('Cliclou na galeria do pressable') }}>
+                                    onPress={handleImageComplaintSelect}>
                                     <Icon alignSelf="center" size={9} color="green.400"
                                         as={MaterialCommunityIcons}
                                         name="file-image-marker"
