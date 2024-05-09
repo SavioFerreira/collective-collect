@@ -57,7 +57,7 @@ export function Profile() {
           source={BackgroundImg}
           defaultSource={BackgroundImg}
           alt="Blue Sky"
-          resizeMode="contain"
+          resizeMode="cover"
           position="absolute"
         />
         <Center mt={6} px={10}>
