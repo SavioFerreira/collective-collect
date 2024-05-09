@@ -107,24 +107,39 @@ export function Coleta() {
                   {coleta.title}
                 </Text>
               </Box>
-              <Box position="relative" mb={1}>
-                <Image
-                  w="full"
-                  h={64}
-                  source={{ uri: `${coleta.complaintImage}` }}
-                  alt="imagem da coleta"
-                  resizeMode="cover"
-                  borderWidth={2}
-                  borderColor="green.800"
-                />
-                <Box position="absolute" bottom={0} left={0} p={2} bgColor="rgba(7, 33, 51, 0.5)" w="full">
-                  <HStack maxW={80} minW={80} alignItems="center">
+              <Box position="relative" mb={1}
+                minH={80}
+                maxH={80}
+                minW="full"
+                maxW="full">
+                {isLoading ? <Loading /> :
+                  <Image
+                    w="full"
+                    h={80}
+                    source={{ uri: `${coleta.complaintImage}` }}
+                    alt="imagem da coleta"
+                    resizeMode="cover"
+                    borderWidth={2}
+                    borderColor="green.800"
+                  />
+                }
+                <Box position="absolute" bottom={0} left={0} p={3} bgColor="rgba(7, 33, 51, 0.5)" w="full">
+                  <HStack alignItems="center">
+
+                    <Pressable
+                      _pressed={{
+                        opacity: 60
+                      }}
+                      onPress={() => {}}
+                    >
                     <Icon
                       as={FontAwesome6}
                       name={"map-location-dot"}
-                      color="yellow.400"
-                      size="xl"
+                      color="green.400"
+                      size={12}
+                      mr={2}
                     />
+                    </Pressable>
                     <Text color="yellow.200" fontStyle="italic" ml={2} numberOfLines={2}>
                       Local: {coleta.locale}
                     </Text>
@@ -140,12 +155,12 @@ export function Coleta() {
                   {coleta.description}
                 </Text>
                 <HStack justifyContent="space-between" mt={1}>
-                <Text fontFamily="body" fontSize="xs" color="yellow.400">
-                   {showDate || "Data não disponível"}
-                </Text>
-                <Text fontFamily="body" fontSize="xs" color="yellow.400">
-                  Denuncia nº {coleta.complaintId}
-                </Text>
+                  <Text fontFamily="body" fontSize="xs" color="yellow.400">
+                    {showDate || "Data não disponível"}
+                  </Text>
+                  <Text fontFamily="body" fontSize="xs" color="yellow.400">
+                    Denuncia nº {coleta.complaintId}
+                  </Text>
                 </HStack>
               </Box>
               <Box bg="green.700" pt={2} pb={2} px={2}>
@@ -202,8 +217,8 @@ export function Coleta() {
               >
                 <Flex flex={1} alignItems="center" justifyContent="center" bg="rgba(74, 169, 255, 0.87)">
                   <View bgColor="blue.500" p={5} pb={3} justifyContent="flex-end" borderRadius="lg" w="90%" maxW="90%" h="60%" maxH="70%" shadow={1}>
-                    <Icon alignSelf="flex-end" size={8}  color="green.400"
-                      as={Feather} 
+                    <Icon alignSelf="flex-end" size={8} color="green.400"
+                      as={Feather}
                       name="x-circle"
                       onPress={closeColetaModal}
                     />
