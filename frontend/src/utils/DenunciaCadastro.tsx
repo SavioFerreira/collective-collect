@@ -1,25 +1,114 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, Heading, Center, Button, useTheme, HStack, VStack, Input, Icon, Select, CheckIcon, ChevronDownIcon } from "native-base";
-import { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import React, { useState } from 'react';
+import { View, Text, Heading, Center, Button, useTheme, HStack, VStack, Input, Icon, Select, CheckIcon, Pressable, useToast } from "native-base";
 import { Alert, ScrollView } from 'react-native';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { ResiduoGravity } from '../enums/ResiduoGravityEnum';
 import { ResiduoType } from '../enums/ResiduoTypesEnum';
+import { DenunciaDTO } from '@dtos/DenunciaDTO';
+import { api } from '@services/api';
+import { AppError } from './AppError';
+import { useAuth } from '@hooks/useAuth';
 
 type Props = {
     onRegister: () => void;
 }
 
+type Complaint = DenunciaDTO;
+
 export function DenunciaCadastro({ onRegister }: Props) {
+
     const { colors } = useTheme();
-    const [residuoTipo, setResiduoTipo] = useState<ResiduoType | undefined>(undefined);
-    const [gravidadeTipo, setGravidadeTipo] = useState<ResiduoGravity>();
+    const [isLoading, setIsloading] = useState(false);
+    const [title, setTitle] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
+    const [locale, setLocale] = useState<string>("");
+    const [complaintImage, setComplaintImage] = useState<string>("");
+    const [wasteType, setWasteType] = useState<ResiduoType | undefined>(undefined);
+    const [gravityType, setGravityType] = useState<ResiduoGravity | undefined>(undefined);
+
     const [date, setDate] = useState<Date>(new Date());
     const [time, setTime] = useState<Date>(new Date());
+    const toast = useToast();
+    const { user } = useAuth();
 
-    const handleCompletion = () => {
-        onRegister();
+    const handleWasteTypeChange = (itemValue: string) => {
+        setWasteType(itemValue as ResiduoType);
     };
+
+    const handleGravityTypeChange = (itemValue: string) => {
+        setGravityType(itemValue as ResiduoGravity);
+    };
+
+    async function handleCreateComplaint() {
+        if (!title || title.length === 0 ||
+            !description || description.length === 0 ||
+            !locale || locale.length === 0 ||
+            !wasteType || !gravityType) {
+            Alert.alert('Atenção', 'Preencha todos os campos!');
+            return
+        }
+
+        const complaintDate = date.toLocaleDateString('pt-BR');
+        const complaintTime = time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false });
+        setComplaintImage('vazio absoluto');
+
+        const complaintData: DenunciaDTO = {
+            id: undefined,
+            author: {
+                id: user.id 
+            },
+            title: title,
+            description: description,
+            type: wasteType,
+            gravity: gravityType,
+            status: undefined,
+            locale: locale,
+            date: `${date} ${time}`,
+            image: complaintImage,
+        };
+
+        console.log("Dados do modal: ")
+        console.log({
+            title,
+            description,
+            locale,
+            wasteType,
+            gravityType,
+            complaintImage,
+            date,
+            time
+        });
+
+        const result = handleFetchComplaint(complaintData);
+        if (await result === 'sucess') {
+            onRegister();
+            toast.show({
+                title: `Obrigado, ${user.name}. Sua denúncia foi registrada com sucesso!`,
+                placement: 'top',
+                bgColor: 'green.600',
+            });
+        }
+    };
+
+    async function handleFetchComplaint(complaint: DenunciaDTO) {
+        try {
+            setIsloading(true);''
+            await api.post('/api/complaint', complaint);
+            return 'sucess';
+
+        } catch (error) {
+            console.log("dados de erro do backend");
+            console.log(error);
+            setIsloading(false);
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : 'Não foi possível criar a conta. Tente novamente mais tarde.';
+            Alert.alert("Ops!", `Erro: ${title}`
+            )
+            return 'fail';
+        } finally {
+            return 'fail';
+        }
+    }
 
     return (
         <View flex={1} px={1}>
@@ -29,11 +118,11 @@ export function DenunciaCadastro({ onRegister }: Props) {
                         Criar Denúncia
                     </Heading>
                 </Center>
-
                 <Text color='blue.300' fontFamily="body" fontSize="md" mb={4} textAlign="center" fontStyle="italic">
                     Preencha os dados com cuidado
                 </Text>
                 <VStack>
+
                     <Text color='blue.300' fontFamily="body" fontSize="sm" mb={1} textAlign="left" fontStyle="italic">
                         Titulo da Denúncia
                     </Text>
@@ -41,6 +130,8 @@ export function DenunciaCadastro({ onRegister }: Props) {
                         _focus={{ borderWidth: 1, borderColor: 'blue.300', bgColor: 'darkBlue.700' }}
                         placeholder='Titulo' placeholderTextColor={colors.green[400]}
                         numberOfLines={1}
+                        onChangeText={setTitle}
+                        value={title}
                     />
 
                     <Text color='blue.300' fontFamily="body" fontSize="sm" mb={1} textAlign="left" fontStyle="italic">
@@ -51,15 +142,17 @@ export function DenunciaCadastro({ onRegister }: Props) {
                         placeholder='Descrição' placeholderTextColor={colors.green[400]}
                         numberOfLines={3}
                         textAlign="justify"
+                        onChangeText={setDescription}
+                        value={description}
                     />
 
                     <Text color='blue.300' fontFamily="body" fontSize="sm" mb={1} textAlign="left" fontStyle="italic">
                         Tipo ou tipos de resíduos
                     </Text>
-
                     <Select
+                        selectedValue={wasteType}
+                        onValueChange={handleWasteTypeChange}
                         bgColor="darkBlue.600" fontSize="md" color="green.400" borderWidth={0}
-                        selectedValue={residuoTipo}
                         h={10}
                         mb={2}
                         placeholder="Tipo de Resíduo"
@@ -83,10 +176,10 @@ export function DenunciaCadastro({ onRegister }: Props) {
                     <Text color='blue.300' fontFamily="body" fontSize="sm" mb={1} textAlign="left" fontStyle="italic">
                         Gravidade proposta para denúncia
                     </Text>
-
                     <Select
+                        selectedValue={gravityType}
+                        onValueChange={handleGravityTypeChange}
                         bgColor="darkBlue.600" fontSize="md" color="green.400" borderWidth={0}
-                        selectedValue={gravidadeTipo}
                         h={10}
                         mb={2}
                         accessibilityLabel="Selecione a gravidade dessa denúncia"
@@ -114,33 +207,44 @@ export function DenunciaCadastro({ onRegister }: Props) {
                     <Input h={10} mb={2} bgColor="darkBlue.600" fontSize="md" color="green.400" borderWidth={0}
                         _focus={{ borderWidth: 1, borderColor: 'blue.300', bgColor: 'darkBlue.700' }}
                         placeholder='Localização' placeholderTextColor={colors.green[400]}
-
+                        textAlign="justify"
+                        onChangeText={setLocale}
+                        value={locale}
                     />
 
                     <Text color='blue.300' fontFamily="body" fontSize="sm" mb={1} textAlign="left" fontStyle="italic">
                         Captura do resíduo
                     </Text>
                     <VStack borderRadius="md" bgColor="darkBlue.600" h={16} justifyContent="center">
-                        <HStack justifyContent="space-around" m={6}>
+                        <HStack justifyContent="space-evenly" m={6}>
                             <VStack>
-                                <Icon alignSelf="center" size={9} color="green.400"
-                                    as={MaterialCommunityIcons}
-                                    name="camera-marker-outline"
-                                    onPress={() => { console.log('Cliclou na câmera') }}
-                                />
-                                <Text color="green.400" fontFamily="body" fontSize="xs" mb={1}>
-                                    Tirar Foto
-                                </Text>
+                                <Pressable
+                                    _pressed={{ opacity: 60 }}
+                                    onPress={() => { console.log('Cliclou na camera do pressable') }}>
+                                    <Icon alignSelf="center" size={9} color="green.400"
+                                        as={MaterialCommunityIcons}
+                                        name="camera-marker-outline"
+                                    />
+                                    <Text color="green.400" fontFamily="body" fontSize="xs" mb={1}>
+                                        Tirar Foto
+                                    </Text>
+                                </Pressable>
                             </VStack>
+                            <Text alignSelf="center" color="green.400" fontSize="md" fontFamily="heading">
+                                Ou
+                            </Text>
                             <VStack>
-                                <Icon alignSelf="center" size={9} color="green.400"
-                                    as={MaterialCommunityIcons}
-                                    name="file-image-marker"
-                                    onPress={() => { console.log('Cliclou na galeria') }}
-                                />
-                                <Text color="green.400" fontFamily="body" fontSize="xs" mb={1} >
-                                    Galeria
-                                </Text>
+                                <Pressable
+                                    _pressed={{ opacity: 60 }}
+                                    onPress={() => { console.log('Cliclou na galeria do pressable') }}>
+                                    <Icon alignSelf="center" size={9} color="green.400"
+                                        as={MaterialCommunityIcons}
+                                        name="file-image-marker"
+                                    />
+                                    <Text color="green.400" fontFamily="body" fontSize="xs" mb={1} >
+                                        Galeria
+                                    </Text>
+                                </Pressable>
 
                             </VStack>
 
@@ -153,10 +257,10 @@ export function DenunciaCadastro({ onRegister }: Props) {
                     size="lg"
                     bgColor="green.500"
                     _pressed={{ bg: "green.600" }}
-                    onPress={handleCompletion}>
+                    onPress={handleCreateComplaint}>
                     Concluir Cadastro
                 </Button>
             </ScrollView>
-        </View>
+        </View >
     );
 }
