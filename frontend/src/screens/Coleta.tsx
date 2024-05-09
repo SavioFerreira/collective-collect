@@ -16,6 +16,8 @@ import { getGravityIcon, getStatusIcon, getTypeIcon } from '@utils/Icons';
 import { Loading } from '@components/Loading';
 
 import { ColetaCadastro } from '@utils/ColetaCadastro';
+import { date } from 'yup';
+import { FormatDate } from 'src/functions/FormatDate';
 
 type RouteParamsProps = {
   collectId: string;
@@ -33,6 +35,7 @@ export function Coleta() {
   const statusIcon = getStatusIcon(coleta.status);
   const statusTitle = coleta.status != undefined ? coleta.status.toLocaleLowerCase().replace("_", " ") : " ";
   const gravityTitle = coleta.gravity != undefined ? coleta.gravity.toLocaleLowerCase().replace("_", " ") : " ";
+  const showDate = FormatDate(coleta?.date);
 
   const [isModalVisible, SetIsModalVisible] = useState(false);
 
@@ -136,9 +139,14 @@ export function Coleta() {
                 <Text minH={10} maxH={20} fontStyle="italic" lineHeight={18} numberOfLines={4} color="warmGray.100" fontSize="md" textAlign="justify">
                   {coleta.description}
                 </Text>
-                <Text fontFamily="body" fontSize="xs" color="yellow.400" alignSelf="flex-end">
-                  denuncia nº{coleta.complaintId}
+                <HStack justifyContent="space-between" mt={1}>
+                <Text fontFamily="body" fontSize="xs" color="yellow.400">
+                   {showDate || "Data não disponível"}
                 </Text>
+                <Text fontFamily="body" fontSize="xs" color="yellow.400">
+                  Denuncia nº {coleta.complaintId}
+                </Text>
+                </HStack>
               </Box>
               <Box bg="green.700" pt={2} pb={2} px={2}>
                 <HStack justifyContent="space-around">

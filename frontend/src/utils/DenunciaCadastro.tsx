@@ -19,12 +19,12 @@ export function DenunciaCadastro({ onRegister }: Props) {
 
     const { colors } = useTheme();
     const [isLoading, setIsloading] = useState(false);
-    const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [locale, setLocale] = useState<string>("");
     const [complaintImage, setComplaintImage] = useState<string>("");
     const [wasteType, setWasteType] = useState<ResiduoType | undefined>(undefined);
     const [gravityType, setGravityType] = useState<ResiduoGravity | undefined>(undefined);
+    const title = "Resíduos de " + wasteType?.toLocaleLowerCase();
 
     const [date, setDate] = useState<Date>(new Date());
     const [time, setTime] = useState<Date>(new Date());
@@ -63,28 +63,18 @@ export function DenunciaCadastro({ onRegister }: Props) {
             gravity: gravityType,
             status: undefined,
             locale: locale,
-            date: `${date} ${time}`,
+            date: `${date.toISOString()}`,
             image: complaintImage,
         };
 
-        console.log("Dados do modal: ")
-        console.log({
-            title,
-            description,
-            locale,
-            wasteType,
-            gravityType,
-            complaintImage,
-            date,
-            time
-        });
-
         const result = handleFetchComplaint(complaintData);
-        if (await result === 'sucess') {
+        if (await result === 'success') {
             onRegister();
+            console.log("\n\nCheguei, então funcionou\n\n")
             toast.show({
                 title: `Obrigado, ${user.name}. Sua denúncia foi registrada com sucesso!`,
                 placement: 'top',
+                duration: 5000,
                 bgColor: 'green.600',
             });
         }
@@ -92,21 +82,20 @@ export function DenunciaCadastro({ onRegister }: Props) {
 
     async function handleFetchComplaint(complaint: DenunciaDTO) {
         try {
-            setIsloading(true);''
+            
+            setIsloading(true);
             await api.post('/api/complaint', complaint);
-            return 'sucess';
-
+            return 'success'
+            
         } catch (error) {
-            console.log("dados de erro do backend");
-            console.log(error);
             setIsloading(false);
             const isAppError = error instanceof AppError;
             const title = isAppError ? error.message : 'Não foi possível criar a conta. Tente novamente mais tarde.';
-            Alert.alert("Ops!", `Erro: ${title}`
+            Alert.alert("Erro", `${title}`
             )
             return 'fail';
         } finally {
-            return 'fail';
+            setIsloading(false);
         }
     }
 
@@ -123,16 +112,6 @@ export function DenunciaCadastro({ onRegister }: Props) {
                 </Text>
                 <VStack>
 
-                    <Text color='blue.300' fontFamily="body" fontSize="sm" mb={1} textAlign="left" fontStyle="italic">
-                        Titulo da Denúncia
-                    </Text>
-                    <Input h={10} mb={2} bgColor="darkBlue.600" fontSize="md" color="green.400" borderWidth={0}
-                        _focus={{ borderWidth: 1, borderColor: 'blue.300', bgColor: 'darkBlue.700' }}
-                        placeholder='Titulo' placeholderTextColor={colors.green[400]}
-                        numberOfLines={1}
-                        onChangeText={setTitle}
-                        value={title}
-                    />
 
                     <Text color='blue.300' fontFamily="body" fontSize="sm" mb={1} textAlign="left" fontStyle="italic">
                         Descrição da Denúncia
