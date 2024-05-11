@@ -12,12 +12,18 @@ import { useAuth } from '@hooks/useAuth';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
+import { Platform } from 'react-native';
+import { FormatDate } from 'src/functions/FormatDate';
+
+type UploadResponse = {
+    imageUrl: string;
+};
+
+
 
 type Props = {
     onRegister: () => void;
 }
-
-type Complaint = DenunciaDTO;
 
 export function DenunciaCadastro({ onRegister }: Props) {
 
@@ -30,12 +36,16 @@ export function DenunciaCadastro({ onRegister }: Props) {
     const title = "Resíduos de " + wasteType?.toLocaleLowerCase();
 
     const [imageIsLoading, setImageIsLoading] = useState(false);
-    const [imageComplaint, SetImageComplaint] = useState('https://imgflip.com/s/meme/Futurama-Fry.jpg');
+    const [imageComplaint, SetImageComplaint] = useState<string>('');
 
     const [date, setDate] = useState<Date>(new Date());
     const [time, setTime] = useState<Date>(new Date());
     const toast = useToast();
     const { user } = useAuth();
+
+    const DateTimeImageSelected = date.toLocaleTimeString('pt-BR', {hour:'numeric' ,day: 'numeric',  hour12: false, }).replaceAll('/', '-').replaceAll(':', '-');
+    const DateTimeImageSelected2 = FormatDate(date.toString()).replaceAll('/', '-').replaceAll(':', '-').replaceAll(' ', '_');
+
 
     const handleWasteTypeChange = (itemValue: string) => {
         setWasteType(itemValue as ResiduoType);
@@ -44,7 +54,7 @@ export function DenunciaCadastro({ onRegister }: Props) {
     const handleGravityTypeChange = (itemValue: string) => {
         setGravityType(itemValue as ResiduoGravity);
     };
-
+    
     async function handleImageComplaintSelect() {
         setImageIsLoading(true);
         try {
@@ -58,8 +68,6 @@ export function DenunciaCadastro({ onRegister }: Props) {
             if (photoSelected.canceled) return;
             if (photoSelected.assets[0].uri) {
                 SetImageComplaint(photoSelected.assets[0].uri);
-                console.log("Imagem da camera ou galeria! ")
-                console.log(imageComplaint)
             }
 
         } catch (error) {
@@ -95,8 +103,6 @@ export function DenunciaCadastro({ onRegister }: Props) {
             if (photoCaptured.canceled) return;
             if (photoCaptured.assets[0].uri) {
                 SetImageComplaint(photoCaptured.assets[0].uri);
-                console.log("Imagem da camera ou galeria! ")
-                console.log(imageComplaint)
             }
         } catch (error) {
             console.error(error);
@@ -144,23 +150,42 @@ export function DenunciaCadastro({ onRegister }: Props) {
     };
 
     async function handleFetchComplaint(complaint: DenunciaDTO) {
+        setIsloading(true);
+        const formData = new FormData();
+
+        formData.append('complaint', JSON.stringify({
+            ...complaint,
+            image: undefined  
+        }));
+    
+        if (complaint.image) {
+            console.log(`complaint_${DateTimeImageSelected2}_author-${complaint.author.id}.png`);
+            formData.append('image', {
+                uri: complaint.image,
+                type: 'image/png',
+                name: `complaint_${DateTimeImageSelected2.toString()}_autor-${complaint.author.id}.png`
+            } as any);
+        }
+    
         try {
-
-            setIsloading(true);
-            await api.post('/api/complaint', complaint);
-            return 'success'
-
+            const response = await api.post('/api/complaint', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+    
+            if (response.status === 200) {
+                return 'success';
+            } else {
+                throw new Error('Falha ao enviar Denuncia!');
+            }
         } catch (error) {
-            setIsloading(false);
-            const isAppError = error instanceof AppError;
-            const title = isAppError ? error.message : 'Não foi possível criar a conta. Tente novamente mais tarde.';
-            Alert.alert("Erro", `${title}`
-            )
+            console.error("Error:", error);
             return 'fail';
         } finally {
             setIsloading(false);
         }
-    }
+    };
 
     return (
         <View flex={1} px={1}>
