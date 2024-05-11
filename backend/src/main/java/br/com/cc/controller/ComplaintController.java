@@ -5,6 +5,7 @@ import br.com.cc.mapper.ComplaintMapperService;
 import br.com.cc.service.ComplaintService;
 import br.com.cc.service.ImageStorageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,17 +43,19 @@ public class ComplaintController {
 				.orElse(ResponseEntity.notFound().build());
 	}
 
-	@PostMapping
-	public ResponseEntity<ComplaintDTO> create(@RequestBody ComplaintDTO complaintDto) {
-		Complaint complaint = complaintMapperService.convertComplaintDtoToEntity(complaintDto);
-		Complaint saved = complaintService.create(complaint);
-		return ResponseEntity.ok(complaintMapperService.convertComplaintToDTO(saved));
-	}
+//	@PostMapping
+//	public ResponseEntity<ComplaintDTO> create(@RequestBody ComplaintDTO complaintDto) {
+//		Complaint complaint = complaintMapperService.convertComplaintDtoToEntity(complaintDto);
+//		Complaint saved = complaintService.create(complaint);
+//		return ResponseEntity.ok(complaintMapperService.convertComplaintToDTO(saved));
+//	}
 
 
 	@PostMapping(consumes = {"multipart/form-data"})
 	public ResponseEntity<ComplaintDTO> create(@RequestParam("complaint") String complaintDtoJson, @RequestParam("image") MultipartFile image) throws IOException {
-		ComplaintDTO complaintDto = new ObjectMapper().readValue(complaintDtoJson, ComplaintDTO.class);
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule()) ;
+		ComplaintDTO complaintDto = mapper.readValue(complaintDtoJson, ComplaintDTO.class);
 
 		String imageUrl = imageStorageService.uploadImage(image);
 		complaintDto.setImage(imageUrl);
