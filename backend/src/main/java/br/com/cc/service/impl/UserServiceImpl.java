@@ -1,12 +1,8 @@
 package br.com.cc.service.impl;
 
-import br.com.cc.entity.Collect;
-import br.com.cc.entity.Complaint;
 import br.com.cc.entity.User;
 import br.com.cc.enums.AuthUserRole;
 import br.com.cc.exception.user.InvalidUserAdminDeletionException;
-import br.com.cc.infra.AppError;
-import br.com.cc.factory.UserActionFactory;
 import br.com.cc.repository.UserRepository;
 import br.com.cc.service.UserService;
 import org.springframework.beans.BeanWrapper;
@@ -96,15 +92,4 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(existingUser);
     }
 
-    public Complaint registerComplaint(User user) {
-        Complaint complaint = UserActionFactory.createComplaint(user);
-        // TODO - Salvar a reclamação no banco de dados aqui
-        return complaint;
-    }
-
-    public Collect startCollect(User user) {
-        Collect collect = UserActionFactory.createCollect(user);
-        // TODO - Salvar a coleta no banco de dados aqui
-        return collect;
-    }
 }
