@@ -3,9 +3,14 @@ import br.com.cc.dto.ComplaintDTO;
 import br.com.cc.entity.Complaint;
 import br.com.cc.mapper.ComplaintMapperService;
 import br.com.cc.service.ComplaintService;
+import br.com.cc.service.ImageStorageService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +23,9 @@ public class ComplaintController {
 
 	@Autowired
 	private ComplaintMapperService complaintMapperService;
+
+	@Autowired
+	private ImageStorageService imageStorageService;
 
 	@GetMapping
 	public List<ComplaintDTO> findAll() {
@@ -40,6 +48,20 @@ public class ComplaintController {
 		Complaint saved = complaintService.create(complaint);
 		return ResponseEntity.ok(complaintMapperService.convertComplaintToDTO(saved));
 	}
+
+
+	@PostMapping(consumes = {"multipart/form-data"})
+	public ResponseEntity<ComplaintDTO> create(@RequestParam("complaint") String complaintDtoJson, @RequestParam("image") MultipartFile image) throws IOException {
+		ComplaintDTO complaintDto = new ObjectMapper().readValue(complaintDtoJson, ComplaintDTO.class);
+
+		String imageUrl = imageStorageService.uploadImage(image);
+		complaintDto.setImage(imageUrl);
+
+		Complaint complaint = complaintMapperService.convertComplaintDtoToEntity(complaintDto);
+		Complaint saved = complaintService.create(complaint);
+		return ResponseEntity.ok(complaintMapperService.convertComplaintToDTO(saved));
+	}
+
 
 	@PutMapping("/{id}")
 	public ResponseEntity<ComplaintDTO> updateById(@PathVariable Long id, @RequestBody ComplaintDTO complaintDto) {

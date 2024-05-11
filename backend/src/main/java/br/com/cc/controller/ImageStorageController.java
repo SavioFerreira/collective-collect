@@ -32,6 +32,7 @@ public class ImageStorageController {
                 .toAbsolutePath().normalize();
     }
 
+
     @PostMapping("/upload")
     public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile image) {
         String imageName = StringUtils.cleanPath(image.getOriginalFilename());
