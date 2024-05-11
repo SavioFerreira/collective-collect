@@ -5,6 +5,7 @@ import br.com.cc.dto.UserDTO;
 import br.com.cc.entity.Collect;
 import br.com.cc.entity.WasteInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.stream.Collectors;
