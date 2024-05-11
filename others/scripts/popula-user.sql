@@ -1,10 +1,7 @@
 insert into
-  "public"."users" ("name","email", "password")
+  "public"."users" ("id" ,"email", "name", "password", "role")
 values
-  ('savi', 'savi@email.com',"123456"),
-  ('wano', 'wano@email.com',"123456"),
-  ('eastblue', 'eastblue@email.com',"123456"),
-  ('gamax', 'gamax@email.com',),
-  ('vertebra', 'vertebra@email.com',"123456"),
-  ('brook', 'brook@email.com',"123456"),
-  ('canis', 'canis@email.com', "123456");
+  ('1','zoro@email.com','zoro','$2a$10$XZ/DBzRVsboYTlRVUEhYCu2xLLr8rTYLogzuEZ2rCKjk1zq0PzpU.','USER'),
+  ('2','maria@email.com','maria','$2a$10$9wKA8XCpulM84YxEqdperOyt4mXu6Gfl.fggUY9PH8XPM8zJYW6f.','USER'),
+  ('3','root@email.com','root','$2a$10$Bxu/kLkqBqSbWgamdP8nnuh3RvmD9paDoXaUYZi7Mg0o/DYmAgbf2','ADMIN');
+  
