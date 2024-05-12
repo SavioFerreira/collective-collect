@@ -10,16 +10,8 @@ import { AppError } from './AppError';
 import { useAuth } from '@hooks/useAuth';
 
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
 
-import { Platform } from 'react-native';
 import { FormatDate } from 'src/functions/FormatDate';
-
-type UploadResponse = {
-    imageUrl: string;
-};
-
-
 
 type Props = {
     onRegister: () => void;
@@ -39,12 +31,10 @@ export function DenunciaCadastro({ onRegister }: Props) {
     const [imageComplaint, SetImageComplaint] = useState<string>('');
 
     const [date, setDate] = useState<Date>(new Date());
-    const [time, setTime] = useState<Date>(new Date());
     const toast = useToast();
     const { user } = useAuth();
 
-    const DateTimeImageSelected = date.toLocaleTimeString('pt-BR', {hour:'numeric' ,day: 'numeric',  hour12: false, }).replaceAll('/', '-').replaceAll(':', '-');
-    const DateTimeImageSelected2 = FormatDate(date.toString()).replaceAll('/', '-').replaceAll(':', '-').replaceAll(' ', '_');
+    const DateTimeImageSelected = FormatDate(date.toString()).replaceAll('/', '-').replaceAll(':', '-').replaceAll(' ', '_');
 
 
     const handleWasteTypeChange = (itemValue: string) => {
@@ -54,14 +44,13 @@ export function DenunciaCadastro({ onRegister }: Props) {
     const handleGravityTypeChange = (itemValue: string) => {
         setGravityType(itemValue as ResiduoGravity);
     };
-    
+
     async function handleImageComplaintSelect() {
         setImageIsLoading(true);
         try {
             const photoSelected = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 quality: 1,
-                aspect: [4, 4],
                 allowsEditing: true,
             });
 
@@ -71,6 +60,7 @@ export function DenunciaCadastro({ onRegister }: Props) {
             }
 
         } catch (error) {
+            alert('Erro ao capturar a imagem.');
             throw error;
         } finally {
             setImageIsLoading(false);
@@ -105,8 +95,8 @@ export function DenunciaCadastro({ onRegister }: Props) {
                 SetImageComplaint(photoCaptured.assets[0].uri);
             }
         } catch (error) {
-            console.error(error);
             alert('Erro ao capturar a imagem.');
+            throw error;
         } finally {
             setImageIsLoading(false);
         }
@@ -114,14 +104,24 @@ export function DenunciaCadastro({ onRegister }: Props) {
 
 
     async function handleCreateComplaint() {
-        if (!title || title.length === 0 ||
-            !description || description.length === 0 ||
-            !locale || locale.length === 0 ||
-            !wasteType || !gravityType) {
-            Alert.alert('Atenção', 'Preencha todos os campos!');
-            return
+        setIsloading(true);
+        let fields = [
+            { label: 'Descrição', value: description },
+            { label: 'Local', value: locale },
+            { label: 'Tipo de Resíduo', value: wasteType},
+            { label: 'Gravidade', value: gravityType},
+            { label: 'Imagem da Denúncia', value: imageComplaint }
+        ];
+        
+        for (let i = 0; i < fields.length; i++) {
+            if (fields[i].value === '' || fields[i].value === undefined || fields[i].value === null) {
+                Alert.alert('Atenção', 'Preencha todos os campos!\n' + fields[i].label  +"** Não foi preenchido");
+                setIsloading(false);
+                return; 
+            }
         }
-
+        
+        setIsloading(true);
         const complaintData: DenunciaDTO = {
             id: undefined,
             author: {
@@ -129,8 +129,8 @@ export function DenunciaCadastro({ onRegister }: Props) {
             },
             title: title,
             description: description,
-            type: wasteType,
-            gravity: gravityType,
+            type: wasteType ?? ResiduoType.INDEFINIDO,
+            gravity: gravityType ?? ResiduoGravity.ALTO,
             status: undefined,
             locale: locale,
             date: `${date.toISOString()}`,
@@ -141,12 +141,13 @@ export function DenunciaCadastro({ onRegister }: Props) {
         if (await result === 'success') {
             onRegister();
             toast.show({
-                title: `Obrigado, ${user.name}. Sua denúncia foi registrada com sucesso!`,
+                title: `Obrigado, ${user.name}.\n Sua denúncia foi registrada com sucesso! \nEla está disponível para visualização em Coletas.`,
                 placement: 'top',
-                duration: 5000,
+                duration: 8000,
                 bgColor: 'green.600',
             });
-        }
+            setIsloading(false);
+        } setIsloading(false);
     };
 
     async function handleFetchComplaint(complaint: DenunciaDTO) {
@@ -155,25 +156,24 @@ export function DenunciaCadastro({ onRegister }: Props) {
 
         formData.append('complaint', JSON.stringify({
             ...complaint,
-            image: undefined  
+            image: undefined
         }));
-    
+
         if (complaint.image) {
-            console.log(`complaint_${DateTimeImageSelected2}_author-${complaint.author.id}.png`);
             formData.append('image', {
                 uri: complaint.image,
                 type: 'image/png',
-                name: `complaint_${DateTimeImageSelected2.toString()}_autor-${complaint.author.id}.png`
+                name: `complaint_${DateTimeImageSelected.toString()}_autor-${complaint.author.id}.png`
             } as any);
         }
-    
+
         try {
             const response = await api.post('/api/complaint', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-    
+
             if (response.status === 200) {
                 return 'success';
             } else {
@@ -324,7 +324,9 @@ export function DenunciaCadastro({ onRegister }: Props) {
                     size="lg"
                     bgColor="green.500"
                     _pressed={{ bg: "green.600" }}
-                    onPress={handleCreateComplaint}>
+                    onPress={handleCreateComplaint}
+                    isLoading={isLoading}>
+                        
                     Concluir Cadastro
                 </Button>
             </ScrollView>

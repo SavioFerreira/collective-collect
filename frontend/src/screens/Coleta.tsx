@@ -116,7 +116,7 @@ export function Coleta() {
                   <Image
                     w="full"
                     h={80}
-                    source={{ uri: `${coleta.complaintImage}` }}
+                    source={{ uri: `${coleta.complaintImage}` || "'https://www.cbde.org.br/images/default.jpg'" } }
                     alt="imagem da coleta"
                     resizeMode="cover"
                     borderWidth={2}
