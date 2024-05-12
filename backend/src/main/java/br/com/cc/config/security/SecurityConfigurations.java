@@ -30,7 +30,7 @@ public class SecurityConfigurations {
                         .requestMatchers("/auth/login", "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/complaint/*", "/api/collect/*").authenticated()
                         .requestMatchers("/api/user/**").hasRole("ADMIN")
-                        .requestMatchers("/api/ccimages/**").authenticated()
+                        .requestMatchers("/api/ccimages/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/complaint/*").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                         .requestMatchers(HttpMethod.PUT, "/api/complaint/*").hasAnyAuthority("ROLE_ADMIN", "ROLE_AUTHOR")
                         .requestMatchers(HttpMethod.POST, "/api/collect/*").hasRole("ADMIN")
