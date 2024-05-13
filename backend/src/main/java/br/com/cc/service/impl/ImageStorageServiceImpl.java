@@ -32,8 +32,4 @@ public class ImageStorageServiceImpl  implements ImageStorageService {
                 .path(imageName)
                 .toUriString();
     }
-
-
-
-
 }
