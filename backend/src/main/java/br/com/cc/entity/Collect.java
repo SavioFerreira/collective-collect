@@ -20,8 +20,8 @@ public class Collect {
 	private Long id;
 	@Enumerated(EnumType.STRING)
 	private Status status;
-	@CreationTimestamp
-	private LocalDateTime date;
+	private LocalDateTime collectDate;
+	private LocalDateTime complaintDate;
 	private String collectImage;
 	private boolean teamCollect;
 

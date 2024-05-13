@@ -5,7 +5,6 @@ import br.com.cc.dto.UserDTO;
 import br.com.cc.entity.Collect;
 import br.com.cc.entity.WasteInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,9 +19,9 @@ public class CollectMapperService {
         CollectDTO dto = new CollectDTO();
         dto.setId(collect.getId());
         dto.setStatus(collect.getStatus());
-        dto.setDate(collect.getDate());
+        dto.setCollectDate(collect.getCollectDate());
+        dto.setComplaintDate(collect.getComplaint().getComplaintDate());
         dto.setCollectImage(collect.getCollectImage());
-
         dto.setGravity(collect.getWasteInfo().getGravity());
         dto.setType(collect.getWasteInfo().getWasteType());
         dto.setTitle(collect.getWasteInfo().getTitle());
@@ -38,7 +37,8 @@ public class CollectMapperService {
         Collect collect = new Collect();
         collect.setId(dto.getId());
         collect.setStatus(dto.getStatus());
-        collect.setDate(dto.getDate());
+        collect.setCollectDate(dto.getCollectDate());
+        collect.setComplaintDate(dto.getComplaintDate());
         collect.setCollectImage(dto.getCollectImage());
 
         WasteInfo wasteInfo = new WasteInfo();

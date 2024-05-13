@@ -17,7 +17,8 @@ public class CollectDTO {
     private Long id;
     @NotNull
     private Long complaintId;
-    private LocalDateTime date;
+    private LocalDateTime complaintDate;
+    private LocalDateTime collectDate;
     private Status status;
     private String collectImage;
     private Set<UserDTO> collaborators;

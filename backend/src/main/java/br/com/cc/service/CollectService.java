@@ -11,7 +11,7 @@ public interface CollectService {
 
     Collect create(Collect collect);
 
-    void addCollaboratorToCollect(Long collectId, User request, LocalDateTime date);
+    void addCollaboratorToCollect(Long collectId, CollectCollaboratorDTO collaboratorDTO);
 
     List<Collect> findAll();
 

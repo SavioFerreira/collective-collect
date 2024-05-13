@@ -72,8 +72,8 @@ public class CollectController {
 	}
 
 	@PostMapping("/{collectId}/addParticipant")
-	public ResponseEntity<?> addParticipantToCollect(@PathVariable Long collectId, @RequestBody User request, @RequestBody LocalDateTime date) {
-		collectService.addCollaboratorToCollect(collectId, request, date);
+	public ResponseEntity<?> addParticipantToCollect(@PathVariable Long collectId, @RequestBody CollectCollaboratorDTO collaboratorDTO) {
+		collectService.addCollaboratorToCollect(collectId, collaboratorDTO );
 		return ResponseEntity.ok().build();
 	}
 }
