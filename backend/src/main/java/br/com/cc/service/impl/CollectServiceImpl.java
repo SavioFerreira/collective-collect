@@ -1,10 +1,14 @@
 package br.com.cc.service.impl;
+import br.com.cc.dto.CollectCollaboratorDTO;
 import br.com.cc.entity.Collect;
+import br.com.cc.entity.User;
 import br.com.cc.enums.Status;
 import br.com.cc.repository.CollectRepository;
 import br.com.cc.service.CollectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,5 +54,14 @@ public class CollectServiceImpl implements CollectService {
 		}
 		collect.setStatus(Status.DISPONIVEL);
 		return collectRepository.save(collect);
+	}
+
+	@Override
+	public void addCollaboratorToCollect(Long collectId, User request, LocalDateTime date) {
+		Collect collect = collectRepository.
+				findById(collectId).orElseThrow(() -> new RuntimeException("Coleta não encontrada"));
+		collect.setDate(date);
+		collect.getCollaborators().add(request);
+		collectRepository.save(collect);
 	}
 }

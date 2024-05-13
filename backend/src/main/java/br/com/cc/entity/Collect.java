@@ -23,6 +23,8 @@ public class Collect {
 	@CreationTimestamp
 	private LocalDateTime date;
 	private String collectImage;
+	private boolean teamCollect;
+
 	@Embedded
 	private WasteInfo wasteInfo;
 	@ManyToOne

@@ -1,7 +1,9 @@
 package br.com.cc.controller;
 
+import br.com.cc.dto.CollectCollaboratorDTO;
 import br.com.cc.dto.CollectDTO;
 import br.com.cc.entity.Collect;
+import br.com.cc.entity.User;
 import br.com.cc.exception.collect.CollectNotFoundException;
 import br.com.cc.mapper.CollectMapperService;
 import br.com.cc.service.CollectService;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,5 +69,11 @@ public class CollectController {
 		Collect collect = collectMapperService.convertCollectDtoToEntity(collectDto);
 		Collect saved = collectService.create(collect);
 		return ResponseEntity.ok(collectMapperService.convertCollectToDTO(saved));
+	}
+
+	@PostMapping("/{collectId}/addParticipant")
+	public ResponseEntity<?> addParticipantToCollect(@PathVariable Long collectId, @RequestBody User request, @RequestBody LocalDateTime date) {
+		collectService.addCollaboratorToCollect(collectId, request, date);
+		return ResponseEntity.ok().build();
 	}
 }

@@ -1,11 +1,17 @@
 package br.com.cc.service;
+import br.com.cc.dto.CollectCollaboratorDTO;
 import br.com.cc.entity.Collect;
+import br.com.cc.entity.User;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface CollectService {
 
     Collect create(Collect collect);
+
+    void addCollaboratorToCollect(Long collectId, User request, LocalDateTime date);
 
     List<Collect> findAll();
 
