@@ -18,7 +18,7 @@ public class ComplaintDTO {
     private Status status;
     private WasteType type;
     private Gravity gravity;
-    private LocalDateTime date;
+    private LocalDateTime complaintDate;
     private String image;
     private String title;
     private String description;

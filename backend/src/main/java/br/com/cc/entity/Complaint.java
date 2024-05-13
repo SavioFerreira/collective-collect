@@ -23,7 +23,7 @@ public class Complaint {
 	private Status status;
 
 	@CreationTimestamp
-	private LocalDateTime date;
+	private LocalDateTime complaintDate;
 
 	@Embedded
 	private WasteInfo wasteInfo;

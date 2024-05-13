@@ -73,7 +73,6 @@ public class ComplaintServiceImpl implements ComplaintService {
 
 	private void updateCollectForComplaint(Complaint complaint) {
 		collectRepository.findByComplaintId(complaint.getId()).ifPresent(collect -> {
-			collect.setDate(complaint.getDate());
 			collect.setStatus(complaint.getStatus());
 			collect.setWasteInfo(complaint.getWasteInfo());
 			Collect savedCollect = collectRepository.save(collect);
@@ -86,7 +85,8 @@ public class ComplaintServiceImpl implements ComplaintService {
 		Collect collect = new Collect();
 		collect.setComplaint(complaint);
 		collect.setStatus(Status.DISPONIVEL);
-		collect.setDate(complaint.getDate());
+		collect.setComplaintDate(complaint.getComplaintDate());
+		collect.setCollectDate(null);
 		collect.setWasteInfo(complaint.getWasteInfo());
 		Collect savedCollect = collectRepository.save(collect);
 		complaint.setCollect(savedCollect);

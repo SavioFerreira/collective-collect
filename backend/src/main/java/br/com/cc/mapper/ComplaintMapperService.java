@@ -5,7 +5,6 @@ import br.com.cc.entity.Complaint;
 import br.com.cc.entity.WasteInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,7 +18,7 @@ public class ComplaintMapperService  {
         dto.setCollectId(complaint.getCollect() != null ? complaint.getCollect().getId() : null);
         dto.setId(complaint.getId());
         dto.setStatus(complaint.getStatus());
-        dto.setDate(complaint.getDate());
+        dto.setComplaintDate(complaint.getComplaintDate());
         dto.setImage(complaint.getWasteInfo().getImage());
         dto.setType(complaint.getWasteInfo().getWasteType());
         dto.setGravity(complaint.getWasteInfo().getGravity());
@@ -35,7 +34,7 @@ public class ComplaintMapperService  {
         Complaint complaint = new Complaint();
         complaint.setId(dto.getId());
         complaint.setStatus(dto.getStatus());
-        complaint.setDate(dto.getDate());
+        complaint.setComplaintDate(dto.getComplaintDate());
         User author = userMapperService.userService.findById(dto.getAuthor().getId()).orElse(null);
         complaint.setAuthor(author);
 
