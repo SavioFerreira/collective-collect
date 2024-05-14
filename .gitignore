@@ -5,7 +5,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-src/ccimages
+backend/src/ccimages/**
 ### STS ###
 .apt_generated
 .classpath
@@ -69,4 +69,3 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
-
