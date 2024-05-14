@@ -15,7 +15,7 @@ export function ColetaCard({ data, ...rest }: Props) {
   const statusIcon = getStatusIcon(data.status);
   const typeIcon = getTypeIcon(data.type);
   const status = data.status.toLocaleLowerCase().replace("_", " ");
-  const dateShow = FormatDate(data.date);
+  const showDate = data.collectDate != undefined || null ? FormatDate(data.collectDate): "Agenda pendente";
 
   return (
     <TouchableOpacity {...rest}>
@@ -51,7 +51,7 @@ export function ColetaCard({ data, ...rest }: Props) {
             Visualisar coleta
           </Text>
           <Text fontSize="xs" fontFamily="body" color={statusIcon.color} numberOfLines={1}>
-            {dateShow}
+            {showDate}
           </Text>
         </HStack>
       </VStack>

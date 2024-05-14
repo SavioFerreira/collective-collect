@@ -1,10 +1,13 @@
+import { UserDTO } from "./UserDTO";
+
 export type ColetaDTO = {
   
 		id: number,
 		status: string,
 		type: string,
 		gravity: string,
-		date: string,
+		collectDate: string,
+		complaintDate: string,
 		image: string,
 		collectImage: string,
 		complaintImage: string,
@@ -12,5 +15,5 @@ export type ColetaDTO = {
 		description:string,
 		locale: string,
 		complaintId: number,
-		collaborators: [],
+		collaborators: [UserDTO],
 	}

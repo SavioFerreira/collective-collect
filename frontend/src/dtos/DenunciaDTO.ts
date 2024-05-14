@@ -7,7 +7,7 @@ export type DenunciaDTO = {
 	title: string,
 	description: string,
 	locale: string,
-	date: string,
+	complaintDate: string,
 	gravity: string,
 	image: string,
 	status: string | undefined,
