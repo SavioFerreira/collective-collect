@@ -1,7 +1,4 @@
-  export function FormatDate(dateString?: string): string {
-    if (!dateString) {
-      return "Data não disponível";
-    }
+  export function FormatDate(dateString: string): string {
   
     const date = new Date(dateString);
   

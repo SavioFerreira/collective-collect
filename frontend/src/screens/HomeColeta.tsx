@@ -1,19 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
-import { HStack, VStack, FlatList, useToast, Text, Heading, Icon, ScrollView, View, Box } from "native-base";
-
+import { HStack, VStack, FlatList, useToast, Text, Heading, Icon } from "native-base";
 import { Entypo } from '@expo/vector-icons';
-import { ColetaDTO } from '@dtos/ColetaDTO';
-import { api } from '@services/api'
 
 import { IconHeader } from "@components/IconHeader";
 import { Group } from '@components/Group';
 import { ColetaCard } from '@components/ColetaCard';
 import { Loading } from '@components/Loading';
-import { AppNavigatorRoutesProps } from '@routes/app.routes';
+import { useCollect } from '@hooks/useCollect';
 import { ResiduoType } from 'src/enums/ResiduoTypesEnum';
+import { AppNavigatorRoutesProps } from '@routes/app.routes';
+import { ColetaDTO } from '@dtos/ColetaDTO';
 import { AppError } from '@utils/AppError';
+import { api } from '@services/api';
 
 export function HomeColeta() {
 
@@ -78,12 +78,7 @@ export function HomeColeta() {
             Tipos de resíduo
           </Heading>
           <TouchableOpacity activeOpacity={.7} onPress={() => { }}>
-            <Icon
-              as={Entypo}
-              name="help-with-circle"
-              color="darkBlue.700"
-              size={7}
-            />
+            <Icon as={Entypo} name="help-with-circle" color="darkBlue.700" size={7} />
           </TouchableOpacity>
         </HStack>
         <FlatList
@@ -98,19 +93,14 @@ export function HomeColeta() {
           )}
           horizontal
           showsHorizontalScrollIndicator={false}
-          _contentContainerStyle={{
-            px: 5,
-          }}
+          _contentContainerStyle={{ px: 5 }}
           my={16}
           maxH={16}
           mb={1} mt={1}
         />
       </VStack>
-      <VStack mb={4}>
-      </VStack>
       {isLoading ? <Loading /> :
         <VStack px={2} bg="rgba(74, 167, 255, 0.295)" mr={4} ml={4} borderRadius="lg" h="65%">
-
           <HStack justifyContent="space-between" m={4}>
             <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading">
               Coletas disponíveis
@@ -120,27 +110,21 @@ export function HomeColeta() {
             </Text>
           </HStack>
           <VStack mr={4} ml={4}>
-
             <FlatList
               data={coletas}
               keyExtractor={item => item.id.toString()}
               renderItem={({ item }) => (
-                <ColetaCard
-                  onPress={() => handleOpenColetaDetails(item.id.toString())}
-                  data={item}
-                />
+                <ColetaCard onPress={() => handleOpenColetaDetails(item.id.toString())} data={item} />
               )}
               ListEmptyComponent={() => (
                 <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
-                  Não há coletas disponíveis no momento. {'\n'}
-                  Volte mais tarde.
+                  Não há coletas disponíveis no momento. {'\n'}Volte mais tarde.
                 </Text>
               )}
               showsVerticalScrollIndicator={false}
               pb={2}
               h="85%"
             />
-
           </VStack>
         </VStack>
       }

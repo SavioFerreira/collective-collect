@@ -133,7 +133,7 @@ export function DenunciaCadastro({ onRegister }: Props) {
             gravity: gravityType ?? ResiduoGravity.ALTO,
             status: undefined,
             locale: locale,
-            date: `${date.toISOString()}`,
+            complaintDate: `${date.toISOString()}`,
             image: imageComplaint
         };
 
@@ -141,7 +141,7 @@ export function DenunciaCadastro({ onRegister }: Props) {
         if (await result === 'success') {
             onRegister();
             toast.show({
-                title: `Obrigado, ${user.name}.\n Sua denúncia foi registrada com sucesso! \nEla está disponível para visualização em Coletas.`,
+                title: `Obrigado, ${user.name}.\nSua denúncia foi registrada com sucesso!\nEla está disponível para visualização em Coletas.`,
                 placement: 'top',
                 duration: 8000,
                 bgColor: 'green.600',

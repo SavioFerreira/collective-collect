@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { HStack, Heading, Icon, VStack, Text, Image, Box, ScrollView, useToast, Pressable, View, Center, Flex } from 'native-base';
 import { TouchableOpacity, Modal, Button } from 'react-native';
-import { Feather, FontAwesome6 } from '@expo/vector-icons';
+import { Feather, FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { AppNavigatorRoutesProps } from '@routes/app.routes'
@@ -16,7 +16,6 @@ import { getGravityIcon, getStatusIcon, getTypeIcon } from '@utils/Icons';
 import { Loading } from '@components/Loading';
 
 import { ColetaCadastro } from '@utils/ColetaCadastro';
-import { date } from 'yup';
 import { FormatDate } from 'src/functions/FormatDate';
 
 type RouteParamsProps = {
@@ -35,9 +34,11 @@ export function Coleta() {
   const statusIcon = getStatusIcon(coleta.status);
   const statusTitle = coleta.status != undefined ? coleta.status.toLocaleLowerCase().replace("_", " ") : " ";
   const gravityTitle = coleta.gravity != undefined ? coleta.gravity.toLocaleLowerCase().replace("_", " ") : " ";
-  const showDate = FormatDate(coleta?.date);
+  const showComplaintDate = coleta.complaintDate != undefined || null ? FormatDate(coleta.complaintDate) : "Data não disponível";
+  const showCollectDate = coleta.collectDate != undefined || null ? FormatDate(coleta.collectDate) : "Indefinido";
 
   const [isModalVisible, SetIsModalVisible] = useState(false);
+  const [isChatVisible, SetIsChatVisible] = useState(false);
 
   function handleGoBack() {
     navigation.navigate('coletas');
@@ -107,6 +108,39 @@ export function Coleta() {
                   {coleta.title}
                 </Text>
               </Box>
+              <Box bg="green.700" mb={1} pt={1} pb={1} px={0}>
+                <HStack justifyContent="space-around">
+                  <HStack>
+                    <Text color="white" mr={2} alignSelf="center" fontSize="xs">
+                      Gravidade
+                    </Text>
+                    <Icon
+                      as={gravityIcon.Component}
+                      name={gravityIcon.name}
+                      color={gravityIcon.color}
+                      size="xl"
+                    />
+                    <Text color={gravityIcon.color} ml={2} alignSelf="center" fontSize="xs">
+                      {gravityTitle.replace(gravityTitle.charAt(0), gravityTitle.charAt(0).toLocaleUpperCase())}
+                    </Text>
+                  </HStack>
+
+                  <HStack>
+                    <Text color="white" mr={2} alignSelf="center" fontSize="xs">
+                      Status
+                    </Text>
+                    <Icon
+                      as={statusIcon.Component}
+                      name={statusIcon.name}
+                      color={statusIcon.color}
+                      size="lg"
+                    />
+                    <Text color={statusIcon.color} ml={2} alignSelf="center" fontSize="xs">
+                      {statusTitle.replace(statusTitle.charAt(0), statusTitle.charAt(0).toLocaleUpperCase())}
+                    </Text>
+                  </HStack>
+                </HStack>
+              </Box>
               <Box position="relative" mb={1}
                 minH={80}
                 maxH={80}
@@ -116,7 +150,7 @@ export function Coleta() {
                   <Image
                     w="full"
                     h={80}
-                    source={{ uri: `${coleta.complaintImage}` || "'https://www.cbde.org.br/images/default.jpg'" } }
+                    source={{ uri: `${coleta.complaintImage}` || "'https://www.cbde.org.br/images/default.jpg'" }}
                     alt="imagem da coleta"
                     resizeMode="cover"
                     borderWidth={2}
@@ -130,15 +164,15 @@ export function Coleta() {
                       _pressed={{
                         opacity: 60
                       }}
-                      onPress={() => {}}
+                      onPress={() => { }}
                     >
-                    <Icon
-                      as={FontAwesome6}
-                      name={"map-location-dot"}
-                      color="green.400"
-                      size={12}
-                      mr={2}
-                    />
+                      <Icon
+                        as={FontAwesome6}
+                        name={"map-location-dot"}
+                        color="green.400"
+                        size={12}
+                        mr={2}
+                      />
                     </Pressable>
                     <Text color="yellow.200" fontStyle="italic" ml={2} numberOfLines={2}>
                       Local: {coleta.locale}
@@ -156,39 +190,68 @@ export function Coleta() {
                 </Text>
                 <HStack justifyContent="space-between" mt={1}>
                   <Text fontFamily="body" fontSize="xs" color="yellow.400">
-                    {showDate || "Data não disponível"}
+                    {showComplaintDate}
                   </Text>
                   <Text fontFamily="body" fontSize="xs" color="yellow.400">
                     Denuncia nº {coleta.complaintId}
                   </Text>
                 </HStack>
               </Box>
-              <Box bg="green.700" pt={2} pb={2} px={2}>
-                <HStack justifyContent="space-around">
-                  <HStack>
-                    <Icon
-                      as={gravityIcon.Component}
-                      name={gravityIcon.name}
-                      color={gravityIcon.color}
-                      size="xl"
-                    />
-                    <Text color="white" ml={2} alignSelf="center">
-                      {gravityTitle.replace(gravityTitle.charAt(0), gravityTitle.charAt(0).toLocaleUpperCase())}
-                    </Text>
-                  </HStack>
 
-                  <HStack>
-                    <Icon
-                      as={statusIcon.Component}
-                      name={statusIcon.name}
-                      color={statusIcon.color}
-                      size="lg"
-                    />
-                    <Text color="white" ml={2} alignSelf="center">
-                      {statusTitle.replace(statusTitle.charAt(0), statusTitle.charAt(0).toLocaleUpperCase())}
-                    </Text>
+              <Box>
+                {coleta.collaborators.length > 0 ?
+                  <HStack  bg="green.700" mb={1} pt={2} pb={1} px={2} flex={1} borderRadius="lg" borderTopRadius={0} justifyContent="space-evenly">
+                    <VStack ml={2} mr={2} alignSelf="center">
+
+                      <Icon
+                        as={Feather}
+                        name={'users'}
+                        color="yellow.400"
+                        size="lg"
+                        alignSelf="center"
+                      />
+                      <Text fontFamily="body" fontSize="xs" color="yellow.400" mb={1}>
+                        Membros
+                      </Text>
+                    </VStack>
+                    <VStack >
+
+                      <Text numberOfLines={4} color="warmGray.100" fontSize="md" textAlign="justify" m={2} mb={3} alignSelf="center">
+                        {coleta.collaborators.map(user => user.name).join(', ')}
+                      </Text>
+                      <Text numberOfLines={4} color="warmGray.100" fontSize="xs" textAlign="justify" alignSelf="center" fontStyle="italic">
+                        Agenda: {showCollectDate}
+                      </Text>
+
+                    </VStack>
+
+                    <VStack ml={2} mr={2} alignSelf="center">
+                      <Pressable
+                        _pressed={{ opacity: 60 }}
+                        borderRadius="md"
+                        alignItems="center"
+                        justifyContent="center"
+                        onPress={() => SetIsChatVisible(true)}
+                      >
+                        <Icon
+                          as={MaterialIcons}
+                          name={'chat'}
+                          color="yellow.400"
+                          size="lg"
+                          alignSelf="center"
+                        />
+                        <Text fontFamily="body" fontSize="xs" color="yellow.400" mb={1}>
+                          Iniciar Chat
+                        </Text>
+                      </Pressable>
+                    </VStack>
+
                   </HStack>
-                </HStack>
+                  :
+                  <Text fontSize="sm" color="white">
+                    Nenhum colaborador
+                  </Text>
+                }
               </Box>
             </Box>
 
@@ -222,7 +285,42 @@ export function Coleta() {
                       name="x-circle"
                       onPress={closeColetaModal}
                     />
-                    <ColetaCadastro onRegister={closeColetaModal} />
+                    <ColetaCadastro onRegister={closeColetaModal} collectId={coleta.id} />
+                  </View>
+                </Flex>
+              </Modal>
+            </View>
+
+            <View>
+              <Modal
+                visible={isChatVisible}
+                animationType="slide"
+                onRequestClose={() => SetIsChatVisible(false)}
+                transparent={true}
+              >
+                <Flex flex={1} alignItems="center" justifyContent="center" bg="rgba(74, 169, 255, 0.9)">
+                  <View bgColor="blue.500" p={5} pb={3} justifyContent="initial" borderRadius="lg" w="90%" maxW="90%" h="80%" maxH="80%" shadow={1}>
+
+                    <View mb={2}>
+                      <Icon alignSelf="flex-start" size={8} color="green.400"
+                        as={Feather}
+                        name="x-circle"
+                        onPress={() => SetIsChatVisible(false)}
+                      />
+                      <Text alignSelf="center" fontFamily="heading" fontSize="lg" color="white">
+                        Chat - Coleta
+                      </Text>
+                    </View>
+                    <VStack rounded="md" flex={1} bg="rgba(110, 183, 252, 0.815)">
+                      <VStack>
+                        <Text> ola</Text>
+                        <Text> salve</Text>
+                        <Text> bão ou nada?</Text>
+                      </VStack>
+                      <HStack>
+
+                      </HStack>
+                    </VStack>
                   </View>
                 </Flex>
               </Modal>
