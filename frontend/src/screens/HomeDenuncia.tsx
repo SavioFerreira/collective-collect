@@ -1,23 +1,25 @@
-import { useCallback, useEffect, useState } from "react";
-import { Modal, TouchableOpacity } from "react-native";
+import { useEffect, useState } from "react";
+import { Modal } from "react-native";
 import { VStack, Image, Pressable, Text, View, Flex, Icon, HStack, Heading, FlatList, Center } from "native-base";
-
 import { Feather } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
 
-import { IconHeader } from "@components/IconHeader";
+
+import { getAddressLocation } from "@utils/getArdressLocation";
 import { DenunciaCadastro } from "@utils/DenunciaCadastro";
-
 import BackDenunciaImg from '@assets/mapBackGround.png';
-import { Group } from "@components/Group";
-import { ResiduoType } from "src/enums/ResiduoTypesEnum";
-import { useForegroundPermissions } from "expo-location";
+import { IconHeader } from "@components/IconHeader";
 import { MapPermission } from "@components/MapPermisson";
+import { Loading } from "@components/Loading";
+
+
+import { useForegroundPermissions, watchPositionAsync, LocationAccuracy, LocationSubscription } from "expo-location";
+import { LocationInfo } from "@components/LocationInfo";
 
 export function HomeDenuncia() {
   const [isModalVisible, SetIsModalVisible] = useState(false);
-
+  const [isLoadingLocation, setIsLoadingLocation] = useState(true);
   const [locationForegroundPermission, requestLocationForegroundPermission] = useForegroundPermissions();
+  const [currentAddress, setCurrentAddress] = useState<string | null>(null)
 
 
   function openDenunciaModal() {
@@ -32,6 +34,30 @@ export function HomeDenuncia() {
     requestLocationForegroundPermission();
   }, [])
 
+  useEffect(() => {
+    if (!locationForegroundPermission?.granted) return;
+
+    let subscription: LocationSubscription;
+
+    watchPositionAsync({
+      accuracy: LocationAccuracy.High,
+      timeInterval: 1000
+    }, (location) => {
+      getAddressLocation(location.coords)
+        .then((address) => {
+          if (address) setCurrentAddress(address)
+
+        })
+        .finally(() => setIsLoadingLocation(false))
+    }).then((response) => subscription = response);
+
+    return () => {
+      if (subscription)
+        subscription.remove();
+    }
+
+  }, [locationForegroundPermission])
+
   if (!locationForegroundPermission?.granted) {
     const permissionMessage = "Você precisa permitir que o aplicativo acesse a sua localização para disponibilizar a visualização do Mapa e para criação de Denúncias.\n" +
       "Por favor, verifique suas configurações de permissão."
@@ -40,10 +66,24 @@ export function HomeDenuncia() {
     )
   }
 
+  if (isLoadingLocation) {
+    return (
+      <Loading />
+    )
+  }
+
   return (
     <VStack flex={1}>
       <IconHeader title="Denuncias" />
-      <VStack flex={1} alignItems="center" justifyContent="center" m={5}>
+      {currentAddress &&
+        <LocationInfo 
+          mt={2} mb={1} px={6}
+          label="Localização atual"
+          description={currentAddress}
+        />
+      }
+
+      <VStack flex={1} alignItems="center" justifyContent="center" px={5}>
         <Image
           source={BackDenunciaImg}
           alt="map"
@@ -58,7 +98,7 @@ export function HomeDenuncia() {
 
         />
       </VStack>
-      <HStack mb={5} px={5}>
+      <HStack mb={5} mt={5} px={5}>
         <Pressable
           bgColor="green.500"
           _pressed={{ bg: "green.600" }}
