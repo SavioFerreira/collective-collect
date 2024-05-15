@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Modal, TouchableOpacity } from "react-native";
-import { VStack, Image, Pressable, Text, View, Flex, Icon, HStack, Heading, FlatList } from "native-base";
+import { VStack, Image, Pressable, Text, View, Flex, Icon, HStack, Heading, FlatList, Center } from "native-base";
 
 import { Feather } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
@@ -11,11 +11,14 @@ import { DenunciaCadastro } from "@utils/DenunciaCadastro";
 import BackDenunciaImg from '@assets/mapBackGround.png';
 import { Group } from "@components/Group";
 import { ResiduoType } from "src/enums/ResiduoTypesEnum";
+import { useForegroundPermissions } from "expo-location";
+import { MapPermission } from "@components/MapPermisson";
 
 export function HomeDenuncia() {
   const [isModalVisible, SetIsModalVisible] = useState(false);
-  const [types, setTypes] = useState(Object.values(ResiduoType));
-  const [typeSelected, setTypeSelected] = useState(types[0]);
+
+  const [locationForegroundPermission, requestLocationForegroundPermission] = useForegroundPermissions();
+
 
   function openDenunciaModal() {
     SetIsModalVisible(true);
@@ -25,48 +28,21 @@ export function HomeDenuncia() {
     SetIsModalVisible(!isModalVisible);
   };
 
-  const handleTypeSelected = useCallback((item: ResiduoType) => {
-    setTypeSelected(item);
-  }, []);
+  useEffect(() => {
+    requestLocationForegroundPermission();
+  }, [])
 
+  if (!locationForegroundPermission?.granted) {
+    const permissionMessage = "Você precisa permitir que o aplicativo acesse a sua localização para disponibilizar a visualização do Mapa e para criação de Denúncias.\n" +
+      "Por favor, verifique suas configurações de permissão."
+    return (
+      <MapPermission message={permissionMessage} />
+    )
+  }
 
   return (
     <VStack flex={1}>
       <IconHeader title="Denuncias" />
-      <VStack px={2} mr={4} ml={4} mt={2} borderRadius="lg">
-        <HStack justifyContent="space-between">
-          <Heading color="darkBlue.700" fontSize="xl" fontFamily="heading" mb={2} ml={'5'}>
-            Filtrar por tipo de Resíduos 
-          </Heading>
-          <TouchableOpacity activeOpacity={.7} onPress={() => { }}>
-            <Icon
-              as={Entypo}
-              name="help-with-circle"
-              color="darkBlue.700"
-              size={7}
-            />
-          </TouchableOpacity>
-        </HStack>
-        <FlatList
-          data={types}
-          keyExtractor={item => item}
-          renderItem={({ item }) => (
-            <Group
-              name={item}
-              isActive={typeSelected === item}
-              onPress={() => handleTypeSelected(item)}
-            />
-          )}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          _contentContainerStyle={{
-            px: 5,
-          }}
-          my={16}
-          maxH={16}
-          mb={1} mt={1}
-        />
-      </VStack>
       <VStack flex={1} alignItems="center" justifyContent="center" m={5}>
         <Image
           source={BackDenunciaImg}
@@ -114,7 +90,7 @@ export function HomeDenuncia() {
                 name="x-circle"
                 onPress={closeDenunciaModal}
               />
-              <DenunciaCadastro onRegister={closeDenunciaModal}/>
+              <DenunciaCadastro onRegister={closeDenunciaModal} />
             </View>
           </Flex>
         </Modal>

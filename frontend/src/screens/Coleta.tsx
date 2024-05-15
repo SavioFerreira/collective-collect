@@ -200,7 +200,7 @@ export function Coleta() {
 
               <Box>
                 {coleta.collaborators.length > 0 ?
-                  <HStack  bg="green.700" mb={1} pt={2} pb={1} px={2} flex={1} borderRadius="lg" borderTopRadius={0} justifyContent="space-evenly">
+                  <HStack bg="green.700" mb={1} pt={2} pb={1} px={2} flex={1} borderRadius="lg" borderTopRadius={0} justifyContent="space-evenly">
                     <VStack ml={2} mr={2} alignSelf="center">
 
                       <Icon
@@ -248,9 +248,12 @@ export function Coleta() {
 
                   </HStack>
                   :
-                  <Text fontSize="sm" color="white">
-                    Nenhum colaborador
-                  </Text>
+                  <HStack bg="green.700" mb={1} pt={2} pb={1} px={2} flex={1} borderRadius="lg" borderTopRadius={0} justifyContent="space-evenly">
+                    <Text fontSize="sm" color="white">
+                      Nenhum colaborador
+                    </Text>
+                  </HStack>
+
                 }
               </Box>
             </Box>
