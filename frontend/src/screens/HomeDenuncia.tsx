@@ -12,14 +12,16 @@ import { MapPermission } from "@components/MapPermisson";
 import { Loading } from "@components/Loading";
 
 
-import { useForegroundPermissions, watchPositionAsync, LocationAccuracy, LocationSubscription } from "expo-location";
+import { useForegroundPermissions, watchPositionAsync, LocationAccuracy, LocationSubscription, LocationObjectCoords } from "expo-location";
 import { LocationInfo } from "@components/LocationInfo";
+import { Map } from "@components/Map";
 
 export function HomeDenuncia() {
   const [isModalVisible, SetIsModalVisible] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(true);
   const [locationForegroundPermission, requestLocationForegroundPermission] = useForegroundPermissions();
-  const [currentAddress, setCurrentAddress] = useState<string | null>(null)
+  const [currentAddress, setCurrentAddress] = useState<string | null>(null);
+  const [currentCoords, setCurrentCoords] = useState<LocationObjectCoords | null>(null);
 
 
   function openDenunciaModal() {
@@ -43,6 +45,7 @@ export function HomeDenuncia() {
       accuracy: LocationAccuracy.High,
       timeInterval: 1000
     }, (location) => {
+      setCurrentCoords(location.coords)
       getAddressLocation(location.coords)
         .then((address) => {
           if (address) setCurrentAddress(address)
@@ -76,28 +79,36 @@ export function HomeDenuncia() {
     <VStack flex={1}>
       <IconHeader title="Denuncias" />
       {currentAddress &&
-        <LocationInfo 
+        <LocationInfo
           mt={2} mb={1} px={6}
           label="Localização atual"
           description={currentAddress}
         />
       }
 
-      <VStack flex={1} alignItems="center" justifyContent="center" px={5}>
-        <Image
-          source={BackDenunciaImg}
-          alt="map"
-          resizeMode="cover"
-          position="absolute"
+      {currentCoords ?
+        <VStack flex={1} alignItems="center" justifyContent="center" px={5}>
+          <Map coords={[currentCoords]}/>
+        </VStack>
+        :
+        <VStack flex={1} alignItems="center" justifyContent="center" px={5}>
+          <Image
+            source={BackDenunciaImg}
+            alt="map"
+            resizeMode="cover"
+            position="absolute"
 
-          width="100%"
-          height="100%"
-          borderWidth={2}
-          borderColor="darkBlue.500"
-          borderRadius="lg"
+            width="100%"
+            height="100%"
+            borderWidth={2}
+            borderColor="darkBlue.500"
+            borderRadius="lg"
 
-        />
-      </VStack>
+          />
+        </VStack>
+      }
+
+
       <HStack mb={5} mt={5} px={5}>
         <Pressable
           bgColor="green.500"

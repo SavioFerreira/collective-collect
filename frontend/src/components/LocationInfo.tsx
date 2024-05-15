@@ -1,4 +1,4 @@
-import { HStack, Icon, VStack, Text, View, IIconProps } from "native-base";
+import { HStack, Icon, VStack, Text, View } from "native-base";
 import {  FontAwesome6 } from '@expo/vector-icons';
 import { IViewProps } from "native-base/lib/typescript/components/basic/View/types";
 
