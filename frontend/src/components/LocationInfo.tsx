@@ -19,7 +19,6 @@ export function LocationInfo({ label, description, ...rest }: Props) {
                     color="blue.700"
                     size={7}
                     mr={2}
-
                 />
                 <VStack>
                     <Text numberOfLines={1} fontSize="sm" fontFamily="body" color="blue.700">
