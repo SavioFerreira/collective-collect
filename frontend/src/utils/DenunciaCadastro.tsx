@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Heading, Center, Button, useTheme, HStack, VStack, Input, Icon, Select, CheckIcon, Pressable, useToast } from "native-base";
 import { Alert, ScrollView } from 'react-native';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
@@ -8,13 +8,15 @@ import { DenunciaDTO } from '@dtos/DenunciaDTO';
 import { api } from '@services/api';
 import { useAuth } from '@hooks/useAuth';
 import { useImagePicker } from '@hooks/useImagePicker';
+import { getAddressLocation } from './getArdressLocation';
+import * as Location from 'expo-location';
 import { FormatDate } from 'src/functions/FormatDate';
+
 type Props = {
     onRegister: () => void;
 }
 
-
-export function DenunciaCadastro({ onRegister }:Props) {
+export function DenunciaCadastro({ onRegister }: Props) {
     const { colors } = useTheme();
     const { user } = useAuth();
     const toast = useToast();
@@ -25,6 +27,8 @@ export function DenunciaCadastro({ onRegister }:Props) {
     const [gravityType, setGravityType] = useState<ResiduoGravity | undefined>();
     const [isLoading, setIsLoading] = useState(false);
 
+    
+
     const handleWasteTypeChange = (itemValue: string) => {
         setWasteType(itemValue as ResiduoType);
     };
@@ -32,7 +36,32 @@ export function DenunciaCadastro({ onRegister }:Props) {
     const handleGravityTypeChange = (itemValue: string) => {
         setGravityType(itemValue as ResiduoGravity);
     };
-  
+
+    useEffect(() => {
+        
+        let subscription: Location.LocationSubscription;
+
+        Location.watchPositionAsync({
+            accuracy: Location.LocationAccuracy.High,
+            timeInterval: 1000
+        }, (location) => {
+            getAddressLocation(location.coords)
+                .then((address) => {
+                    if (address) setLocale(address || 'Localização não encontrada')
+
+                }).catch(error => {
+                    console.error('Erro ao obter o endereço:', error);
+                    setLocale('Erro ao definir localização');
+                })
+        }).then((response) => subscription = response);
+
+        return () => {
+            if (subscription)
+                subscription.remove();
+        }
+
+    }, [])
+
     async function handleCreateComplaint() {
         setIsLoading(true);
         const fields = [
@@ -86,7 +115,7 @@ export function DenunciaCadastro({ onRegister }:Props) {
         }));
 
         if (complaint.image) {
-            const date =  new Date().toISOString();
+            const date = new Date().toISOString();
             const dateTimeImageSelected = FormatDate(date.toString()).replaceAll('/', '-').replaceAll(':', '-').replaceAll(' ', '_');
             formData.append('image', {
                 uri: complaint.image,
@@ -115,7 +144,6 @@ export function DenunciaCadastro({ onRegister }:Props) {
         }
     };
 
-
     return (
         <View flex={1} px={1}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -128,7 +156,6 @@ export function DenunciaCadastro({ onRegister }:Props) {
                     Preencha os dados com cuidado
                 </Text>
                 <VStack>
-
 
                     <Text color='blue.300' fontFamily="body" fontSize="sm" mb={1} textAlign="left" fontStyle="italic">
                         Descrição da Denúncia
