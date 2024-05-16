@@ -71,7 +71,10 @@ export function HomeDenuncia() {
 
   if (isLoadingLocation) {
     return (
-      <Loading />
+      <View flex={1}>
+        <IconHeader title="Denuncias" />
+        <Loading />
+      </View>
     )
   }
 
