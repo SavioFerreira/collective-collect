@@ -6,36 +6,24 @@ import { ResiduoGravity } from '../enums/ResiduoGravityEnum';
 import { ResiduoType } from '../enums/ResiduoTypesEnum';
 import { DenunciaDTO } from '@dtos/DenunciaDTO';
 import { api } from '@services/api';
-import { AppError } from './AppError';
 import { useAuth } from '@hooks/useAuth';
-
-import * as ImagePicker from 'expo-image-picker';
-
+import { useImagePicker } from '@hooks/useImagePicker';
 import { FormatDate } from 'src/functions/FormatDate';
-
 type Props = {
     onRegister: () => void;
 }
 
-export function DenunciaCadastro({ onRegister }: Props) {
 
+export function DenunciaCadastro({ onRegister }:Props) {
     const { colors } = useTheme();
-    const [isLoading, setIsloading] = useState(false);
-    const [description, setDescription] = useState<string>("");
-    const [locale, setLocale] = useState<string>("");
-    const [wasteType, setWasteType] = useState<ResiduoType | undefined>(undefined);
-    const [gravityType, setGravityType] = useState<ResiduoGravity | undefined>(undefined);
-    const title = "Resíduos de " + wasteType?.toLocaleLowerCase();
-
-    const [imageIsLoading, setImageIsLoading] = useState(false);
-    const [imageComplaint, SetImageComplaint] = useState<string>('');
-
-    const [date, setDate] = useState<Date>(new Date());
-    const toast = useToast();
     const { user } = useAuth();
-
-    const DateTimeImageSelected = FormatDate(date.toString()).replaceAll('/', '-').replaceAll(':', '-').replaceAll(' ', '_');
-
+    const toast = useToast();
+    const { imageUri, pickImage, takePhoto } = useImagePicker();
+    const [description, setDescription] = useState("");
+    const [locale, setLocale] = useState("");
+    const [wasteType, setWasteType] = useState<ResiduoType | undefined>();
+    const [gravityType, setGravityType] = useState<ResiduoGravity | undefined>();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleWasteTypeChange = (itemValue: string) => {
         setWasteType(itemValue as ResiduoType);
@@ -44,97 +32,35 @@ export function DenunciaCadastro({ onRegister }: Props) {
     const handleGravityTypeChange = (itemValue: string) => {
         setGravityType(itemValue as ResiduoGravity);
     };
+  
+    async function handleCreateComplaint() {
+        setIsLoading(true);
+        const fields = [
+            { label: 'Descrição', value: description },
+            { label: 'Local', value: locale },
+            { label: 'Tipo de Resíduo', value: wasteType },
+            { label: 'Gravidade', value: gravityType },
+            { label: 'Imagem da Denúncia', value: imageUri }
+        ];
 
-    async function handleImageComplaintSelect() {
-        setImageIsLoading(true);
-        try {
-            const photoSelected = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                quality: 1,
-                allowsEditing: true,
-            });
-
-            if (photoSelected.canceled) return;
-            if (photoSelected.assets[0].uri) {
-                SetImageComplaint(photoSelected.assets[0].uri);
-            }
-
-        } catch (error) {
-            alert('Erro ao capturar a imagem.');
-            throw error;
-        } finally {
-            setImageIsLoading(false);
-        }
-    }
-
-    async function getCameraPermission() {
-        const { status } = await ImagePicker.requestCameraPermissionsAsync();
-        if (status !== 'granted') {
-            alert('Desculpe, precisamos de permissões de câmera para fazer isso funcionar!');
-            return false;
-        }
-        return true;
-    }
-
-    async function handleImageComplaintCatch() {
-        const hasPermission = await getCameraPermission();
-        if (!hasPermission) {
+        const emptyField = fields.find(field => !field.value);
+        if (emptyField) {
+            Alert.alert('Atenção', `Preencha todos os campos!\n${emptyField.label} não foi preenchido`);
+            setIsLoading(false);
             return;
         }
 
-        try {
-            setImageIsLoading(true);
-            const photoCaptured = await ImagePicker.launchCameraAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                quality: 1,
-                allowsEditing: true,
-            });
-
-            if (photoCaptured.canceled) return;
-            if (photoCaptured.assets[0].uri) {
-                SetImageComplaint(photoCaptured.assets[0].uri);
-            }
-        } catch (error) {
-            alert('Erro ao capturar a imagem.');
-            throw error;
-        } finally {
-            setImageIsLoading(false);
-        }
-    }
-
-
-    async function handleCreateComplaint() {
-        setIsloading(true);
-        let fields = [
-            { label: 'Descrição', value: description },
-            { label: 'Local', value: locale },
-            { label: 'Tipo de Resíduo', value: wasteType},
-            { label: 'Gravidade', value: gravityType},
-            { label: 'Imagem da Denúncia', value: imageComplaint }
-        ];
-        
-        for (let i = 0; i < fields.length; i++) {
-            if (fields[i].value === '' || fields[i].value === undefined || fields[i].value === null) {
-                Alert.alert('Atenção', 'Preencha todos os campos!\n' + fields[i].label  +"** Não foi preenchido");
-                setIsloading(false);
-                return; 
-            }
-        }
-        
-        setIsloading(true);
-        const complaintData: DenunciaDTO = {
+        const complaintData = {
             id: undefined,
-            author: {
-                id: user.id
-            },
-            title: title,
-            description: description,
+            author: { id: user.id },
+            title: `Resíduos de ${wasteType?.toLocaleLowerCase()}`,
+            description,
             type: wasteType ?? ResiduoType.INDEFINIDO,
             gravity: gravityType ?? ResiduoGravity.ALTO,
             status: undefined,
-            locale: locale,
-            complaintDate: `${date.toISOString()}`,
-            image: imageComplaint
+            locale,
+            complaintDate: new Date().toISOString(),
+            image: imageUri ?? 'imagem indisponivel'
         };
 
         const result = handleFetchComplaint(complaintData);
@@ -146,12 +72,12 @@ export function DenunciaCadastro({ onRegister }: Props) {
                 duration: 8000,
                 bgColor: 'green.600',
             });
-            setIsloading(false);
-        } setIsloading(false);
+            setIsLoading(false);
+        } setIsLoading(false);
     };
 
     async function handleFetchComplaint(complaint: DenunciaDTO) {
-        setIsloading(true);
+        setIsLoading(true);
         const formData = new FormData();
 
         formData.append('complaint', JSON.stringify({
@@ -160,10 +86,12 @@ export function DenunciaCadastro({ onRegister }: Props) {
         }));
 
         if (complaint.image) {
+            const date =  new Date().toISOString();
+            const dateTimeImageSelected = FormatDate(date.toString()).replaceAll('/', '-').replaceAll(':', '-').replaceAll(' ', '_');
             formData.append('image', {
                 uri: complaint.image,
                 type: 'image/png',
-                name: `complaint_${DateTimeImageSelected.toString()}_autor-${complaint.author.id}.png`
+                name: `complaint_${dateTimeImageSelected.toString()}_autor-${complaint.author.id}.png`
             } as any);
         }
 
@@ -183,9 +111,10 @@ export function DenunciaCadastro({ onRegister }: Props) {
             console.error("Error:", error);
             return 'fail';
         } finally {
-            setIsloading(false);
+            setIsLoading(false);
         }
     };
+
 
     return (
         <View flex={1} px={1}>
@@ -287,7 +216,7 @@ export function DenunciaCadastro({ onRegister }: Props) {
                             <VStack>
                                 <Pressable
                                     _pressed={{ opacity: 60 }}
-                                    onPress={handleImageComplaintCatch}>
+                                    onPress={takePhoto}>
                                     <Icon alignSelf="center" size={9} color="green.400"
                                         as={MaterialCommunityIcons}
                                         name="camera-marker-outline"
@@ -303,7 +232,7 @@ export function DenunciaCadastro({ onRegister }: Props) {
                             <VStack>
                                 <Pressable
                                     _pressed={{ opacity: 60 }}
-                                    onPress={handleImageComplaintSelect}>
+                                    onPress={pickImage}>
                                     <Icon alignSelf="center" size={9} color="green.400"
                                         as={MaterialCommunityIcons}
                                         name="file-image-marker"
@@ -326,7 +255,6 @@ export function DenunciaCadastro({ onRegister }: Props) {
                     _pressed={{ bg: "green.600" }}
                     onPress={handleCreateComplaint}
                     isLoading={isLoading}>
-                        
                     Concluir Cadastro
                 </Button>
             </ScrollView>

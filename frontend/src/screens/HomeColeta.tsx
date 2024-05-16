@@ -58,8 +58,8 @@ export function HomeColeta() {
     }
   }
 
-  useEffect(() => {
-    applyFilter();
+   useEffect(() => {
+     applyFilter();
   }, [typeSelected, applyFilter]);
 
   useFocusEffect(
@@ -100,7 +100,7 @@ export function HomeColeta() {
         />
       </VStack>
       {isLoading ? <Loading /> :
-        <VStack px={2} bg="rgba(74, 167, 255, 0.295)" mr={4} ml={4} borderRadius="lg" h="65%">
+        <VStack  mr={4} ml={4}  flex={1}>
           <HStack justifyContent="space-between" m={4}>
             <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading">
               Coletas disponíveis
@@ -109,7 +109,7 @@ export function HomeColeta() {
               {coletas.length}
             </Text>
           </HStack>
-          <VStack mr={4} ml={4}>
+          <VStack mr={1} ml={1} flex={1}>
             <FlatList
               data={coletas}
               keyExtractor={item => item.id.toString()}
@@ -122,8 +122,6 @@ export function HomeColeta() {
                 </Text>
               )}
               showsVerticalScrollIndicator={false}
-              pb={2}
-              h="85%"
             />
           </VStack>
         </VStack>

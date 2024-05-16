@@ -45,7 +45,7 @@ export function ColetaCard({ data, ...rest }: Props) {
 
   return (
     <TouchableOpacity {...rest}>
-      <VStack bg="darkBlue.700" alignItems="center" p={2} rounded="md" mb={3} borderWidth={1} borderColor={gravityIcon.color}>
+      <VStack bg="darkBlue.700" alignItems="center" p={1} rounded="md" mb={3} borderWidth={1} borderColor={gravityIcon.color}>
         <HStack alignItems="center" px={4} rounded="md" mb={2}>
           <Icon
             as={typeIcon.Component}
