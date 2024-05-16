@@ -97,7 +97,7 @@ export function Coleta() {
 
       {isLoading ? <Loading /> :
         <ScrollView>
-          <VStack p={5} pt={3}>
+          <VStack p={4} pt={3}>
 
             <Box rounded="lg" mb={3} overflow="hidden">
               <Box bg="green.700" mt={2} pt={1} pb={2} px={4} borderRadius="lg" borderBottomRadius={0} mb={1}>
