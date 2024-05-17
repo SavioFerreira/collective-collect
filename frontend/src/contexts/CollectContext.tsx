@@ -34,10 +34,8 @@ export function CollectContextProvider({ children }: CollectContextProviderProps
       setAllColetas(response.data);
       applyFilter();
     } catch (error) {
-      console.error("Erro ao buscar coletas", error);
       const isAppError = error instanceof AppError;
       const title = isAppError ? error.message : 'Não foi possível carregar os dados das coletas';
-      console.log("Erro específico:", error);
       toast.show({
         title: title,
         placement: 'top',

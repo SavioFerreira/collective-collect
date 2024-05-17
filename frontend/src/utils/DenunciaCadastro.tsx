@@ -45,7 +45,11 @@ export function DenunciaCadastro({ onRegister }: Props) {
             accuracy: Location.LocationAccuracy.High,
             timeInterval: 1000
         }, (location) => {
+            console.log("Teste com coordenadas de DenunciaCadastro")
+            console.log(location.coords.latitude)
+            console.log(location.coords.longitude)
             getAddressLocation(location.coords)
+
                 .then((address) => {
                     if (address) setLocale(address || 'Localização não encontrada')
 

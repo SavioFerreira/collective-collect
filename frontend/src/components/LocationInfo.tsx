@@ -33,7 +33,7 @@ export function LocationInfo({ label, description, ...rest }: Props) {
                         <Text numberOfLines={1} fontSize="md" fontFamily="body" color="blue.700">
                             {label}
                         </Text>
-                        <Text numberOfLines={1} fontSize="sm" fontFamily="heading" color="blue.700" maxW="97%">
+                        <Text numberOfLines={1} fontSize="sm" fontFamily="heading" color="blue.700" maxW="98%">
                             {description}
                         </Text>
                     </VStack>
