@@ -6,7 +6,11 @@ export type DenunciaDTO = {
 	},
 	title: string,
 	description: string,
-	locale: string,
+	locale: {
+		address: string;
+		latitude: number | undefined;
+		longitude: number | undefined;
+	}
 	complaintDate: string,
 	gravity: string,
 	image: string,
