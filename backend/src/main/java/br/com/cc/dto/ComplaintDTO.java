@@ -1,5 +1,6 @@
 package br.com.cc.dto;
 
+import br.com.cc.entity.Locale;
 import br.com.cc.enums.Gravity;
 import br.com.cc.enums.Status;
 import br.com.cc.enums.WasteType;
@@ -22,6 +23,6 @@ public class ComplaintDTO {
     private String image;
     private String title;
     private String description;
-    private String locale;
+    private Locale locale;
     private UserDTO author;
 }
