@@ -3,26 +3,20 @@ import MapView, { MapViewProps, PROVIDER_GOOGLE, LatLng, Marker } from "react-na
 import { Icon, VStack, Text, View, useToast } from "native-base";
 import { Entypo } from '@expo/vector-icons';
 import { mapStyleHopper } from "@utils/mapStyle";
-import { getCoordinatesFromAddress } from "@utils/getCoordinatesFromAddress";
 import { api } from "@services/api";
 import { ColetaDTO } from "@dtos/ColetaDTO";
 import { AppError } from "@utils/AppError";
+import { getGravityIcon, getTypeIcon } from "src/functions/Icons";
 
 type Props = MapViewProps & {
     coords: LatLng[];
 };
-
-interface MarkerData extends ColetaDTO {
-    latitude?: number;
-    longitude?: number;
-}
 
 export function Map({ coords, ...rest }: Props) {
     const lastCoord = coords[coords.length - 1];
     const mapRef = useRef<MapView | null>(null);
 
     const [coletas, setColetas] = useState<ColetaDTO[]>([]);
-    const [markers, setMarkers] = useState<MarkerData[]>([]);
     const toast = useToast();
 
     async function onMapLoaded() {
@@ -59,22 +53,6 @@ export function Map({ coords, ...rest }: Props) {
     };
 
     useEffect(() => {
-        const convertAddresses = async () => {
-            const promises = coletas.map(async (coleta) => {
-                const coords = await getCoordinatesFromAddress(coleta.locale);
-                return { ...coleta, latitude: coords?.latitude, longitude: coords?.longitude };
-            });
-            const results = await Promise.all(promises);
-            setMarkers(results);
-        };
-
-        if (coletas.length > 0) {
-            convertAddresses();
-        }
-    }, [coletas]);
-
-
-    useEffect(() => {
         fetchColetas();
     }, []);
 
@@ -82,7 +60,6 @@ export function Map({ coords, ...rest }: Props) {
         <View w="full" h="full" borderWidth={2} borderColor="blue.500" borderRadius={10} overflow="hidden">
             <MapView
                 ref={mapRef}
-
                 provider={PROVIDER_GOOGLE}
                 style={{ width: '100%', height: '100%' }}
                 region={{
@@ -95,15 +72,26 @@ export function Map({ coords, ...rest }: Props) {
                 customMapStyle={mapStyleHopper}
                 {...rest}
             >
-                {markers.map((marker, index) => (
-                    <Marker
-                        key={index}
-                        coordinate={{ latitude: marker.latitude ?? 0, longitude: marker.longitude ?? 0 }}
-                        title={marker.type}
-                        description={marker.status}
-                    />
-                ))}
-    
+                {coletas.map((coleta, index) => {
+                    const typeIcon = getTypeIcon(coleta.type);
+                    const colorIcon = getGravityIcon(coleta.gravity);
+                    return (
+                        <Marker
+                            key={index}
+                            coordinate={{ latitude: coleta.locale.latitude ?? 0, longitude: coleta.locale.longitude ?? 0 }}
+                            title={coleta.title}
+                            description={` STATUS: ${coleta.status}`}
+                        >
+
+                            <Icon
+                                as={typeIcon.Component}
+                                name={typeIcon.name}
+                                color={colorIcon.color}
+                                size={10}
+                            />
+                        </Marker>
+                    );
+                })}
                 <Marker
                     title="Você"
                     identifier="user"
@@ -116,7 +104,7 @@ export function Map({ coords, ...rest }: Props) {
                         <Icon
                             as={Entypo}
                             name="user"
-                            size={8}
+                            size={10}
                             color="darkBlue.600"
                         />
                     </VStack>
@@ -134,7 +122,7 @@ export function Map({ coords, ...rest }: Props) {
                 <Icon
                     as={Entypo}
                     name="location-pin"
-                    size={9}
+                    size="9"
                     color="darkBlue.600"
                     alignSelf="center"
                     onPress={centerMapOnUserLocation}
@@ -142,5 +130,4 @@ export function Map({ coords, ...rest }: Props) {
             </VStack>
         </View>
     );
-    
 }

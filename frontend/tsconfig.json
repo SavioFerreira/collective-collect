@@ -33,6 +33,12 @@
       ],
       "@routes/*": [
         "./src/routes/*"
+      ],
+      "@functions/*": [
+        "./src/functions/*"
+      ],
+      "@enums/*": [
+        "./src/enums/*"
       ]
     }
   }
