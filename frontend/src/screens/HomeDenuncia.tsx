@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Modal } from "react-native";
-import { VStack, Image, Pressable, Text, View, Flex, Icon, HStack, Heading, FlatList, Center } from "native-base";
+import { VStack, Image, Pressable, Text, View, Flex, Icon, HStack } from "native-base";
 import { Feather } from '@expo/vector-icons';
 
 
 import { getAddressLocation } from "@utils/getArdressLocation";
-import { DenunciaCadastro } from "@utils/DenunciaCadastro";
+import { DenunciaCadastro } from "src/functions/DenunciaCadastro";
 import BackDenunciaImg from '@assets/mapBackGround.png';
 import { IconHeader } from "@components/IconHeader";
 import { MapPermission } from "@components/MapPermisson";
@@ -14,7 +14,7 @@ import { Loading } from "@components/Loading";
 
 import { useForegroundPermissions, watchPositionAsync, LocationAccuracy, LocationSubscription, LocationObjectCoords } from "expo-location";
 import { LocationInfo } from "@components/LocationInfo";
-import { Map } from "@components/Map";
+import { Map } from "@functions/Map";
 
 export function HomeDenuncia() {
   const [isModalVisible, SetIsModalVisible] = useState(false);

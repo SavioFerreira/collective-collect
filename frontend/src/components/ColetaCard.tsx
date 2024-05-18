@@ -2,7 +2,7 @@ import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { Heading, HStack, Text, VStack, Icon, useToast } from 'native-base';
 
 import { ColetaDTO } from '@dtos/ColetaDTO';
-import { getGravityIcon, getStatusIcon, getTypeIcon } from '@utils/Icons';
+import { getGravityIcon, getStatusIcon, getTypeIcon } from 'src/functions/Icons';
 import { FormatDate } from 'src/functions/FormatDate';
 import { useState } from 'react';
 import { api } from '@services/api';
@@ -23,9 +23,9 @@ export function ColetaCard({ data, ...rest }: Props) {
   const showDate = data.collectDate != undefined || null ? FormatDate(data.collectDate): "Agenda pendente";
   const toast = useToast();
   
+  // Ainda não faz nada, vou arrumar
   async function fetchColetaDetails() {
     try {
-      //setIsLoading(true);
       const response = await api.get(`/api/collect/${data.id}`);
       setColeta(response.data);
 
@@ -39,7 +39,6 @@ export function ColetaCard({ data, ...rest }: Props) {
         bgColor: 'red.500'
       })
     } finally {
-     // setIsLoading(false);
     }
   }
 

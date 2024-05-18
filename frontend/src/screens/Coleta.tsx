@@ -12,10 +12,10 @@ import { ColetaDTO } from '@dtos/ColetaDTO';
 
 import RecicleLogoSvg from '@assets/recycleLogo.svg';
 
-import { getGravityIcon, getStatusIcon, getTypeIcon } from '@utils/Icons';
+import { getGravityIcon, getStatusIcon, getTypeIcon } from 'src/functions/Icons';
 import { Loading } from '@components/Loading';
 
-import { ColetaCadastro } from '@utils/ColetaCadastro';
+import { ColetaCadastro } from '@functions/ColetaCadastro';
 import { FormatDate } from 'src/functions/FormatDate';
 
 type RouteParamsProps = {
@@ -175,7 +175,7 @@ export function Coleta() {
                       />
                     </Pressable>
                     <Text color="yellow.200" fontStyle="italic" ml={2} numberOfLines={2}>
-                      Local: {coleta.locale}
+                      Local: {coleta.locale.address}
                     </Text>
                   </HStack>
                 </Box>
