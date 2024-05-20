@@ -7,17 +7,26 @@ import { api } from "@services/api";
 import { ColetaDTO } from "@dtos/ColetaDTO";
 import { AppError } from "@utils/AppError";
 import { getGravityIcon, getTypeIcon } from "src/functions/Icons";
+import { RouteProp, useRoute } from "@react-navigation/native";
 
 type Props = MapViewProps & {
     coords: LatLng[];
 };
 
+type DenunciasRouteParams = {
+    Denuncias: {
+        complaintId?: string;
+    };
+};
+
 export function Map({ coords, ...rest }: Props) {
     const lastCoord = coords[coords.length - 1];
     const mapRef = useRef<MapView | null>(null);
-
     const [coletas, setColetas] = useState<ColetaDTO[]>([]);
     const toast = useToast();
+
+    const route = useRoute<RouteProp<DenunciasRouteParams, 'Denuncias'>>();
+    const complaintId = route.params?.complaintId;
 
     async function onMapLoaded() {
         if (coords.length > 1) {
@@ -41,7 +50,6 @@ export function Map({ coords, ...rest }: Props) {
             const response = await api.get('api/collect');
             setColetas(response.data);
         } catch (error) {
-            console.log("Erro ao buscar coletas", error);
             const isAppError = error instanceof AppError;
             const title = isAppError ? error.message : 'Não foi possível carregar os dados das coletas';
             toast.show({
@@ -53,8 +61,23 @@ export function Map({ coords, ...rest }: Props) {
     };
 
     useEffect(() => {
-        fetchColetas();
-    }, []);
+      fetchColetas();
+    }, [complaintId]);
+
+    useEffect(() => {
+        if (complaintId && coletas.length > 0) {
+            const targetComplaint = coletas.find(coleta => coleta.id.toString() === complaintId);
+            if (targetComplaint) {
+                const region = {
+                    latitude: targetComplaint.locale.latitude,
+                    longitude: targetComplaint.locale.longitude,
+                    latitudeDelta: 0.002,
+                    longitudeDelta: 0.002
+                };
+                mapRef.current?.animateToRegion(region, 1000);
+            }
+        }
+    }, [coletas, complaintId]);
 
     return (
         <View w="full" h="full" borderWidth={2} borderColor="blue.500" borderRadius={10} overflow="hidden">
@@ -81,8 +104,8 @@ export function Map({ coords, ...rest }: Props) {
                             coordinate={{ latitude: coleta.locale.latitude ?? 0, longitude: coleta.locale.longitude ?? 0 }}
                             title={coleta.title}
                             description={` STATUS: ${coleta.status}`}
+                            onPress={() => {console.log('Cliclou no marker')}}
                         >
-
                             <Icon
                                 as={typeIcon.Component}
                                 name={typeIcon.name}

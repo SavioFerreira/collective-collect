@@ -17,7 +17,7 @@ import { Denuncia } from '@screens/Denuncia';
 type AppRoutes = {
   home: undefined;
   coletas: undefined;
-  denuncias: undefined;
+  denuncias: {complaintId: string};
   profile: undefined;
   detalhesColeta: {collectId: string};
   detalhesDenuncia: undefined
