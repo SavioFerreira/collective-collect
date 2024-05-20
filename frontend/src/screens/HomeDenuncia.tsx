@@ -3,7 +3,6 @@ import { Modal } from "react-native";
 import { VStack, Image, Pressable, Text, View, Flex, Icon, HStack } from "native-base";
 import { Feather } from '@expo/vector-icons';
 
-
 import { getAddressLocation } from "@utils/getArdressLocation";
 import { DenunciaCadastro } from "src/functions/DenunciaCadastro";
 import BackDenunciaImg from '@assets/mapBackGround.png';
@@ -11,10 +10,10 @@ import { IconHeader } from "@components/IconHeader";
 import { MapPermission } from "@components/MapPermisson";
 import { Loading } from "@components/Loading";
 
-
 import { useForegroundPermissions, watchPositionAsync, LocationAccuracy, LocationSubscription, LocationObjectCoords } from "expo-location";
 import { LocationInfo } from "@components/LocationInfo";
 import { Map } from "@functions/Map";
+import { useRoute } from "@react-navigation/native";
 
 export function HomeDenuncia() {
   const [isModalVisible, SetIsModalVisible] = useState(false);
@@ -22,7 +21,7 @@ export function HomeDenuncia() {
   const [locationForegroundPermission, requestLocationForegroundPermission] = useForegroundPermissions();
   const [currentAddress, setCurrentAddress] = useState<string | null>(null);
   const [currentCoords, setCurrentCoords] = useState<LocationObjectCoords | null>(null);
-
+  const route = useRoute();
 
   function openDenunciaModal() {
     SetIsModalVisible(true);
@@ -91,7 +90,7 @@ export function HomeDenuncia() {
 
       {currentCoords ?
         <VStack flex={1} alignItems="center" justifyContent="center" px={5}>
-          <Map coords={[currentCoords]}/>
+          <Map coords={[currentCoords]} />
         </VStack>
         :
         <VStack flex={1} alignItems="center" justifyContent="center" px={5}>

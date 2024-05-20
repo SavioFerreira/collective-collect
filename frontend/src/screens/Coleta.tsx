@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { HStack, Heading, Icon, VStack, Text, Image, Box, ScrollView, useToast, Pressable, View, Center, Flex } from 'native-base';
+import { HStack, Heading, Icon, VStack, Text, Image, Box, ScrollView, useToast, Pressable, View, Flex } from 'native-base';
 import { TouchableOpacity, Modal, Button } from 'react-native';
 import { Feather, FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -12,11 +12,12 @@ import { ColetaDTO } from '@dtos/ColetaDTO';
 
 import RecicleLogoSvg from '@assets/recycleLogo.svg';
 
-import { getGravityIcon, getStatusIcon, getTypeIcon } from 'src/functions/Icons';
+import { getGravityIcon, getStatusIcon } from 'src/functions/Icons';
 import { Loading } from '@components/Loading';
 
 import { ColetaCadastro } from '@functions/ColetaCadastro';
 import { FormatDate } from 'src/functions/FormatDate';
+import { useAuth } from '@hooks/useAuth';
 
 type RouteParamsProps = {
   collectId: string;
@@ -28,6 +29,8 @@ export function Coleta() {
   const [coleta, setcoleta] = useState<ColetaDTO>({} as ColetaDTO);
   const route = useRoute();
   const toast = useToast();
+
+  const { user } = useAuth();
   const { collectId } = route.params as RouteParamsProps;
 
   const gravityIcon = getGravityIcon(coleta.gravity);
@@ -40,6 +43,12 @@ export function Coleta() {
   const [isModalVisible, SetIsModalVisible] = useState(false);
   const [isChatVisible, SetIsChatVisible] = useState(false);
 
+  const isUserCollaborator = coleta.collaborators?.some(colab => colab.id === user.id);
+
+  function handleViewComplaintOnMap(complaintId: string) {
+    navigation.navigate('denuncias', { complaintId });
+  }
+
   function handleGoBack() {
     navigation.navigate('coletas');
   }
@@ -50,6 +59,7 @@ export function Coleta() {
 
   const closeColetaModal = () => {
     SetIsModalVisible(!isModalVisible);
+    fetchColetaDetails();
   };
 
   async function fetchColetaDetails() {
@@ -164,7 +174,7 @@ export function Coleta() {
                       _pressed={{
                         opacity: 60
                       }}
-                      onPress={() => { }}
+                      onPress={() => handleViewComplaintOnMap(coleta.complaintId.toString())}
                     >
                       <Icon
                         as={FontAwesome6}
@@ -174,7 +184,7 @@ export function Coleta() {
                         mr={2}
                       />
                     </Pressable>
-                    <Text color="yellow.200" fontStyle="italic" ml={2} numberOfLines={2}>
+                    <Text color="yellow.200" fontStyle="italic" ml={1} numberOfLines={2} maxW={'80%'}>
                       Local: {coleta.locale.address}
                     </Text>
                   </HStack>
@@ -224,27 +234,33 @@ export function Coleta() {
                       </Text>
 
                     </VStack>
+                    {isUserCollaborator ?
+                      <VStack ml={2} mr={2} alignSelf="center">
+                        <Pressable
+                          _pressed={{ opacity: 60 }}
+                          borderRadius="md"
+                          alignItems="center"
+                          justifyContent="center"
+                          onPress={() => SetIsChatVisible(true)}
+                        >
+                          <Icon
+                            as={MaterialIcons}
+                            name={'chat'}
+                            color="yellow.400"
+                            size="lg"
+                            alignSelf="center"
+                          />
+                          <Text fontFamily="body" fontSize="xs" color="yellow.400" mb={1}>
+                            Iniciar Chat
+                          </Text>
+                        </Pressable>
+                      </VStack>
+                      :
+                      <VStack ml={2} mr={2}>
 
-                    <VStack ml={2} mr={2} alignSelf="center">
-                      <Pressable
-                        _pressed={{ opacity: 60 }}
-                        borderRadius="md"
-                        alignItems="center"
-                        justifyContent="center"
-                        onPress={() => SetIsChatVisible(true)}
-                      >
-                        <Icon
-                          as={MaterialIcons}
-                          name={'chat'}
-                          color="yellow.400"
-                          size="lg"
-                          alignSelf="center"
-                        />
-                        <Text fontFamily="body" fontSize="xs" color="yellow.400" mb={1}>
-                          Iniciar Chat
-                        </Text>
-                      </Pressable>
-                    </VStack>
+                      </VStack>
+
+                    }
 
                   </HStack>
                   :
@@ -315,10 +331,15 @@ export function Coleta() {
                       </Text>
                     </View>
                     <VStack rounded="md" flex={1} bg="rgba(110, 183, 252, 0.815)">
-                      <VStack>
-                        <Text> ola</Text>
-                        <Text> salve</Text>
-                        <Text> bão ou nada?</Text>
+                      <VStack m={2}>
+                        <HStack mb={2} bgColor="darkBlue.100" rounded="md" w="90%">
+                          <Icon as={Feather} name='user' color='blue.700' size={7} alignSelf="center" />
+                          <Text color="blue.700" w="85%" p={2} textAlign="justify">Olá. como vai? Meu nome é fulano de tal e estou iniciando essa coleta</Text>
+                        </HStack>
+                        <HStack mb={2} bgColor="darkBlue.100" rounded="md" w="90%">
+                          <Icon as={Feather} name='user' color='blue.700' size={7} alignSelf="center" />
+                          <Text color="blue.700" w="85%" p={2} textAlign="justify">Bom dia, tudo certo</Text>
+                        </HStack>
                       </VStack>
                       <HStack>
 
