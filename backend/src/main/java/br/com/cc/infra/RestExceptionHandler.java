@@ -2,6 +2,7 @@ package br.com.cc.infra;
 
 import br.com.cc.exception.collect.CollectNotFoundException;
 import br.com.cc.exception.collect.InvalidCollectCreationException;
+import br.com.cc.exception.collect.InvalidCollectRegistrationException;
 import br.com.cc.exception.complaint.ComplaintNotFoundException;
 import br.com.cc.exception.complaint.InvalidComplaintCreationException;
 import br.com.cc.exception.user.*;
@@ -47,6 +48,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(appError);
     }
 
+    @ExceptionHandler(InvalidCollectRegistrationException.class)
+    private ResponseEntity<AppError> InvalidCollectRegistrationHandler(InvalidCollectRegistrationException exception){
+        AppError appError = new AppError(HttpStatus.CONFLICT,exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(appError);
+    }
 
     // Exceções de usuários e autenticação
     @ExceptionHandler(UserNotFoundException.class)
