@@ -7,7 +7,10 @@ import { api } from "@services/api";
 import { ColetaDTO } from "@dtos/ColetaDTO";
 import { AppError } from "@utils/AppError";
 import { getGravityIcon, getTypeIcon } from "src/functions/Icons";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { LocationInfo } from "@components/LocationInfo";
+import { Modal,  Alert } from "react-native";
+import { AppNavigatorRoutesProps } from "@routes/app.routes";
 
 type Props = MapViewProps & {
     coords: LatLng[];
@@ -24,9 +27,14 @@ export function Map({ coords, ...rest }: Props) {
     const mapRef = useRef<MapView | null>(null);
     const [coletas, setColetas] = useState<ColetaDTO[]>([]);
     const toast = useToast();
-
+    const navigation = useNavigation<AppNavigatorRoutesProps>();
     const route = useRoute<RouteProp<DenunciasRouteParams, 'Denuncias'>>();
     const complaintId = route.params?.complaintId;
+
+    
+  function handleOpenColetaDetails(collectId: string) {
+    navigation.navigate('detalhesColeta', { collectId });
+  }
 
     async function onMapLoaded() {
         if (coords.length > 1) {
@@ -61,7 +69,7 @@ export function Map({ coords, ...rest }: Props) {
     };
 
     useEffect(() => {
-      fetchColetas();
+        fetchColetas();
     }, [complaintId]);
 
     useEffect(() => {
@@ -104,7 +112,21 @@ export function Map({ coords, ...rest }: Props) {
                             coordinate={{ latitude: coleta.locale.latitude ?? 0, longitude: coleta.locale.longitude ?? 0 }}
                             title={coleta.title}
                             description={` STATUS: ${coleta.status}`}
-                            onPress={() => {console.log('Cliclou no marker')}}
+                            
+                            onPress={() => {Alert.alert(
+                                "Ir para detalhes da coleta?",
+                                `Deseja ver mais informações sobre a coleta?`,
+                                [
+                                    {
+                                        text: "Não",
+                                        style: "cancel"
+                                    },
+                                    {
+                                        text: "Sim",
+                                        onPress: () => handleOpenColetaDetails(coleta.id.toString())
+                                    }
+                                ]
+                            );}}
                         >
                             <Icon
                                 as={typeIcon.Component}
