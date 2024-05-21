@@ -18,6 +18,9 @@ import { Loading } from '@components/Loading';
 import { ColetaCadastro } from '@functions/ColetaCadastro';
 import { FormatDate } from 'src/functions/FormatDate';
 import { useAuth } from '@hooks/useAuth';
+import { RoleType } from '@enums/RoleTypesEnum';
+import { LocationInfo } from '@components/LocationInfo';
+import { OnCollectModal } from '@components/OnCollectModal';
 
 type RouteParamsProps = {
   collectId: string;
@@ -44,6 +47,7 @@ export function Coleta() {
   const [isChatVisible, SetIsChatVisible] = useState(false);
 
   const isUserCollaborator = coleta.collaborators?.some(colab => colab.id === user.id);
+  const isUserPrimaryCollaborator = coleta.collaborators?.[0]?.id === user.id;
 
   function handleViewComplaintOnMap(complaintId: string) {
     navigation.navigate('denuncias', { complaintId });
@@ -274,21 +278,49 @@ export function Coleta() {
               </Box>
             </Box>
 
-            <Pressable
-              bgColor="orange.500"
-              _pressed={{ bg: "orange.700" }}
-              size="20"
-              w="full"
-              h={16}
-              borderRadius="md"
-              alignItems="center"
-              justifyContent="center"
-              onPress={openColetaModal}
-            >
-              <Text fontFamily="heading" fontSize="lg" color="white">
-                Cadastrar
-              </Text>
-            </Pressable>
+            { !isUserCollaborator ? 
+              <Pressable
+                bgColor="orange.500"
+                _pressed={{ bg: "orange.700" }}
+                size="20"
+                w="100%"
+                h={16}
+                borderRadius="md"
+                alignItems="center"
+                justifyContent="center"
+                onPress={openColetaModal}
+              >
+                <Text fontFamily="heading" fontSize="lg" color="white">
+                  Cadastrar
+                </Text>
+              </Pressable>
+              :
+              ''
+            }
+
+            { isUserPrimaryCollaborator ?
+            <HStack justifyContent="space-between">
+              <OnCollectModal label="iniciar Coleta" w="82%"/>
+              <Pressable 
+                justifyContent="center" 
+                bgColor="blue.500" 
+                p={4} borderRadius="md" 
+                _pressed={{ bg: "blue.700" }}
+                onPress={openColetaModal}
+              >
+                <Icon
+                  as={Feather}
+                  name={'edit'}
+                  color="white"
+                  size={8}
+                  alignSelf="center"
+                 
+                />
+              </Pressable>
+            </HStack>
+            : 
+            ''
+            }
 
             <View>
               <Modal
