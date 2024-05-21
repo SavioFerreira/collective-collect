@@ -5,6 +5,7 @@ import { Alert, ScrollView } from 'react-native';
 import { api } from '@services/api';
 import { UserDTO } from '@dtos/UserDTO';
 import { useAuth } from '@hooks/useAuth';
+import { AppError } from '@utils/AppError';
 
 type Props = {
     onRegister: () => void;
@@ -41,6 +42,19 @@ export function ColetaCadastro({ onRegister, collectId }: Props) {
         const currentDate = selectedDate || (mode === 'date' ? date : time);
         const maxDate = new Date();
         maxDate.setDate(maxDate.getDate() + 7);
+        setShow(false);
+
+        if (event.type === 'set' && selectedDate) {
+            if (mode === 'date') {
+                const newDate = new Date(dateTime);
+                newDate.setFullYear(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+                setDateTime(newDate);
+            } else {
+                const newTime = new Date(dateTime);
+                newTime.setHours(selectedDate.getHours(), selectedDate.getMinutes());
+                setDateTime(newTime);
+            }
+        }
 
         let fields = [
             { label: 'date', value: date },
@@ -68,6 +82,9 @@ export function ColetaCadastro({ onRegister, collectId }: Props) {
 
         }
     };
+
+
+    const [dateTime, setDateTime] = useState(new Date());
 
 
     function handleValidateEntryRegister() {
@@ -117,8 +134,10 @@ export function ColetaCadastro({ onRegister, collectId }: Props) {
             }
         } catch (error) {
             onRegister()
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : 'Falha\n Não foi possível realizar o cadastro. tente novamente mais tarde.'
             toast.show({
-                title: 'Falha\n Não foi possível realizar o cadastro. tente novamente mais tarde.\n ' + error,
+                title: title,
                 placement: 'top',
                 bgColor: 'error.500'
             })
