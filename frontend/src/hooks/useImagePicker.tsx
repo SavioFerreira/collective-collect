@@ -6,6 +6,14 @@ export function useImagePicker() {
     const [imageUri, setImageUri] = useState<string>();
 
     async function pickImage() {
+
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+            Alert.alert('Permissão necessária', 'Permissão de galeria é necessária para selecionar imagens');
+            return;
+        }
+
         try {
             const result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -13,6 +21,7 @@ export function useImagePicker() {
                 allowsEditing: true,
             });
 
+            if (result.canceled) return;
             if (!result.canceled && result.assets && result.assets.length > 0) {
                 setImageUri(result.assets[0].uri);
             }
@@ -32,11 +41,12 @@ export function useImagePicker() {
         try {
             const result = await ImagePicker.launchCameraAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                
                 quality: 1,
                 allowsEditing: true,
             });
 
-           
+            if (result.canceled) return;
             if (!result.canceled && result.assets && result.assets.length > 0) {
                 setImageUri(result.assets[0].uri);
             }
