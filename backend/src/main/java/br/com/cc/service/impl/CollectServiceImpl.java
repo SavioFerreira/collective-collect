@@ -5,6 +5,7 @@ import br.com.cc.entity.User;
 import br.com.cc.enums.AuthUserRole;
 import br.com.cc.enums.Status;
 import br.com.cc.exception.collect.InvalidCollectRegistrationException;
+import br.com.cc.mapper.UserMapperService;
 import br.com.cc.repository.CollectRepository;
 import br.com.cc.service.CollectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class CollectServiceImpl implements CollectService {
 
 	@Autowired
 	private CollectRepository collectRepository;
+
+	@Autowired
+	UserMapperService userMapperService;
 
 	@Override
 	public List<Collect> findAll() {
@@ -61,16 +65,16 @@ public class CollectServiceImpl implements CollectService {
 	public void addCollaboratorToCollect(Long collectId, CollectCollaboratorDTO collaboratorDTO) {
 		Collect collect = collectRepository.findById(collectId).orElseThrow(() -> new RuntimeException("Coleta não encontrada"));
 
-		boolean isAlreadyCollaborator = collect.getCollaborators().stream()
-				.anyMatch(user -> user.getId().equals(collaboratorDTO.getUser().getId()));
+		boolean isAuthor = collaboratorDTO.getUser().getId().equals(collect.getComplaint().getAuthor().getId());
+		boolean isAlreadyCollaborator = collect.getCollaborators().stream().anyMatch(user -> user.getId().equals(collaboratorDTO.getUser().getId()));
 
-		if (isAlreadyCollaborator) {
-            throw new InvalidCollectRegistrationException("Você já está registrado para essa coleta!");
-		}
-
-		if (collect.getCollaborators().isEmpty() || collaboratorDTO.getUser().getId().equals(collect.getComplaint().getAuthor().getId())) {
+		if (collect.getCollaborators().isEmpty() || isAuthor ) {
 			collect.setTeamCollect(collaboratorDTO.isTeamCollect());
 			collect.setCollectDate(collaboratorDTO.getDate());
+		}
+
+		if (isAlreadyCollaborator) {
+			throw new InvalidCollectRegistrationException("Você já está registrado para essa coleta!");
 		}
 
 		if (collaboratorDTO.getUser().getRole().equals(AuthUserRole.ADMIN)) {
@@ -78,7 +82,11 @@ public class CollectServiceImpl implements CollectService {
 			collect.setCollectDate(collaboratorDTO.getDate());
 		}
 
-		collect.getCollaborators().add(collaboratorDTO.getUser());
+		if (!collaboratorDTO.isTeamCollect() || !isAuthor){
+			throw new InvalidCollectRegistrationException("Essa coleta não está disponível para outros usuários!");
+		}
+
+		collect.getCollaborators().add(userMapperService.convertUserToEntity(collaboratorDTO.getUser()));
 		collectRepository.save(collect);
 	}
 }

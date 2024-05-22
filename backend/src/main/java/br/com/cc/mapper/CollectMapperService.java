@@ -29,6 +29,7 @@ public class CollectMapperService {
         dto.setLocale(collect.getWasteInfo().getLocale());
         dto.setComplaintImage(collect.getWasteInfo().getImage());
         dto.setComplaintId(collect.getComplaint() != null ? collect.getComplaint().getId() : null);
+        dto.setTeamCollect(collect.isTeamCollect());
         dto.setCollaborators(convertToUserDTOSet(collect.getCollaborators()));
         return dto;
     }
@@ -40,6 +41,8 @@ public class CollectMapperService {
         collect.setCollectDate(dto.getCollectDate());
         collect.setComplaintDate(dto.getComplaintDate());
         collect.setCollectImage(dto.getCollectImage());
+        collect.setTeamCollect(dto.isTeamCollect());
+        collect.setCollaborators(convertToUserEntitySet(dto.getCollaborators()));
 
         WasteInfo wasteInfo = new WasteInfo();
         wasteInfo.setImage(dto.getComplaintImage());
@@ -57,6 +60,13 @@ public class CollectMapperService {
 
         return users.stream()
                 .map(userMapperService::convertUserToDTO)
+                .collect(Collectors.toSet());
+    }
+
+    public Set<User> convertToUserEntitySet(Set<UserDTO> users) {
+
+        return users.stream()
+                .map(userMapperService::convertUserToEntity)
                 .collect(Collectors.toSet());
     }
 

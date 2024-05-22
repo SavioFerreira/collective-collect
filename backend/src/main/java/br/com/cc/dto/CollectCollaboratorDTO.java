@@ -1,6 +1,5 @@
 package br.com.cc.dto;
 
-import br.com.cc.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +9,6 @@ import java.time.LocalDateTime;
 @Setter
 public class CollectCollaboratorDTO {
     private LocalDateTime date;
-    private User user;
+    private UserDTO user;
     private boolean teamCollect;
 }
