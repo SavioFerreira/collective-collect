@@ -23,7 +23,7 @@ public class CollectDTO {
     private Status status;
     private String collectImage;
     private Set<UserDTO> collaborators;
-    private boolean isTeamCollect;
+    private boolean teamCollect;
     private String title;
     private String description;
     private Locale locale;

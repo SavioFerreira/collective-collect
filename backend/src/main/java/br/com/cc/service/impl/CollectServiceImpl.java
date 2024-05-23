@@ -11,7 +11,9 @@ import br.com.cc.service.CollectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -65,24 +67,23 @@ public class CollectServiceImpl implements CollectService {
 	public void addCollaboratorToCollect(Long collectId, CollectCollaboratorDTO collaboratorDTO) {
 		Collect collect = collectRepository.findById(collectId).orElseThrow(() -> new RuntimeException("Coleta não encontrada"));
 
-		boolean isAuthor = collaboratorDTO.getUser().getId().equals(collect.getComplaint().getAuthor().getId());
 		boolean isAlreadyCollaborator = collect.getCollaborators().stream().anyMatch(user -> user.getId().equals(collaboratorDTO.getUser().getId()));
+		boolean isUserAdmin = collaboratorDTO.getUser().getRole().equals(AuthUserRole.ADMIN);
 
-		if (collect.getCollaborators().isEmpty() || isAuthor ) {
+		if (collect.getCollaborators().isEmpty() || isUserAdmin) {
 			collect.setTeamCollect(collaboratorDTO.isTeamCollect());
 			collect.setCollectDate(collaboratorDTO.getDate());
 		}
 
-		if (isAlreadyCollaborator) {
+		User userPrimaryCollaborator[] = collect.getCollaborators().toArray(new User[0]);
+		boolean isUserPrimaryCollaborator = Objects.equals(userPrimaryCollaborator[0].getId(), collaboratorDTO.getUser().getId());
+
+
+		if (isAlreadyCollaborator && !isUserPrimaryCollaborator) {
 			throw new InvalidCollectRegistrationException("Você já está registrado para essa coleta!");
 		}
 
-		if (collaboratorDTO.getUser().getRole().equals(AuthUserRole.ADMIN)) {
-			collect.setTeamCollect(collaboratorDTO.isTeamCollect());
-			collect.setCollectDate(collaboratorDTO.getDate());
-		}
-
-		if (!collaboratorDTO.isTeamCollect() || !isAuthor){
+		if (collaboratorDTO.isTeamCollect()){
 			throw new InvalidCollectRegistrationException("Essa coleta não está disponível para outros usuários!");
 		}
 
