@@ -25,6 +25,7 @@ export function useImagePicker() {
             if (!result.canceled && result.assets && result.assets.length > 0) {
                 setImageUri(result.assets[0].uri);
             }
+            return result.assets[0].uri;
         } catch (error) {
             Alert.alert('Erro', 'Não foi possível selecionar a imagem.');
         } 
@@ -50,6 +51,8 @@ export function useImagePicker() {
             if (!result.canceled && result.assets && result.assets.length > 0) {
                 setImageUri(result.assets[0].uri);
             }
+
+            return result.assets[0].uri;
         } catch (error) {
             Alert.alert('Erro', 'Não foi possível capturar a foto.');
         } 

@@ -18,7 +18,7 @@ import { Loading } from '@components/Loading';
 import { ColetaCadastro } from '@functions/ColetaCadastro';
 import { FormatDate } from 'src/functions/FormatDate';
 import { useAuth } from '@hooks/useAuth';
-import { OnCollectModal } from '@components/OnCollectModal';
+import { OnCollectModal } from '@functions/OnCollectModal';
 
 type RouteParamsProps = {
   collectId: string;
