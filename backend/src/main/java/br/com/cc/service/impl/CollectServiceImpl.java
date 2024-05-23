@@ -67,23 +67,26 @@ public class CollectServiceImpl implements CollectService {
 	public void addCollaboratorToCollect(Long collectId, CollectCollaboratorDTO collaboratorDTO) {
 		Collect collect = collectRepository.findById(collectId).orElseThrow(() -> new RuntimeException("Coleta não encontrada"));
 
-		boolean isAlreadyCollaborator = collect.getCollaborators().stream().anyMatch(user -> user.getId().equals(collaboratorDTO.getUser().getId()));
-		boolean isUserAdmin = collaboratorDTO.getUser().getRole().equals(AuthUserRole.ADMIN);
-
-		if (collect.getCollaborators().isEmpty() || isUserAdmin) {
+		if (collect.getCollaborators().isEmpty()){
 			collect.setTeamCollect(collaboratorDTO.isTeamCollect());
 			collect.setCollectDate(collaboratorDTO.getDate());
 		}
 
+		boolean isAlreadyCollaborator = collect.getCollaborators().stream().anyMatch(user -> user.getId().equals(collaboratorDTO.getUser().getId()));
+		boolean isUserAdmin = collaboratorDTO.getUser().getRole().equals(AuthUserRole.ADMIN);
 		User userPrimaryCollaborator[] = collect.getCollaborators().toArray(new User[0]);
 		boolean isUserPrimaryCollaborator = Objects.equals(userPrimaryCollaborator[0].getId(), collaboratorDTO.getUser().getId());
 
+		if (isUserAdmin || isUserPrimaryCollaborator ) {
+			collect.setTeamCollect(collaboratorDTO.isTeamCollect());
+			collect.setCollectDate(collaboratorDTO.getDate());
+		}
 
 		if (isAlreadyCollaborator && !isUserPrimaryCollaborator) {
 			throw new InvalidCollectRegistrationException("Você já está registrado para essa coleta!");
 		}
 
-		if (collaboratorDTO.isTeamCollect()){
+		if (collaboratorDTO.isTeamCollect() && !isUserPrimaryCollaborator){
 			throw new InvalidCollectRegistrationException("Essa coleta não está disponível para outros usuários!");
 		}
 
