@@ -70,12 +70,19 @@ public class CollectServiceImpl implements CollectService {
 		if (collect.getCollaborators().isEmpty()){
 			collect.setTeamCollect(collaboratorDTO.isTeamCollect());
 			collect.setCollectDate(collaboratorDTO.getDate());
+			collect.setStatus(Status.PENDENTE);
 		}
 
 		boolean isAlreadyCollaborator = collect.getCollaborators().stream().anyMatch(user -> user.getId().equals(collaboratorDTO.getUser().getId()));
 		boolean isUserAdmin = collaboratorDTO.getUser().getRole().equals(AuthUserRole.ADMIN);
-		User userPrimaryCollaborator[] = collect.getCollaborators().toArray(new User[0]);
-		boolean isUserPrimaryCollaborator = Objects.equals(userPrimaryCollaborator[0].getId(), collaboratorDTO.getUser().getId());
+
+
+		User[] userPrimaryCollaborator = collect.getCollaborators().toArray(new User[0]);
+		boolean isUserPrimaryCollaborator = false;
+
+		if (userPrimaryCollaborator.length > 0) {
+			isUserPrimaryCollaborator = Objects.equals(userPrimaryCollaborator[0].getId(), collaboratorDTO.getUser().getId());
+		}
 
 		if (isUserAdmin || isUserPrimaryCollaborator ) {
 			collect.setTeamCollect(collaboratorDTO.isTeamCollect());

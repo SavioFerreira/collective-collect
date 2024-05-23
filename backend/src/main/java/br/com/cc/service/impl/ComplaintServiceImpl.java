@@ -87,6 +87,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 		collect.setStatus(Status.DISPONIVEL);
 		collect.setComplaintDate(complaint.getComplaintDate());
 		collect.setCollectDate(null);
+		collect.setTeamCollect(true);
 		collect.setWasteInfo(complaint.getWasteInfo());
 		Collect savedCollect = collectRepository.save(collect);
 		complaint.setCollect(savedCollect);
