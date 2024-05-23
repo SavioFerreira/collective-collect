@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { HStack, Heading, Icon, VStack, Text, Image, Box, ScrollView, useToast, Pressable, View, Flex } from 'native-base';
-import { TouchableOpacity, Modal, Button } from 'react-native';
+import { HStack, Heading, Icon, VStack, Text, Image, Box, ScrollView,  useToast, Pressable, View, Flex, } from 'native-base';
+import { TouchableOpacity, Modal, RefreshControl } from 'react-native';
 import { Feather, FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -72,9 +72,10 @@ export function Coleta() {
       const response = await api.get(`/api/collect/${collectId}`);
       setcoleta(response.data);
 
+
     } catch (error) {
       const isAppError = error instanceof AppError;
-      const title = isAppError ? error.message : 'Não foi possível carregar os detalhes do exercícios';
+      const title = isAppError ? error.message : 'Não foi possível carregar os detalhes da coleta';
 
       toast.show({
         title: title,
@@ -82,7 +83,9 @@ export function Coleta() {
         bgColor: 'red.500'
       })
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
   }
 
@@ -110,7 +113,12 @@ export function Coleta() {
       </VStack>
 
       {isLoading ? <Loading /> :
-        <ScrollView>
+        <ScrollView refreshControl={ 
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={fetchColetaDetails}
+          />
+        }>
           <VStack p={4} pt={3}>
 
             <Box rounded="lg" mb={3} overflow="hidden">

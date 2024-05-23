@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { TouchableOpacity } from 'react-native';
+import { RefreshControl, TouchableOpacity } from 'react-native';
 import { HStack, VStack, FlatList, useToast, Text, Heading, Icon } from "native-base";
 import { Entypo } from '@expo/vector-icons';
 
@@ -47,7 +47,7 @@ export function HomeColeta() {
       applyFilter();
     } catch (error) {
       const isAppError = error instanceof AppError;
-      const title = isAppError ? error.message : 'Não foi possível carregar os detalhes do exercícios';
+      const title = isAppError ? error.message : 'Não foi possível carregar os detalhes da coleta';
       toast.show({
         title: title,
         placement: 'top',
@@ -111,6 +111,12 @@ export function HomeColeta() {
           </HStack>
           <VStack mr={1} ml={1} flex={1}>
             <FlatList
+              refreshControl={ 
+                <RefreshControl
+                  refreshing={isLoading}
+                  onRefresh={fetchColetas}
+                />
+              }
               data={coletas}
               keyExtractor={item => item.id.toString()}
               renderItem={({ item }) => (
