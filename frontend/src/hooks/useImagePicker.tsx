@@ -11,7 +11,7 @@ export function useImagePicker() {
 
         if (permissionResult.granted === false) {
             Alert.alert('Permissão necessária', 'Permissão de galeria é necessária para selecionar imagens');
-            return;
+            return null;
         }
 
         try {
@@ -21,7 +21,7 @@ export function useImagePicker() {
                 allowsEditing: true,
             });
 
-            if (result.canceled) return;
+            if (result.canceled) return null;
             if (!result.canceled && result.assets && result.assets.length > 0) {
                 setImageUri(result.assets[0].uri);
             }
@@ -36,7 +36,7 @@ export function useImagePicker() {
 
         if (permissionResult.granted === false) {
             Alert.alert('Permissão necessária', 'Permissão de câmera é necessária para tirar fotos.');
-            return;
+            return null;
         }
 
         try {
@@ -47,7 +47,7 @@ export function useImagePicker() {
                 allowsEditing: true,
             });
 
-            if (result.canceled) return;
+            if (result.canceled) return null;
             if (!result.canceled && result.assets && result.assets.length > 0) {
                 setImageUri(result.assets[0].uri);
             }

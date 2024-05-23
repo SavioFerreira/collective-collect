@@ -17,10 +17,10 @@ type Props = IViewProps & {
 export function OnCollectModal({ label, ...rest }: Props) {
     const [isModalVisible, SetIsModalVisible] = useState(false);
     const [isSelectPhotoVisible, setIsSelectPhotoVisible] = useState(false);
-    const { imageUri, pickImage, takePhoto } = useImagePicker();
+    const { pickImage, takePhoto } = useImagePicker();
     const [photoBefore, setPhotoBefore] = useState<string | null>(null);
     const [photoAfter, setPhotoAfter] = useState<string | null>(null);
-
+    const [photoType, setPhotoType] = useState<'before' | 'after' | null>(null);
 
     const video = React.useRef(null);
 
@@ -33,15 +33,28 @@ export function OnCollectModal({ label, ...rest }: Props) {
     }
 
 
-    const handlePhoto = async (type: 'before' | 'after') => {
-        const action = type === 'before' ? takePhoto : pickImage;
-        const result = await action();
-        if (result) {
-            if (type === 'before') {
-                setPhotoBefore(result);
-            } else {
-                setPhotoAfter(result);
-            }
+    async function handlePhotoSelection(type: 'before' | 'after') {
+        togglePhotoVisible();
+        setPhotoType(type); 
+    };
+
+    async function handleTakePhoto() {
+        const imageUri = await takePhoto();
+        setIsSelectPhotoVisible(false);
+        if (photoType === 'before') {
+            setPhotoBefore(imageUri ?? null);
+        } else if (photoType === 'after') {
+            setPhotoAfter(imageUri ?? null);
+        }
+    };
+
+    async function handlePickImage() {
+        const imageUri = await pickImage();
+        setIsSelectPhotoVisible(false);
+        if (photoType === 'before') {
+            setPhotoBefore(imageUri ?? null);
+        } else if (photoType === 'after') {
+            setPhotoAfter(imageUri ?? null);
         }
     };
 
@@ -113,7 +126,7 @@ export function OnCollectModal({ label, ...rest }: Props) {
                                     <VStack>
                                         <Pressable
                                             _pressed={{ opacity: 60 }}
-                                            onPress={() => handlePhoto('before')}>
+                                            onPress={handleTakePhoto}>
                                             <Icon alignSelf="center" size={9} color="green.400"
                                                 as={MaterialCommunityIcons}
                                                 name="camera-marker-outline"
@@ -129,7 +142,7 @@ export function OnCollectModal({ label, ...rest }: Props) {
                                     <VStack>
                                         <Pressable
                                             _pressed={{ opacity: 60 }}
-                                            onPress={() => handlePhoto('after')}>
+                                            onPress={handlePickImage}>
                                             <Icon alignSelf="center" size={9} color="green.400"
                                                 as={MaterialCommunityIcons}
                                                 name="file-image-marker"
@@ -146,7 +159,7 @@ export function OnCollectModal({ label, ...rest }: Props) {
 
                             <HStack flexDirection="row" alignSelf="center">
 
-                                <Pressable onPress={togglePhotoVisible}>
+                                <Pressable onPress={() => {handlePhotoSelection("before")}}>
                                     <View bgColor="red.500" rounded="md" w={160} h={150} m={1}>
                                         <Text numberOfLines={2} fontSize="md" fontFamily="body" color="blue.200" textAlign="center">
                                            Adicione a  imagem de antes da coleta
@@ -167,7 +180,7 @@ export function OnCollectModal({ label, ...rest }: Props) {
 
                                 <View p={1} />
 
-                                <Pressable  disabled={photoBefore !== null ? false : true } onPress={togglePhotoVisible}>
+                                <Pressable  disabled={photoBefore !== null ? false : true }  onPress={() => handlePhotoSelection('after')}>
                                 <View bgColor="green.500" rounded="md" w={160} h={150} m={1}>
                                     <Text numberOfLines={2} fontSize="md" fontFamily="body" color="blue.200" textAlign="center">
                                       Adicione a  imagem de depois da coleta
@@ -189,7 +202,7 @@ export function OnCollectModal({ label, ...rest }: Props) {
 
                             <Pressable
                                 mt={10}
-                                bgColor={canFinalize ? "green.500" : "blue.400"}
+                                bgColor={canFinalize ? "green.400" : "blue.400"}
                                 isDisabled={!canFinalize}
                                 _pressed={{ opacity: 70 }}
                                 size="20"
@@ -200,7 +213,7 @@ export function OnCollectModal({ label, ...rest }: Props) {
                                 justifyContent="center"
                                 onPress={toggleModal}
                             >
-                                <Text fontFamily="heading" fontSize="lg" color="blue.200">
+                                <Text fontFamily="heading" fontSize="xl" color="white">
                                     Finalizar
                                 </Text>
                             </Pressable>
