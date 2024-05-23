@@ -31,7 +31,7 @@ export function ColetaCard({ data, ...rest }: Props) {
 
     } catch (error) {
       const isAppError = error instanceof AppError;
-      const title = isAppError ? error.message : 'Não foi possível carregar os detalhes do exercícios';
+      const title = isAppError ? error.message : 'Não foi possível carregar os detalhes da coleta';
 
       toast.show({
         title: title,

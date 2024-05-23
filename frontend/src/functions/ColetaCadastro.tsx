@@ -1,149 +1,80 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, Heading, Center, Switch, Button, useTheme, useToast, VStack } from "native-base";
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Heading, Center, Switch, Button, useTheme, useToast, VStack, Spacer, Box } from "native-base";
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Alert, ScrollView } from 'react-native';
 import { api } from '@services/api';
-import { UserDTO } from '@dtos/UserDTO';
 import { useAuth } from '@hooks/useAuth';
+import { UserDTO } from '@dtos/UserDTO';
+import { FormatDate } from './FormatDate';
 import { AppError } from '@utils/AppError';
 
 type Props = {
     onRegister: () => void;
     collectId: number;
-}
+};
 
-type RegisterCollectForm = {
-    user: UserDTO
-    collectId: number
-    date: Date
-    isExclusive: boolean
-}
+type RegisterOnCollectForm = {
+    user: UserDTO; 
+    collectId: number;
+    date: string;
+    teamCollect: boolean;
+};
 
 export function ColetaCadastro({ onRegister, collectId }: Props) {
-    const { colors } = useTheme();
-    const [isLoading, setIsloading] = useState(false);
-    const [date, setDate] = useState<Date>(new Date());
-    const [time, setTime] = useState<Date>(new Date());
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [teamCollect, setTeamCollect] = useState<boolean>(true);
+
+    const [date, setDate] = useState<Date>(new Date()); 
+    const [initialDate, setInitialDate] = useState<Date>(new Date()); 
+    const [showPicker, setShowPicker] = useState<boolean>(false);
     const [mode, setMode] = useState<'date' | 'time'>('date');
-    const [show, setShow] = useState<boolean>(false);
-    const [isExclusive, setIsExclusive] = useState<boolean>(false);
-    const initialDate = useRef<Date>(new Date());
-    const initialTime = useRef<Date>(new Date());
 
     const { user } = useAuth();
+    const { colors } = useTheme();
     const toast = useToast();
 
-    function showMode(currentMode: 'date' | 'time') {
-        setShow(true);
+    const toggleSwitch = () => setTeamCollect(previousState => !previousState);
+
+    const onChange = (_event: any, selectedDate?: Date) => {
+        const currentDate = selectedDate || date;
+        setDate(currentDate);
+        setShowPicker(false);
+    };
+
+    const showMode = (currentMode: 'date' | 'time') => {
+        setShowPicker(true);
         setMode(currentMode);
     };
 
-    function onChange(event: DateTimePickerEvent, selectedDate?: Date) {
-        const currentDate = selectedDate || (mode === 'date' ? date : time);
-        const maxDate = new Date();
-        maxDate.setDate(maxDate.getDate() + 7);
-        setShow(false);
-
-        if (event.type === 'set' && selectedDate) {
-            if (mode === 'date') {
-                const newDate = new Date(dateTime);
-                newDate.setFullYear(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
-                setDateTime(newDate);
-            } else {
-                const newTime = new Date(dateTime);
-                newTime.setHours(selectedDate.getHours(), selectedDate.getMinutes());
-                setDateTime(newTime);
-            }
-        }
-
-        let fields = [
-            { label: 'date', value: date },
-            { label: 'time', value: time },
-            { label: 'TeamCollect', value: isExclusive },
-        ];
-
-        for (let i = 0; i < fields.length; i++) {
-            if (fields[i].value === undefined || fields[i].value === null) {
-                Alert.alert('Atenção', 'Preencha todos os campos!\n' + fields[i].label + "** Não foi preenchido");
-                setIsloading(false);
-                return;
-            }
-        }
-
-        if (currentDate <= maxDate) {
-            setShow(false);
-            if (mode === 'date') {
-                setDate(currentDate);
-            } else {
-                setTime(currentDate);
-            }
-        } else {
-            Alert.alert('Atenção', 'Por favor, escolha uma data que esteja dentro de uma semana.')
-
-        }
-    };
+    useEffect(() => {
+        setInitialDate(new Date()); 
+    }, []);
 
 
-    const [dateTime, setDateTime] = useState(new Date());
-
-
-    function handleValidateEntryRegister() {
-        const dateDifference = date.toISOString().slice(0, 10) === initialDate.current.toISOString().slice(0, 10);
-        const timeDifference = (time.getTime() - initialTime.current.getTime()) / 60000;
-
-        if ((dateDifference && timeDifference >= 20) || (!dateDifference && date > initialDate.current)) {
-            setIsloading(false);
-            return 'sucess'
-        } else {
-            Alert.alert('Atenção', 'Por favor, selecione uma hora pelo menos 20 minutos à frente do horário atual ou uma data futura.')
-            return 'fail'
-        }
-    };
-
-    async function handleAddCollaborator() {
-        setIsloading(true);
-        if (handleValidateEntryRegister() === 'sucess') {
-
-            const collectRegisterData: RegisterCollectForm = { collectId, date, user, isExclusive }
-            const result = handleFetchCollaborator(collectRegisterData);
-            if (await result === 'success') {
+    async function handleRegisterCollaborator() {
+        setIsLoading(true);
+        try {
+            const response = await api.post(`/api/collect/${collectId}/addParticipant`, { date: date.toISOString(), teamCollect, user, collectId });
+            if (response.status === 200) {
                 onRegister();
                 toast.show({
-                    title: `Obrigado, ${user.name}\n Seu cadatro foi registrado com sucesso!`,
+                    title: 'Seu cadastro foi registrado com sucesso!',
                     placement: 'top',
-                    duration: 5000,
-                    bgColor: 'green.600',
+                    bgColor: 'green.500'
                 });
-                setIsloading(false);
-            }
-        }
-        setIsloading(false);
-
-    };
-
-    async function handleFetchCollaborator(registerCollectForm: RegisterCollectForm) {
-        setIsloading(true);
-
-        try {
-            const response = await api.post(`/api/collect/${collectId}/addParticipant`, registerCollectForm);
-
-            if (response.status === 200) {
-                return 'success';
             } else {
                 throw new Error('Falha ao enviar cadastro!');
             }
         } catch (error) {
-            onRegister()
-            const isAppError = error instanceof AppError;
-            const title = isAppError ? error.message : 'Falha\n Não foi possível realizar o cadastro. tente novamente mais tarde.'
+            onRegister();
+            const title = error instanceof AppError ? error.message : 'Falha\n Não foi possível realizar o cadastro. Tente novamente mais tarde.';
             toast.show({
-                title: title,
+                title,
                 placement: 'top',
                 bgColor: 'error.500'
-            })
-            return 'fail';
+            });
         } finally {
-            setIsloading(false);
+            setIsLoading(false);
         }
     };
 
@@ -151,9 +82,7 @@ export function ColetaCadastro({ onRegister, collectId }: Props) {
         <View flex={1} px={1}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <Center>
-                    <Heading color='white' mb={3}>
-                        Cadastro Coleta
-                    </Heading>
+                    <Heading color='white' mb={3}>Cadastro Coleta</Heading>
                 </Center>
                 <Text color='white' fontFamily="body" fontSize="md" mb={2}>
                     Qual Horário e dia estará disponível para realizar a coleta?
@@ -167,13 +96,15 @@ export function ColetaCadastro({ onRegister, collectId }: Props) {
                 <Button bgColor="darkBlue.600" onPress={() => showMode('time')}>
                     Escolher horário
                 </Button>
+                { date.toTimeString() === initialDate.toTimeString() ? <Box mb={7}/> :
                 <Text textAlign="center" mb={2} color="blue.200">
-                    {time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                    {date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false })}
                 </Text>
-                {show && (
+                }
+                {showPicker && (
                     <DateTimePicker
                         testID="dateTimePicker"
-                        value={mode === 'date' ? date : time}
+                        value={date}
                         mode={mode}
                         is24Hour={true}
                         display="default"
@@ -186,13 +117,15 @@ export function ColetaCadastro({ onRegister, collectId }: Props) {
                     </Text>
                     <VStack>
                         <Text color='white' fontFamily="body" fontSize={10} mb={-3}>
-                            SIM  -  NÃO
+                            NÃO  -  SIM
                         </Text>
                         <Switch
-                        mr={3}
-                            isChecked={isExclusive}
-                            onToggle={() => setIsExclusive(!isExclusive)}
-                            thumbColor={isExclusive ? colors.green[500] : colors.darkBlue[600]}
+                            thumbColor={teamCollect ? colors.darkBlue[600] : colors.green[500]}
+                            trackColor={{ false: colors.green[300], true: colors.darkBlue[200] }}
+                            ios_backgroundColor={colors.green[500]}
+                            mr={3}
+                            onToggle={toggleSwitch}
+                            value={teamCollect}
                         />
                     </VStack>
                 </View>
@@ -201,11 +134,11 @@ export function ColetaCadastro({ onRegister, collectId }: Props) {
                     h={16}
                     bgColor="green.500"
                     _pressed={{ bg: "green.400" }}
-                    onPress={handleAddCollaborator}
+                    onPress={handleRegisterCollaborator}
                     isLoading={isLoading}>
                     Concluir Cadastro
                 </Button>
             </ScrollView>
         </View>
     );
-}
+};
