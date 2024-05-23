@@ -5,9 +5,6 @@ import { ColetaDTO } from '@dtos/ColetaDTO';
 import { getGravityIcon, getStatusIcon, getTypeIcon } from 'src/functions/Icons';
 import { FormatDate } from 'src/functions/FormatDate';
 import { useState } from 'react';
-import { api } from '@services/api';
-import { useAuth } from '@hooks/useAuth';
-import { AppError } from '@utils/AppError';
 
 type Props = TouchableOpacityProps & {
   data: ColetaDTO;
@@ -22,25 +19,7 @@ export function ColetaCard({ data, ...rest }: Props) {
   const status = data.status.toLocaleLowerCase().replace("_", " ");
   const showDate = data.collectDate != undefined || null ? FormatDate(data.collectDate): "Agenda pendente";
   const toast = useToast();
-  
-  // Ainda não faz nada, vou arrumar
-  async function fetchColetaDetails() {
-    try {
-      const response = await api.get(`/api/collect/${data.id}`);
-      setColeta(response.data);
 
-    } catch (error) {
-      const isAppError = error instanceof AppError;
-      const title = isAppError ? error.message : 'Não foi possível carregar os detalhes da coleta';
-
-      toast.show({
-        title: title,
-        placement: 'top',
-        bgColor: 'red.500'
-      })
-    } finally {
-    }
-  }
 
   return (
     <TouchableOpacity {...rest}>

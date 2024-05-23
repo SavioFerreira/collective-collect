@@ -18,8 +18,6 @@ import { Loading } from '@components/Loading';
 import { ColetaCadastro } from '@functions/ColetaCadastro';
 import { FormatDate } from 'src/functions/FormatDate';
 import { useAuth } from '@hooks/useAuth';
-import { RoleType } from '@enums/RoleTypesEnum';
-import { LocationInfo } from '@components/LocationInfo';
 import { OnCollectModal } from '@components/OnCollectModal';
 
 type RouteParamsProps = {
@@ -48,6 +46,7 @@ export function Coleta() {
 
   const isUserCollaborator = coleta.collaborators?.some(colab => colab.id === user.id);
   const isUserPrimaryCollaborator = coleta.collaborators?.[0]?.id === user.id;
+  const isCollectPublic = coleta.teamCollect;
 
   function handleViewComplaintOnMap(complaintId: string) {
     navigation.navigate('denuncias', { complaintId });
@@ -286,7 +285,7 @@ export function Coleta() {
               </Box>
             </Box>
 
-            { !isUserCollaborator ? 
+            { !isUserCollaborator && isCollectPublic === true ? 
               <Pressable
                 bgColor="orange.500"
                 _pressed={{ bg: "orange.700" }}

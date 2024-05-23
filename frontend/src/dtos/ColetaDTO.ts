@@ -19,4 +19,5 @@ export type ColetaDTO = {
 		}
 		complaintId: number,
 		collaborators: [UserDTO],
+		teamCollect: boolean;
 	}
