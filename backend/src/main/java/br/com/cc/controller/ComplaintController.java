@@ -43,14 +43,6 @@ public class ComplaintController {
 				.orElse(ResponseEntity.notFound().build());
 	}
 
-//	@PostMapping
-//	public ResponseEntity<ComplaintDTO> create(@RequestBody ComplaintDTO complaintDto) {
-//		Complaint complaint = complaintMapperService.convertComplaintDtoToEntity(complaintDto);
-//		Complaint saved = complaintService.create(complaint);
-//		return ResponseEntity.ok(complaintMapperService.convertComplaintToDTO(saved));
-//	}
-
-
 	@PostMapping(consumes = {"multipart/form-data"})
 	public ResponseEntity<ComplaintDTO> create(@RequestParam("complaint") String complaintDtoJson, @RequestParam("image") MultipartFile image) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
