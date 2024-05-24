@@ -8,10 +8,13 @@ import br.com.cc.exception.collect.InvalidCollectRegistrationException;
 import br.com.cc.mapper.UserMapperService;
 import br.com.cc.repository.CollectRepository;
 import br.com.cc.service.CollectService;
+import br.com.cc.service.ImageStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,6 +27,9 @@ public class CollectServiceImpl implements CollectService {
 
 	@Autowired
 	UserMapperService userMapperService;
+
+	@Autowired
+	private ImageStorageService imageStorageService;
 
 	@Override
 	public List<Collect> findAll() {
@@ -100,4 +106,29 @@ public class CollectServiceImpl implements CollectService {
 		collect.getCollaborators().add(userMapperService.convertUserToEntity(collaboratorDTO.getUser()));
 		collectRepository.save(collect);
 	}
+
+	@Override
+	public Optional<Collect> startCollect(Long id,  MultipartFile beforeImage,  MultipartFile afterImage)  {
+		return collectRepository.findById(id).map(collect -> {
+			collect.setStatus(Status.OCORRENDO);
+			collect.setCollectDate(LocalDateTime.now());
+
+            String imageBeforeUrl = null;
+			String imageAfterUrl = null;
+            try {
+                imageBeforeUrl = imageStorageService.uploadImage(beforeImage);
+				imageAfterUrl = imageStorageService.uploadImage(afterImage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            collect.setCollectImageBefore(imageBeforeUrl);
+		    collect.setCollectImageAfter(imageAfterUrl);
+
+			collectRepository.save(collect);
+			return collect;
+		});
+	}
+
+
 }

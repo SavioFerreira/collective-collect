@@ -2,17 +2,22 @@ package br.com.cc.controller;
 
 import br.com.cc.dto.CollectCollaboratorDTO;
 import br.com.cc.dto.CollectDTO;
+import br.com.cc.dto.ComplaintDTO;
 import br.com.cc.entity.Collect;
-import br.com.cc.entity.User;
+import br.com.cc.entity.Complaint;
 import br.com.cc.exception.collect.CollectNotFoundException;
 import br.com.cc.mapper.CollectMapperService;
 import br.com.cc.service.CollectService;
+import br.com.cc.service.ImageStorageService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,6 +31,9 @@ public class CollectController {
 
 	@Autowired
 	private CollectMapperService collectMapperService;
+
+	@Autowired
+	private ImageStorageService imageStorageService;
 
 	@GetMapping
 	public List<CollectDTO> findAll() {
@@ -76,4 +84,11 @@ public class CollectController {
 		collectService.addCollaboratorToCollect(collectId, collaboratorDTO );
 		return ResponseEntity.ok().build();
 	}
+
+	@PatchMapping("/{id}/start")
+	public ResponseEntity<CollectDTO> startCollect(@PathVariable Long id, @RequestParam("beforeImage") MultipartFile beforeImage, @RequestParam("afterImage") MultipartFile afterImage) {
+		collectService.startCollect(id, beforeImage, afterImage);
+		return ResponseEntity.ok().build();
+	}
+
 }
