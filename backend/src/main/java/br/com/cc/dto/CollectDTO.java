@@ -21,7 +21,8 @@ public class CollectDTO {
     private LocalDateTime complaintDate;
     private LocalDateTime collectDate;
     private Status status;
-    private String collectImage;
+    private String collectImageBefore;
+    private String collectImageAfter;
     private Set<UserDTO> collaborators;
     private boolean teamCollect;
     private String title;
