@@ -4,7 +4,6 @@ import br.com.cc.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -22,7 +21,8 @@ public class Collect {
 	private Status status;
 	private LocalDateTime collectDate;
 	private LocalDateTime complaintDate;
-	private String collectImage;
+	private String collectImageBefore;
+	private String collectImageAfter;
 	private boolean teamCollect;
 
 	@Embedded
