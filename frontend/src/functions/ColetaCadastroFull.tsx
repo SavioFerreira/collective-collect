@@ -5,7 +5,6 @@ import { Alert, ScrollView } from 'react-native';
 import { api } from '@services/api';
 import { useAuth } from '@hooks/useAuth';
 import { UserDTO } from '@dtos/UserDTO';
-import { FormatDate } from './FormatDate';
 import { AppError } from '@utils/AppError';
 
 type Props = {
@@ -20,7 +19,7 @@ type RegisterOnCollectForm = {
     teamCollect: boolean;
 };
 
-export function ColetaCadastro({ onRegister, collectId }: Props) {
+export function ColetaCadastroFull({ onRegister, collectId }: Props) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [teamCollect, setTeamCollect] = useState<boolean>(true);
 

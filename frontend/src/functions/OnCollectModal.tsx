@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { Modal, TouchableWithoutFeedback } from 'react-native';
-import { HStack, VStack, Text, View, Flex, Icon, Pressable, Box, Image, ScrollView } from "native-base";
+import { Modal } from 'react-native';
+import { HStack, VStack, Text, View, Flex, Icon, Pressable, Box, Image, ScrollView, useToast } from "native-base";
 import { FontAwesome6 } from '@expo/vector-icons';
 import { IViewProps } from "native-base/lib/typescript/components/basic/View/types";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useImagePicker } from "@hooks/useImagePicker";
 
+
 import { Video, ResizeMode } from 'expo-av';
 import videoPath from '@assets/working-collect.mp4';
 import React from "react";
+import { AppNavigatorRoutesProps } from "@routes/app.routes";
+import { useNavigation } from "@react-navigation/native";
 
 type Props = IViewProps & {
     label: string;
@@ -21,8 +24,14 @@ export function OnCollectModal({ label, ...rest }: Props) {
     const [photoBefore, setPhotoBefore] = useState<string | null>(null);
     const [photoAfter, setPhotoAfter] = useState<string | null>(null);
     const [photoType, setPhotoType] = useState<'before' | 'after' | null>(null);
-
+    const toast = useToast();
     const video = React.useRef(null);
+
+    const navigation = useNavigation<AppNavigatorRoutesProps>();
+
+    function handleGoBack() {
+        navigation.navigate("coletas");
+    }
 
     function toggleModal() {
         SetIsModalVisible(!isModalVisible);
@@ -32,10 +41,9 @@ export function OnCollectModal({ label, ...rest }: Props) {
         setIsSelectPhotoVisible(!isSelectPhotoVisible);
     }
 
-
     async function handlePhotoSelection(type: 'before' | 'after') {
         togglePhotoVisible();
-        setPhotoType(type); 
+        setPhotoType(type);
     };
 
     async function handleTakePhoto() {
@@ -59,6 +67,17 @@ export function OnCollectModal({ label, ...rest }: Props) {
     };
 
     const canFinalize = photoBefore && photoAfter;
+
+    function handleCompletCollect() {
+        toggleModal();
+        handleGoBack();
+        toast.show({
+            title: "Enviamos a coleta para a análise, obrigado por sua colaboração.",
+            placement: 'top',
+            duration: 8000,
+            bgColor: 'green.600',
+        });
+    }
 
     return (
         <View alignItems="flex-start" {...rest}>
@@ -120,49 +139,49 @@ export function OnCollectModal({ label, ...rest }: Props) {
                                 Selecione uma imagem antes de realizar a coleta e outra depois de finalizar
                             </Text>
 
-                            { isSelectPhotoVisible ? 
-                            <VStack borderRadius="md" bgColor="darkBlue.600" h={16} justifyContent="center" mb={2}>
-                                <HStack justifyContent="space-evenly" m={6}>
-                                    <VStack>
-                                        <Pressable
-                                            _pressed={{ opacity: 60 }}
-                                            onPress={handleTakePhoto}>
-                                            <Icon alignSelf="center" size={9} color="green.400"
-                                                as={MaterialCommunityIcons}
-                                                name="camera-marker-outline"
-                                            />
-                                            <Text color="green.400" fontFamily="body" fontSize="xs" mb={1}>
-                                                Tirar Foto
-                                            </Text>
-                                        </Pressable>
-                                    </VStack>
-                                    <Text alignSelf="center" color="green.400" fontSize="md" fontFamily="heading">
-                                        Ou
-                                    </Text>
-                                    <VStack>
-                                        <Pressable
-                                            _pressed={{ opacity: 60 }}
-                                            onPress={handlePickImage}>
-                                            <Icon alignSelf="center" size={9} color="green.400"
-                                                as={MaterialCommunityIcons}
-                                                name="file-image-marker"
-                                            />
-                                            <Text color="green.400" fontFamily="body" fontSize="xs" mb={1} >
-                                                Galeria
-                                            </Text>
-                                        </Pressable>
-                                    </VStack>
-                                </HStack>
-                            </VStack>
-                            : ''
+                            {isSelectPhotoVisible ?
+                                <VStack borderRadius="md" bgColor="darkBlue.600" h={16} justifyContent="center" mb={2}>
+                                    <HStack justifyContent="space-evenly" m={6}>
+                                        <VStack>
+                                            <Pressable
+                                                _pressed={{ opacity: 60 }}
+                                                onPress={handleTakePhoto}>
+                                                <Icon alignSelf="center" size={9} color="green.400"
+                                                    as={MaterialCommunityIcons}
+                                                    name="camera-marker-outline"
+                                                />
+                                                <Text color="green.400" fontFamily="body" fontSize="xs" mb={1}>
+                                                    Tirar Foto
+                                                </Text>
+                                            </Pressable>
+                                        </VStack>
+                                        <Text alignSelf="center" color="green.400" fontSize="md" fontFamily="heading">
+                                            Ou
+                                        </Text>
+                                        <VStack>
+                                            <Pressable
+                                                _pressed={{ opacity: 60 }}
+                                                onPress={handlePickImage}>
+                                                <Icon alignSelf="center" size={9} color="green.400"
+                                                    as={MaterialCommunityIcons}
+                                                    name="file-image-marker"
+                                                />
+                                                <Text color="green.400" fontFamily="body" fontSize="xs" mb={1} >
+                                                    Galeria
+                                                </Text>
+                                            </Pressable>
+                                        </VStack>
+                                    </HStack>
+                                </VStack>
+                                : ''
                             }
 
                             <HStack flexDirection="row" alignSelf="center">
 
-                                <Pressable onPress={() => {handlePhotoSelection("before")}}>
+                                <Pressable onPress={() => { handlePhotoSelection("before") }}>
                                     <View bgColor="red.500" rounded="md" w={160} h={150} m={1}>
                                         <Text numberOfLines={2} fontSize="md" fontFamily="body" color="blue.200" textAlign="center">
-                                           Adicione a  imagem de antes da coleta
+                                            Adicione a  imagem de antes da coleta
                                         </Text>
                                         <Image
                                             w="100%"
@@ -180,22 +199,22 @@ export function OnCollectModal({ label, ...rest }: Props) {
 
                                 <View p={1} />
 
-                                <Pressable  disabled={photoBefore !== null ? false : true }  onPress={() => handlePhotoSelection('after')}>
-                                <View bgColor="green.500" rounded="md" w={160} h={150} m={1}>
-                                    <Text numberOfLines={2} fontSize="md" fontFamily="body" color="blue.200" textAlign="center">
-                                      Adicione a  imagem de depois da coleta
-                                    </Text>
+                                <Pressable disabled={photoBefore !== null ? false : true} onPress={() => handlePhotoSelection('after')}>
+                                    <View bgColor="green.500" rounded="md" w={160} h={150} m={1}>
+                                        <Text numberOfLines={2} fontSize="md" fontFamily="body" color="blue.200" textAlign="center">
+                                            Adicione a  imagem de depois da coleta
+                                        </Text>
 
-                                    <Image
-                                        w="100%"
-                                        h="90%"
-                                        source={{ uri: photoAfter ?? 'imagem indisponivel' }}
-                                        alt="imagem da coleta"
-                                        resizeMode="stretch"
-                                        borderRadius="lg"
-                                        borderTopRadius={0}
-                                    />
-                                </View>
+                                        <Image
+                                            w="100%"
+                                            h="90%"
+                                            source={{ uri: photoAfter ?? 'imagem indisponivel' }}
+                                            alt="imagem da coleta"
+                                            resizeMode="stretch"
+                                            borderRadius="lg"
+                                            borderTopRadius={0}
+                                        />
+                                    </View>
                                 </Pressable>
                             </HStack>
 
@@ -211,7 +230,7 @@ export function OnCollectModal({ label, ...rest }: Props) {
                                 borderRadius="md"
                                 alignItems="center"
                                 justifyContent="center"
-                                onPress={toggleModal}
+                                onPress={handleCompletCollect}
                             >
                                 <Text fontFamily="heading" fontSize="xl" color="white">
                                     Finalizar

@@ -15,10 +15,11 @@ import RecicleLogoSvg from '@assets/recycleLogo.svg';
 import { getGravityIcon, getStatusIcon } from 'src/functions/Icons';
 import { Loading } from '@components/Loading';
 
-import { ColetaCadastro } from '@functions/ColetaCadastro';
 import { FormatDate } from 'src/functions/FormatDate';
 import { useAuth } from '@hooks/useAuth';
 import { OnCollectModal } from '@functions/OnCollectModal';
+import { ColetaCadastroFull } from '@functions/ColetaCadastroFull';
+import { ColetaCadastroBasic } from '@functions/ColetaCadastroBasic';
 
 type RouteParamsProps = {
   collectId: string;
@@ -343,7 +344,11 @@ export function Coleta() {
                       name="x-circle"
                       onPress={closeColetaModal}
                     />
-                    <ColetaCadastro onRegister={closeColetaModal} collectId={coleta.id} />
+                    { isUserPrimaryCollaborator ?
+                      <ColetaCadastroFull onRegister={closeColetaModal} collectId={coleta.id} />
+                      :
+                      <ColetaCadastroBasic onRegister={closeColetaModal} collectId={coleta.id} />
+                    }
                   </View>
                 </Flex>
               </Modal>

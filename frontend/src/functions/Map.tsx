@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import MapView, { MapViewProps, PROVIDER_GOOGLE, LatLng, Marker } from "react-native-maps";
 import { Icon, VStack, Text, View, useToast } from "native-base";
 import { Entypo } from '@expo/vector-icons';
-import { mapStyleHopper } from "@utils/mapStyle";
+import { mapStyleDefault, mapStyleGTA, mapStyleHopper } from "@utils/mapStyle";
 import { api } from "@services/api";
 import { ColetaDTO } from "@dtos/ColetaDTO";
 import { AppError } from "@utils/AppError";

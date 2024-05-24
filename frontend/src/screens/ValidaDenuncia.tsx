@@ -9,7 +9,7 @@ export function ValidaDenuncia() {
       <ScrollView mt={10}>
         <Center>
           <Heading>
-            validação - coletas
+            validação - Denuncias
           </Heading>
         </Center>
       </ScrollView>
