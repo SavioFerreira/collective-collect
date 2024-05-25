@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Heading, Center, Switch, Button, useTheme, useToast, VStack, Spacer, Box } from "native-base";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Alert, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import { api } from '@services/api';
 import { useAuth } from '@hooks/useAuth';
 import { UserDTO } from '@dtos/UserDTO';
