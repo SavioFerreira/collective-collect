@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { HStack, Heading, Icon, VStack, Text, Image, Box, ScrollView,  useToast, Pressable, View, Flex, } from 'native-base';
-import { TouchableOpacity, Modal, RefreshControl } from 'react-native';
+import { HStack, Heading, Icon, VStack, Text, Image, Box, ScrollView, useToast, Pressable, View, Flex, } from 'native-base';
+import { TouchableOpacity, Modal, RefreshControl, Alert } from 'react-native';
 import { Feather, FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -42,8 +42,8 @@ export function Coleta() {
   const showComplaintDate = coleta.complaintDate != undefined || null ? FormatDate(coleta.complaintDate) : "Data não disponível";
   const showCollectDate = coleta.collectDate != undefined || null ? FormatDate(coleta.collectDate) : "Indefinido";
 
-  const [isModalVisible, SetIsModalVisible] = useState(false);
-  const [isChatVisible, SetIsChatVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isCollectStartVisible, setIsCollectStartVisible] = useState(false);
 
   const isUserCollaborator = coleta.collaborators?.some(colab => colab.id === user.id);
   const isUserPrimaryCollaborator = coleta.collaborators?.[0]?.id === user.id;
@@ -58,11 +58,11 @@ export function Coleta() {
   }
 
   function openColetaModal() {
-    SetIsModalVisible(true);
+    setIsModalVisible(true);
   }
 
   const closeColetaModal = () => {
-    SetIsModalVisible(!isModalVisible);
+    setIsModalVisible(!isModalVisible);
     fetchColetaDetails();
   };
 
@@ -89,6 +89,11 @@ export function Coleta() {
     }
   }
 
+  async function handleStartCollect() {
+    setIsCollectStartVisible(true)
+    console.log("funcionou");
+  }
+
   useEffect(() => {
     fetchColetaDetails();
   }, [collectId]);
@@ -113,7 +118,7 @@ export function Coleta() {
       </VStack>
 
       {isLoading ? <Loading /> :
-        <ScrollView refreshControl={ 
+        <ScrollView refreshControl={
           <RefreshControl
             refreshing={isLoading}
             onRefresh={fetchColetaDetails}
@@ -253,7 +258,7 @@ export function Coleta() {
                           borderRadius="md"
                           alignItems="center"
                           justifyContent="center"
-                          onPress={() => SetIsChatVisible(true)}
+                          onPress={() => {}}
                         >
                           <Icon
                             as={MaterialIcons}
@@ -286,7 +291,7 @@ export function Coleta() {
               </Box>
             </Box>
 
-            { !isUserCollaborator && isCollectPublic === true ? 
+            {!isUserCollaborator && isCollectPublic === true ?
               <Pressable
                 bgColor="orange.500"
                 _pressed={{ bg: "orange.700" }}
@@ -306,28 +311,58 @@ export function Coleta() {
               ''
             }
 
-            { isUserPrimaryCollaborator ?
-            <HStack justifyContent="space-between">
-              <OnCollectModal label="iniciar Coleta" w="82%"/>
-              <Pressable 
-                justifyContent="center" 
-                bgColor="blue.500" 
-                p={4} borderRadius="md" 
-                _pressed={{ bg: "blue.700" }}
-                onPress={openColetaModal}
-              >
-                <Icon
-                  as={Feather}
-                  name={'edit'}
-                  color="white"
-                  size={8}
-                  alignSelf="center"
-                 
-                />
-              </Pressable>
-            </HStack>
-            : 
-            ''
+            {isUserPrimaryCollaborator ?
+              <HStack justifyContent="space-between">
+                { isCollectStartVisible === false ?
+                  <Pressable
+                    w="82%"
+                    justifyContent="center"
+                    bgColor="blue.500"
+                    p={4} borderRadius="md"
+                    _pressed={{ bg: "blue.700" }}
+                    onPress={() => {
+                      Alert.alert(
+                        "Iniciar coleta",
+                        `Deseja iniciar a coleta agora?`,
+                        [
+                          {
+                            text: "Não",
+                            style: "cancel"
+                          },
+                          {
+                            text: "Sim",
+                            onPress: handleStartCollect
+                          }
+                        ]
+                      );
+                    }}
+                  >
+                    <Text numberOfLines={1} fontSize={20} fontFamily="heading" color="blue.200" mb={1} textAlign="center">
+                      Iniciar Coleta?
+                    </Text>
+                  </Pressable>
+                  :
+                  <OnCollectModal w="82%" label="Clique para Iniciar "/>
+                }
+                <Pressable
+                  justifyContent="center"
+                  bgColor="blue.500"
+                  p={4} borderRadius="md"
+                  _pressed={{ bg: "blue.700" }}
+                  onPress={openColetaModal}
+                >
+                  <Icon
+                    as={Feather}
+                    name={'edit'}
+                    color="white"
+                    size={8}
+                    alignSelf="center"
+
+                  />
+                </Pressable>
+              </HStack>
+              :
+              ''
             }
 
             <View>
@@ -344,7 +379,7 @@ export function Coleta() {
                       name="x-circle"
                       onPress={closeColetaModal}
                     />
-                    { isUserPrimaryCollaborator ?
+                    {isUserPrimaryCollaborator ?
                       <ColetaCadastroFull onRegister={closeColetaModal} collectId={coleta.id} />
                       :
                       <ColetaCadastroBasic onRegister={closeColetaModal} collectId={coleta.id} />
@@ -355,43 +390,6 @@ export function Coleta() {
             </View>
 
             <View>
-              <Modal
-                visible={isChatVisible}
-                animationType="slide"
-                onRequestClose={() => SetIsChatVisible(false)}
-                transparent={true}
-              >
-                <Flex flex={1} alignItems="center" justifyContent="center" bg="rgba(74, 169, 255, 0.9)">
-                  <View bgColor="blue.500" p={5} pb={3} justifyContent="initial" borderRadius="lg" w="90%" maxW="90%" h="80%" maxH="80%" shadow={1}>
-
-                    <View mb={2}>
-                      <Icon alignSelf="flex-start" size={8} color="green.400"
-                        as={Feather}
-                        name="x-circle"
-                        onPress={() => SetIsChatVisible(false)}
-                      />
-                      <Text alignSelf="center" fontFamily="heading" fontSize="lg" color="white">
-                        Chat - Coleta
-                      </Text>
-                    </View>
-                    <VStack rounded="md" flex={1} bg="rgba(110, 183, 252, 0.815)">
-                      <VStack m={2}>
-                        <HStack mb={2} bgColor="darkBlue.100" rounded="md" w="90%">
-                          <Icon as={Feather} name='user' color='blue.700' size={7} alignSelf="center" />
-                          <Text color="blue.700" w="85%" p={2} textAlign="justify">Olá. como vai? Meu nome é fulano de tal e estou iniciando essa coleta</Text>
-                        </HStack>
-                        <HStack mb={2} bgColor="darkBlue.100" rounded="md" w="90%">
-                          <Icon as={Feather} name='user' color='blue.700' size={7} alignSelf="center" />
-                          <Text color="blue.700" w="85%" p={2} textAlign="justify">Bom dia, tudo certo</Text>
-                        </HStack>
-                      </VStack>
-                      <HStack>
-
-                      </HStack>
-                    </VStack>
-                  </View>
-                </Flex>
-              </Modal>
             </View>
           </VStack>
         </ScrollView>

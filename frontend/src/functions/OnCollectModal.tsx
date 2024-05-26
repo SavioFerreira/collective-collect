@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Modal } from 'react-native';
-import { HStack, VStack, Text, View, Flex, Icon, Pressable, Box, Image, ScrollView, useToast } from "native-base";
+import { HStack, VStack, Text, View, Flex, Icon, Pressable, Box, Image, ScrollView, useToast, IButtonProps } from "native-base";
 import { FontAwesome6 } from '@expo/vector-icons';
 import { IViewProps } from "native-base/lib/typescript/components/basic/View/types";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -26,7 +26,6 @@ export function OnCollectModal({ label, ...rest }: Props) {
     const [photoType, setPhotoType] = useState<'before' | 'after' | null>(null);
     const toast = useToast();
     const video = React.useRef(null);
-
     const navigation = useNavigation<AppNavigatorRoutesProps>();
 
     function handleGoBack() {
@@ -80,6 +79,7 @@ export function OnCollectModal({ label, ...rest }: Props) {
     }
 
     return (
+
         <View alignItems="flex-start" {...rest}>
             <Pressable
                 bgColor="blue.500"
