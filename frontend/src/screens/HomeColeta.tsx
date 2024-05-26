@@ -8,12 +8,12 @@ import { IconHeader } from "@components/IconHeader";
 import { Group } from '@components/Group';
 import { ColetaCard } from '@components/ColetaCard';
 import { Loading } from '@components/Loading';
-import { useCollect } from '@hooks/useCollect';
 import { ResiduoType } from 'src/enums/ResiduoTypesEnum';
 import { AppNavigatorRoutesProps } from '@routes/app.routes';
 import { ColetaDTO } from '@dtos/ColetaDTO';
 import { AppError } from '@utils/AppError';
 import { api } from '@services/api';
+import { HelpModal } from '@components/HelpModal';
 
 export function HomeColeta() {
 
@@ -25,6 +25,13 @@ export function HomeColeta() {
   const [typeSelected, setTypeSelected] = useState(types[0]);
   const navigation = useNavigation<AppNavigatorRoutesProps>();
   const toast = useToast();
+
+  const helpDescriptioin = "O que são os filtros? \nOs filtros são opções de filtragem de tipos de coletas.\nCom eles você pode filtrar por qualquer tipo de coleta disponível."
+  const helpDescriptions = {
+    title: '',
+    desc1: '',
+    desc2: ''
+  }
 
   function handleOpenColetaDetails(collectId: string) {
     navigation.navigate('detalhesColeta', { collectId });
@@ -77,9 +84,7 @@ export function HomeColeta() {
           <Heading color="darkBlue.700" fontSize="xl" fontFamily="heading" mb={2} ml={'24'}>
             Tipos de resíduo
           </Heading>
-          <TouchableOpacity activeOpacity={.7} onPress={() => { }}>
-            <Icon as={Entypo} name="help-with-circle" color="darkBlue.700" size={7} />
-          </TouchableOpacity>
+          <HelpModal  label='Ajuda Filtro - Coletas' description={helpDescriptioin}/>
         </HStack>
         <FlatList
           data={types}
