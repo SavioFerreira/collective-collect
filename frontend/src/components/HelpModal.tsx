@@ -8,15 +8,11 @@ import { IViewProps } from "native-base/lib/typescript/components/basic/View/typ
 
 type Props = IViewProps & {
     label: string;
-    description?: string;
-    descriptions?: {
-        title: string;
-        desc1: string;
-        desc2: string
-    }
+    description: string;
+   
 }
 
-export function HelpModal({ label, description, descriptions, ...rest }: Props) {
+export function HelpModal({ label, description,  ...rest }: Props) {
     const [isModalVisible, SetIsModalVisible] = useState(false);
 
     function toggleModal() {
@@ -50,7 +46,6 @@ export function HelpModal({ label, description, descriptions, ...rest }: Props) 
                                         {label}
                                     </Text>
                                     <Icon
-
                                         as={FontAwesome6}
                                         name={"map-location-dot"}
                                         color="blue.700"
@@ -58,17 +53,9 @@ export function HelpModal({ label, description, descriptions, ...rest }: Props) 
                                         ml={3}
                                     />
                                 </HStack>
-
-                                {description ?
-                                    <Text numberOfLines={10} fontSize="lg" fontFamily="body" color="darkBlue.700" maxW="97%" textAlign="justify">
-                                        {description}
-                                    </Text>
-                                    :
-                                    <Text numberOfLines={10} fontSize="lg" fontFamily="body" color="darkBlue.700" maxW="97%" textAlign="justify">
-                                        {descriptions?.title} {descriptions?.desc1} {descriptions?.desc2}
-                                    </Text>
-                                }
-
+                                <Text numberOfLines={10} fontSize="lg" fontFamily="body" fontStyle="italic" color="darkBlue.700" maxW="97%" textAlign="justify">
+                                    {description}
+                                </Text>
                             </VStack>
                         </View>
                     </Flex>

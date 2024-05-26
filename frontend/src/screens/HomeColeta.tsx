@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { RefreshControl, TouchableOpacity } from 'react-native';
-import { HStack, VStack, FlatList, useToast, Text, Heading, Icon } from "native-base";
+import { HStack, VStack, FlatList, useToast, Text, Heading, Icon, View } from "native-base";
 import { Entypo } from '@expo/vector-icons';
 
 import { IconHeader } from "@components/IconHeader";
@@ -26,12 +26,9 @@ export function HomeColeta() {
   const navigation = useNavigation<AppNavigatorRoutesProps>();
   const toast = useToast();
 
-  const helpDescriptioin = "O que são os filtros? \nOs filtros são opções de filtragem de tipos de coletas.\nCom eles você pode filtrar por qualquer tipo de coleta disponível."
-  const helpDescriptions = {
-    title: '',
-    desc1: '',
-    desc2: ''
-  }
+  const helpDescriptioin = "Os filtros são opções de filtragem para os diversos tipos de resíduos.\n" +
+  "Com eles você pode filtrar por qualquer tipo de coleta disponível.\nExemplo: PLASTICO só lista as coletas do tipo plástico"
+
 
   function handleOpenColetaDetails(collectId: string) {
     navigation.navigate('detalhesColeta', { collectId });
