@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { RefreshControl, TouchableOpacity } from 'react-native';
-import { HStack, VStack, FlatList, useToast, Text, Heading, Icon, View } from "native-base";
+import { HStack, VStack, FlatList, useToast, Text, Heading, Icon, View, Pressable } from "native-base";
 import { Entypo } from '@expo/vector-icons';
 
 import { IconHeader } from "@components/IconHeader";
@@ -14,6 +14,7 @@ import { ColetaDTO } from '@dtos/ColetaDTO';
 import { AppError } from '@utils/AppError';
 import { api } from '@services/api';
 import { HelpModal } from '@components/HelpModal';
+import { useAuth } from '@hooks/useAuth';
 
 export function HomeColeta() {
 
@@ -21,14 +22,23 @@ export function HomeColeta() {
   const [types, setTypes] = useState(Object.values(ResiduoType));
   const [coletas, setColetas] = useState<ColetaDTO[]>([]);
   const [allColetas, setAllColetas] = useState<ColetaDTO[]>([]);
+  const [isUserCollectVisible, setIsUserCollectVisible] = useState(false);
+  const { user } = useAuth();
+  const userCollect = coletas.filter(collect => collect.collaborators.some(users => users.id === user.id));
+  const [userCollectHeight, setUserCollectHeight] = useState<number | string>(50); 
 
   const [typeSelected, setTypeSelected] = useState(types[0]);
   const navigation = useNavigation<AppNavigatorRoutesProps>();
   const toast = useToast();
 
   const helpDescriptioin = "Os filtros são opções de filtragem para os diversos tipos de resíduos.\n" +
-  "Com eles você pode filtrar por qualquer tipo de coleta disponível.\nExemplo: PLASTICO só lista as coletas do tipo plástico"
+    "Com eles você pode filtrar por qualquer tipo de coleta disponível.\nExemplo: PLASTICO só lista as coletas do tipo plástico"
 
+
+  function toggleUserCollect() {
+    setIsUserCollectVisible(!isUserCollectVisible);
+    setUserCollectHeight(isUserCollectVisible ? 50 : 600);
+  }
 
   function handleOpenColetaDetails(collectId: string) {
     navigation.navigate('detalhesColeta', { collectId });
@@ -62,8 +72,8 @@ export function HomeColeta() {
     }
   }
 
-   useEffect(() => {
-     applyFilter();
+  useEffect(() => {
+    applyFilter();
   }, [typeSelected, applyFilter]);
 
   useFocusEffect(
@@ -76,12 +86,12 @@ export function HomeColeta() {
   return (
     <VStack flex={1}>
       <IconHeader title="Coletas" />
-      <VStack px={2} mr={4} ml={4} mt={2} borderRadius="lg">
+      <VStack px={2} mr={4} ml={4} mt={2} mb={2} bgColor="blue.400" rounded="lg">
         <HStack justifyContent="space-between">
           <Heading color="darkBlue.700" fontSize="xl" fontFamily="heading" mb={2} ml={'24'}>
             Tipos de resíduo
           </Heading>
-          <HelpModal  label='Ajuda Filtro - Coletas' description={helpDescriptioin}/>
+          <HelpModal label='Ajuda Filtro - Coletas' description={helpDescriptioin} />
         </HStack>
         <FlatList
           data={types}
@@ -101,25 +111,75 @@ export function HomeColeta() {
           mb={1} mt={1}
         />
       </VStack>
-      {isLoading ? <Loading /> :
-        <VStack  mr={4} ml={4}  flex={1}>
+      {userCollect.length > 0 &&
+        <View mr={4} ml={4} mb={2} flex={1} minH={userCollectHeight} maxH={userCollectHeight}>
+          {isLoading ? <Loading /> :
+            <VStack flex={1} bgColor={'blue.400'} rounded="lg">
+              <HStack justifyContent="space-between" m={4} >
+                <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading">
+                  Você tem {userCollect.length}º agendamentos
+                </Heading>
+                <Pressable _pressed={{ opacity: 60 }} onPress={toggleUserCollect}>
+                  { isUserCollectVisible ?
+                  <Icon alignSelf="center" size={9} color="darkBlue.700"
+                    as={Entypo}
+                    name="chevron-small-up"
+                  />
+                  :
+                  <Icon alignSelf="center" size={9} color="darkBlue.700"
+                  as={Entypo}
+                  name="chevron-small-down"
+                />
+                  }
+                </Pressable>
+              </HStack>
+              <VStack mr={1} ml={1} flex={1}>
+                { isUserCollectVisible &&
+                <FlatList
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={isLoading}
+                      onRefresh={fetchColetas}
+                    />
+                  }
+                  data={userCollect}
+                  keyExtractor={item => item.id.toString()}
+                  renderItem={({ item }) => (
+                    <ColetaCard onPress={() => handleOpenColetaDetails(item.id.toString())} data={item} />
+                  )}
+                  ListEmptyComponent={() => (
+                    <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
+                      Não há coletas disponíveis no momento. {'\n'}Volte mais tarde.
+                    </Text>
+                  )}
+                  showsVerticalScrollIndicator={false}
+                />
+                }
+              </VStack>
+            </VStack>
+          }
+        </View>
+
+      }
+      { isLoading ? <Loading /> : !isUserCollectVisible &&
+        <VStack mr={4} ml={4} flex={1} bgColor="blue.400" rounded="lg" m={2}>
           <HStack justifyContent="space-between" m={4}>
             <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading">
               Coletas disponíveis
             </Heading>
             <Text color="darkBlue.700" fontSize="lg" fontFamily="heading">
-              {coletas.length}
+              {coletas.filter(collect => collect.teamCollect === true).length}
             </Text>
           </HStack>
           <VStack mr={1} ml={1} flex={1}>
             <FlatList
-              refreshControl={ 
+              refreshControl={
                 <RefreshControl
                   refreshing={isLoading}
                   onRefresh={fetchColetas}
                 />
               }
-              data={coletas}
+              data={coletas.filter(collect => collect.teamCollect === true)}
               keyExtractor={item => item.id.toString()}
               renderItem={({ item }) => (
                 <ColetaCard onPress={() => handleOpenColetaDetails(item.id.toString())} data={item} />
