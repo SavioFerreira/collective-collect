@@ -79,16 +79,21 @@ public class CollectController {
 		return ResponseEntity.ok(collectMapperService.convertCollectToDTO(saved));
 	}
 
-	@PostMapping("/{collectId}/addParticipant")
-	public ResponseEntity<?> addParticipantToCollect(@PathVariable Long collectId, @RequestBody CollectCollaboratorDTO collaboratorDTO) {
-		collectService.addCollaboratorToCollect(collectId, collaboratorDTO );
+	@PostMapping("/{id}/addParticipant")
+	public ResponseEntity<?> addParticipantToCollect(@PathVariable Long id, @RequestBody CollectCollaboratorDTO collaboratorDTO) {
+		collectService.addCollaboratorToCollect(id, collaboratorDTO );
 		return ResponseEntity.ok().build();
 	}
 
 	@PatchMapping("/{id}/start")
-	public ResponseEntity<CollectDTO> startCollect(@PathVariable Long id, @RequestParam("beforeImage") MultipartFile beforeImage, @RequestParam("afterImage") MultipartFile afterImage) {
-		collectService.startCollect(id, beforeImage, afterImage);
+	public ResponseEntity<CollectDTO> startCollect(@PathVariable Long id) {
+		collectService.startCollect(id);
 		return ResponseEntity.ok().build();
 	}
 
+	@PatchMapping("/{id}/complete")
+	public ResponseEntity<CollectDTO> completeCollect(@PathVariable Long id, @RequestParam("beforeImage") MultipartFile beforeImage, @RequestParam("afterImage") MultipartFile afterImage) {
+		collectService.completeCollect(id, beforeImage, afterImage);
+		return ResponseEntity.ok().build();
+	}
 }

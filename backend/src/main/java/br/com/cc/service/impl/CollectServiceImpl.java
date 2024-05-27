@@ -82,7 +82,6 @@ public class CollectServiceImpl implements CollectService {
 		boolean isAlreadyCollaborator = collect.getCollaborators().stream().anyMatch(user -> user.getId().equals(collaboratorDTO.getUser().getId()));
 		boolean isUserAdmin = collaboratorDTO.getUser().getRole().equals(AuthUserRole.ADMIN);
 
-
 		User[] userPrimaryCollaborator = collect.getCollaborators().toArray(new User[0]);
 		boolean isUserPrimaryCollaborator = false;
 
@@ -108,27 +107,33 @@ public class CollectServiceImpl implements CollectService {
 	}
 
 	@Override
-	public Optional<Collect> startCollect(Long id,  MultipartFile beforeImage,  MultipartFile afterImage)  {
+	public Optional<Collect> startCollect(Long id)  {
 		return collectRepository.findById(id).map(collect -> {
 			collect.setStatus(Status.OCORRENDO);
 			collect.setCollectDate(LocalDateTime.now());
-
-            String imageBeforeUrl = null;
-			String imageAfterUrl = null;
-            try {
-                imageBeforeUrl = imageStorageService.uploadImage(beforeImage);
-				imageAfterUrl = imageStorageService.uploadImage(afterImage);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            collect.setCollectImageBefore(imageBeforeUrl);
-		    collect.setCollectImageAfter(imageAfterUrl);
-
 			collectRepository.save(collect);
 			return collect;
 		});
 	}
 
+	@Override
+	public Optional<Collect> completeCollect(Long id,  MultipartFile beforeImage,  MultipartFile afterImage)  {
+		return collectRepository.findById(id).map(collect -> {
+			collect.setCollectDate(LocalDateTime.now());
+			String imageBeforeUrl = null;
+			String imageAfterUrl = null;
+			try {
+				imageBeforeUrl = imageStorageService.uploadImage(beforeImage);
+				imageAfterUrl = imageStorageService.uploadImage(afterImage);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 
+			collect.setCollectImageBefore(imageBeforeUrl);
+			collect.setCollectImageAfter(imageAfterUrl);
+			collect.setStatus(Status.EM_ANALISE);
+			collectRepository.save(collect);
+			return collect;
+		});
+	}
 }

@@ -13,7 +13,9 @@ public interface CollectService {
 
     void addCollaboratorToCollect(Long collectId, CollectCollaboratorDTO collaboratorDTO);
 
-    Optional<Collect> startCollect(Long id,  MultipartFile beforeImage,  MultipartFile afterImage);
+    Optional<Collect> startCollect(Long id);
+
+    Optional<Collect> completeCollect(Long id,  MultipartFile beforeImage,  MultipartFile afterImage);
 
     List<Collect> findAll();
 
