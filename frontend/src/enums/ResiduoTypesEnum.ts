@@ -1,6 +1,6 @@
 
 export enum ResiduoType  {
-    TODOS = "TODOS OS TIPOS",
+    TODOS = "TODOS",
     PLASTICO = "PLASTICO",
     VIDRO = "VIDRO",
     METAL = "METAL",

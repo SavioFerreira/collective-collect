@@ -15,11 +15,13 @@ import { AppError } from '@utils/AppError';
 import { api } from '@services/api';
 import { HelpModal } from '@components/HelpModal';
 import { useAuth } from '@hooks/useAuth';
+import {getTypeIcon} from '@functions/Icons'
 
 export function HomeColeta() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [types, setTypes] = useState(Object.values(ResiduoType));
+  const [iconTypes, setIconTypes] = useState(Object.values(getTypeIcon));
   const [coletas, setColetas] = useState<ColetaDTO[]>([]);
   const [allColetas, setAllColetas] = useState<ColetaDTO[]>([]);
   const { user } = useAuth();
@@ -113,6 +115,7 @@ export function HomeColeta() {
               isActive={typeSelected === item}
               onPress={() => handleTypeSelected(item)}
             />
+            
           )}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -122,13 +125,49 @@ export function HomeColeta() {
           mb={1} mt={1}
         />
       </VStack>
+
       {isLoading ? <Loading /> :
         <View flex={1}>
+
+          {!isUserCollectVisible && !isPublicCollectVisible &&
+            <VStack mr={3} ml={3} flex={1} rounded="lg" bgColor="blue.400" mb={2}>
+              <HStack m={2} justifyContent="space-evenly">
+                <View m={4} />
+                <Heading color="white" fontSize="xl" fontFamily="heading" alignSelf="center">
+                  Todas as coletas
+                </Heading>
+                <Text color="white" fontSize="xl" fontFamily="heading" alignSelf="flex-end">
+                  {coletas.length}
+                </Text>
+              </HStack>
+              <VStack mr={2} ml={2} flex={1}>
+                <FlatList
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={isLoading}
+                      onRefresh={fetchColetas}
+                    />
+                  }
+                  data={coletas}
+                  keyExtractor={item => item.id.toString()}
+                  renderItem={({ item }) => (
+                    <ColetaCard onPress={() => handleOpenColetaDetails(item.id.toString())} data={item} />
+                  )}
+                  ListEmptyComponent={() => (
+                    <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
+                      Não há coletas disponíveis no momento. {'\n'}Volte mais tarde.
+                    </Text>
+                  )}
+                  showsVerticalScrollIndicator={false}
+                />
+              </VStack>
+            </VStack>
+          }
 
           <HStack justifyContent="space-between" mr={2} ml={2} mb={2}>
             {userCollects.length > 0 && !isPublicCollectVisible &&
               <View flex={1} minH={userCollectHeight} maxH={userCollectHeight} m={1}>
-                <VStack flex={1} bgColor="blue.400" borderWidth={2} borderColor="red.500" rounded="lg">
+                <VStack flex={1} bgColor="blue.400" borderWidth={1} borderColor="red.500" rounded="lg">
                   <HStack justifyContent="space-evenly" m={2} >
                     <Heading color="white" fontSize="sm" fontFamily="heading">
                       Você possui {userCollects.length}º agendamentos
@@ -176,7 +215,7 @@ export function HomeColeta() {
 
             {PublicCollects.length > 0 && !isUserCollectVisible &&
               <View flex={1} minH={publicCollectHeight} maxH={publicCollectHeight} m={1}>
-                <VStack flex={1} bgColor="blue.400" borderWidth={2} borderColor="green.600" rounded="lg">
+                <VStack flex={1}  bgColor="blue.400" borderWidth={1} borderColor="green.600" rounded="lg">
                   <HStack justifyContent="space-evenly" m={2}>
                     <Heading color="white" fontSize="sm" fontFamily="heading">
                       Existem {PublicCollects.length}º coletas públicas
@@ -223,40 +262,7 @@ export function HomeColeta() {
             }
           </HStack>
 
-          {!isUserCollectVisible && !isPublicCollectVisible &&
-            <VStack mr={3} ml={3} flex={1} bgColor="blue.400" rounded="lg" mb={2}>
-              <HStack m={4} justifyContent="space-between">
-                <View m={4} />
-                <Heading color="darkBlue.700" fontSize="lg" fontFamily="heading" alignSelf="center">
-                  Todas as coletas
-                </Heading>
-                <Text color="darkBlue.700" fontSize="lg" fontFamily="heading" alignSelf="flex-end">
-                  {coletas.length}
-                </Text>
-              </HStack>
-              <VStack mr={2} ml={2} flex={1}>
-                <FlatList
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={isLoading}
-                      onRefresh={fetchColetas}
-                    />
-                  }
-                  data={coletas}
-                  keyExtractor={item => item.id.toString()}
-                  renderItem={({ item }) => (
-                    <ColetaCard onPress={() => handleOpenColetaDetails(item.id.toString())} data={item} />
-                  )}
-                  ListEmptyComponent={() => (
-                    <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
-                      Não há coletas disponíveis no momento. {'\n'}Volte mais tarde.
-                    </Text>
-                  )}
-                  showsVerticalScrollIndicator={false}
-                />
-              </VStack>
-            </VStack>
-          }
+
 
         </View>
       }
