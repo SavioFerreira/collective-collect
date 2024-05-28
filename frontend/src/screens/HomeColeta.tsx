@@ -22,10 +22,15 @@ export function HomeColeta() {
   const [types, setTypes] = useState(Object.values(ResiduoType));
   const [coletas, setColetas] = useState<ColetaDTO[]>([]);
   const [allColetas, setAllColetas] = useState<ColetaDTO[]>([]);
-  const [isUserCollectVisible, setIsUserCollectVisible] = useState(false);
   const { user } = useAuth();
-  const userCollect = coletas.filter(collect => collect.collaborators.some(users => users.id === user.id));
+
+  const userCollects = coletas.filter(collect => collect.collaborators.some(users => users.id === user.id));
+  const [isUserCollectVisible, setIsUserCollectVisible] = useState(false);
   const [userCollectHeight, setUserCollectHeight] = useState(50);
+
+  const PublicCollects = coletas.filter(collect => collect.teamCollect === true);
+  const [publicCollectHeight, setPublicCollectHeight] = useState(50);
+  const [isPublicCollectVisible, setIsPublicCollectVisible] = useState(false);
 
   const [typeSelected, setTypeSelected] = useState(types[0]);
   const navigation = useNavigation<AppNavigatorRoutesProps>();
@@ -37,7 +42,12 @@ export function HomeColeta() {
 
   function toggleUserCollect() {
     setIsUserCollectVisible(!isUserCollectVisible);
-    setUserCollectHeight(isUserCollectVisible ? 50 : 600);
+    setUserCollectHeight(isUserCollectVisible ? 55 : 450);
+  }
+
+  function togglePublicCollect() {
+    setIsPublicCollectVisible(!isPublicCollectVisible);
+    setPublicCollectHeight(isPublicCollectVisible ? 55 : 450);
   }
 
   function handleOpenColetaDetails(collectId: string) {
@@ -114,103 +124,106 @@ export function HomeColeta() {
       </VStack>
       {isLoading ? <Loading /> :
         <View flex={1}>
-          {userCollect.length > 0 &&
-            <View mr={3} ml={3} mb={2} flex={1} minH={userCollectHeight} maxH={userCollectHeight}>
-              <VStack flex={1} bgColor={'blue.400'} rounded="lg">
-                <HStack justifyContent="space-between" m={4} >
-                  <Heading color="green.400" fontSize="md" fontFamily="heading">
-                    Você tem {userCollect.length}º agendamentos
-                  </Heading>
-                  <Pressable _pressed={{ opacity: 60 }} onPress={toggleUserCollect}>
-                    {isUserCollectVisible ?
-                      <Icon alignSelf="center" size={9} color="green.400"
-                        as={Entypo}
-                        name="chevron-small-up"
-                      />
-                      :
-                      <Icon alignSelf="center" size={9} color="green.400"
-                        as={Entypo}
-                        name="chevron-small-down"
-                      />
-                    }
-                  </Pressable>
-                </HStack>
-                <VStack mr={2} ml={2} flex={1}>
-                  {isUserCollectVisible &&
-                    <FlatList
-                      refreshControl={
-                        <RefreshControl
-                          refreshing={isLoading}
-                          onRefresh={fetchColetas}
-                        />
-                      }
-                      data={userCollect}
-                      keyExtractor={item => item.id.toString()}
-                      renderItem={({ item }) => (
-                        <ColetaCard onPress={() => handleOpenColetaDetails(item.id.toString())} data={item} />
-                      )}
-                      ListEmptyComponent={() => (
-                        <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
-                          Não há coletas disponíveis no momento. {'\n'}Volte mais tarde.
-                        </Text>
-                      )}
-                      showsVerticalScrollIndicator={false}
-                    />
-                  }
-                </VStack>
-              </VStack>
-            </View>
-          }
-          
-          {userCollect.length > 0 &&
-            <View mr={3} ml={3} mb={2} flex={1} minH={userCollectHeight} maxH={userCollectHeight}>
-              <VStack flex={1} bgColor={'blue.400'} rounded="lg">
-                <HStack justifyContent="space-between" m={4} >
-                  <Heading color="white" fontSize="md" fontFamily="heading">
-                    Existem {coletas.filter(collect => collect.teamCollect === true).length}º coletas disponíveis
-                  </Heading>
-                  <Pressable _pressed={{ opacity: 60 }} onPress={toggleUserCollect}>
-                    {isUserCollectVisible ?
-                      <Icon alignSelf="center" size={9} color="white"
-                        as={Entypo}
-                        name="chevron-small-up"
-                      />
-                      :
-                      <Icon alignSelf="center" size={9} color="white"
-                        as={Entypo}
-                        name="chevron-small-down"
-                      />
-                    }
-                  </Pressable>
-                </HStack>
-                <VStack mr={2} ml={2} flex={1}>
-                  {isUserCollectVisible &&
-                    <FlatList
-                      refreshControl={
-                        <RefreshControl
-                          refreshing={isLoading}
-                          onRefresh={fetchColetas}
-                        />
-                      }
-                      data={userCollect}
-                      keyExtractor={item => item.id.toString()}
-                      renderItem={({ item }) => (
-                        <ColetaCard onPress={() => handleOpenColetaDetails(item.id.toString())} data={item} />
-                      )}
-                      ListEmptyComponent={() => (
-                        <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
-                          Não há coletas disponíveis no momento. {'\n'}Volte mais tarde.
-                        </Text>
-                      )}
-                      showsVerticalScrollIndicator={false}
-                    />
-                  }
-                </VStack>
-              </VStack>
-            </View>
-          }
 
-          {!isUserCollectVisible &&
+          <HStack justifyContent="space-between" mr={2} ml={2} mb={2}>
+            {userCollects.length > 0 && !isPublicCollectVisible &&
+              <View flex={1} minH={userCollectHeight} maxH={userCollectHeight} m={1}>
+                <VStack flex={1} bgColor="blue.400" borderWidth={2} borderColor="red.500" rounded="lg">
+                  <HStack justifyContent="space-evenly" m={2} >
+                    <Heading color="white" fontSize="sm" fontFamily="heading">
+                      Você possui {userCollects.length}º agendamentos
+                    </Heading>
+                    <Pressable _pressed={{ opacity: 60 }} onPress={toggleUserCollect}>
+                      {isUserCollectVisible ?
+                        <Icon alignSelf="center" size={9} color="white"
+                          as={Entypo}
+                          name="chevron-small-up"
+                        />
+                        :
+                        <Icon alignSelf="center" size={9} color="white"
+                          as={Entypo}
+                          name="chevron-small-down"
+                        />
+                      }
+                    </Pressable>
+                  </HStack>
+                  <VStack mr={2} ml={2} flex={1}>
+                    {isUserCollectVisible &&
+                      <FlatList
+                        refreshControl={
+                          <RefreshControl
+                            refreshing={isLoading}
+                            onRefresh={fetchColetas}
+                          />
+                        }
+                        data={userCollects}
+                        keyExtractor={item => item.id.toString()}
+                        renderItem={({ item }) => (
+                          <ColetaCard onPress={() => handleOpenColetaDetails(item.id.toString())} data={item} />
+                        )}
+                        ListEmptyComponent={() => (
+                          <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
+                            Não há coletas disponíveis no momento. {'\n'}Volte mais tarde.
+                          </Text>
+                        )}
+                        showsVerticalScrollIndicator={false}
+                      />
+                    }
+                  </VStack>
+                </VStack>
+              </View>
+            }
+
+            {PublicCollects.length > 0 && !isUserCollectVisible &&
+              <View flex={1} minH={publicCollectHeight} maxH={publicCollectHeight} m={1}>
+                <VStack flex={1} bgColor="blue.400" borderWidth={2} borderColor="green.600" rounded="lg">
+                  <HStack justifyContent="space-evenly" m={2}>
+                    <Heading color="white" fontSize="sm" fontFamily="heading">
+                      Existem {PublicCollects.length}º coletas públicas
+                    </Heading>
+                    <Pressable _pressed={{ opacity: 60 }} onPress={togglePublicCollect}>
+                      {isPublicCollectVisible ?
+                        <Icon alignSelf="center" size={9} color="white"
+                          as={Entypo}
+                          name="chevron-small-up"
+                        />
+                        :
+                        <Icon alignSelf="center" size={9} color="white"
+                          as={Entypo}
+                          name="chevron-small-down"
+                        />
+                      }
+                    </Pressable>
+                  </HStack>
+                  <VStack mr={2} ml={2} flex={1}>
+                    {isPublicCollectVisible &&
+                      <FlatList
+                        refreshControl={
+                          <RefreshControl
+                            refreshing={isLoading}
+                            onRefresh={fetchColetas}
+                          />
+                        }
+                        data={PublicCollects}
+                        keyExtractor={item => item.id.toString()}
+                        renderItem={({ item }) => (
+                          <ColetaCard onPress={() => handleOpenColetaDetails(item.id.toString())} data={item} />
+                        )}
+                        ListEmptyComponent={() => (
+                          <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
+                            Não há coletas disponíveis no momento. {'\n'}Volte mais tarde.
+                          </Text>
+                        )}
+                        showsVerticalScrollIndicator={false}
+                      />
+                    }
+                  </VStack>
+                </VStack>
+              </View>
+            }
+          </HStack>
+
+          {!isUserCollectVisible && !isPublicCollectVisible &&
             <VStack mr={3} ml={3} flex={1} bgColor="blue.400" rounded="lg" mb={2}>
               <HStack m={4} justifyContent="space-between">
                 <View m={4} />
@@ -244,6 +257,7 @@ export function HomeColeta() {
               </VStack>
             </VStack>
           }
+
         </View>
       }
     </VStack>
