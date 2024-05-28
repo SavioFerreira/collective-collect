@@ -1,23 +1,27 @@
 import { useState } from "react";
 import { Modal } from 'react-native';
-import { HStack, VStack, Text, View, Flex, Icon, Pressable, Box, Image, ScrollView, useToast, IButtonProps } from "native-base";
+import { HStack, VStack, Text, View, Flex, Icon, Pressable, Box, Image, ScrollView, useToast, IButtonProps, Button } from "native-base";
 import { FontAwesome6 } from '@expo/vector-icons';
 import { IViewProps } from "native-base/lib/typescript/components/basic/View/types";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useImagePicker } from "@hooks/useImagePicker";
-
 
 import { Video, ResizeMode } from 'expo-av';
 import videoPath from '@assets/working-collect.mp4';
 import React from "react";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { useNavigation } from "@react-navigation/native";
+import { AppError } from "@utils/AppError";
+import { api } from "@services/api";
+import { FormatDate } from "./FormatDate";
 
 type Props = IViewProps & {
     label: string;
+    collectId: string
 }
 
-export function OnCollectModal({ label, ...rest }: Props) {
+export function OnCollectModal({ label, collectId, ...rest }: Props) {
+    const [isLoading, setIsLoading] = useState(false);
     const [isModalVisible, SetIsModalVisible] = useState(false);
     const [isSelectPhotoVisible, setIsSelectPhotoVisible] = useState(false);
     const { pickImage, takePhoto } = useImagePicker();
@@ -64,10 +68,48 @@ export function OnCollectModal({ label, ...rest }: Props) {
             setPhotoAfter(imageUri ?? null);
         }
     };
-
     const canFinalize = photoBefore && photoAfter;
 
-    function handleCompletCollect() {
+    async function handleCompletCollect() {
+
+        const formData = new FormData();
+        const date = new Date();
+        const dateTimeImageSelected = FormatDate(date.toString()).replaceAll('/', '-').replaceAll(':', '-').replaceAll(' ', '_');
+        setIsLoading(true);
+        formData.append('beforeImage', {
+            uri: photoBefore,
+            type: 'image/png',
+            name: `beforeImage_${dateTimeImageSelected.toString()}_collectId-${collectId}.png`
+        } as any)
+
+        formData.append('afterImage', {
+            uri: photoAfter,
+            type: 'image/png',
+            name: `afterImage_${dateTimeImageSelected.toString()}_collectId-${collectId}.png`
+        } as any)
+
+        try {
+            
+            const response = await api.patch(`/api/collect/${collectId}/complete`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : 'Não foi possível carregar os detalhes da coleta';
+
+            toast.show({
+                title: title,
+                placement: 'top',
+                bgColor: 'red.500'
+            })
+        } finally {
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 1000);
+        }
         toggleModal();
         handleGoBack();
         toast.show({
@@ -77,6 +119,7 @@ export function OnCollectModal({ label, ...rest }: Props) {
             bgColor: 'green.600',
         });
     }
+
 
     return (
 
@@ -217,25 +260,19 @@ export function OnCollectModal({ label, ...rest }: Props) {
                                     </View>
                                 </Pressable>
                             </HStack>
-
-
-                            <Pressable
+                            <Button
                                 mt={10}
+                                w="100%"
+                                h={16}
+                                size="lg"
+                                borderRadius="lg"
                                 bgColor={canFinalize ? "green.400" : "blue.400"}
                                 isDisabled={!canFinalize}
                                 _pressed={{ opacity: 70 }}
-                                size="20"
-                                w="100%"
-                                h={16}
-                                borderRadius="md"
-                                alignItems="center"
-                                justifyContent="center"
                                 onPress={handleCompletCollect}
-                            >
-                                <Text fontFamily="heading" fontSize="xl" color="white">
-                                    Finalizar
-                                </Text>
-                            </Pressable>
+                                isLoading={!canFinalize && isLoading}>
+                                Finalizar
+                            </Button>
                         </ScrollView>
                     </View>
                 </Flex>
@@ -243,4 +280,3 @@ export function OnCollectModal({ label, ...rest }: Props) {
         </View>
     );
 }
-
