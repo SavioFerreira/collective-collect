@@ -66,6 +66,28 @@ export function Coleta() {
     fetchColetaDetails();
   };
 
+  async function handleStartCollect() {
+    try {
+      setIsLoading(true);
+      const response = await api.patch(`/api/collect/${collectId}/start`);
+      setIsCollectStartVisible(true)
+
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError ? error.message : 'Não foi possível carregar os detalhes da coleta';
+
+      toast.show({
+        title: title,
+        placement: 'top',
+        bgColor: 'red.500'
+      })
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    }
+  }
+
   async function fetchColetaDetails() {
     try {
       setIsLoading(true);
@@ -87,11 +109,6 @@ export function Coleta() {
         setIsLoading(false);
       }, 1000);
     }
-  }
-
-  async function handleStartCollect() {
-    setIsCollectStartVisible(true)
-    console.log("funcionou");
   }
 
   useEffect(() => {
@@ -342,7 +359,7 @@ export function Coleta() {
                     </Text>
                   </Pressable>
                   :
-                  <OnCollectModal w="82%" label="Clique para Iniciar "/>
+                  <OnCollectModal w="82%" label="Clique para Iniciar " collectId={collectId}/>
                 }
                 <Pressable
                   justifyContent="center"
