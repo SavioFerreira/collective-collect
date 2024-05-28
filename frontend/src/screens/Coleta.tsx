@@ -67,6 +67,9 @@ export function Coleta() {
   };
 
   async function handleStartCollect() {
+
+    if (coleta.status === "OCORRENDO") setIsCollectStartVisible(true);
+   
     try {
       setIsLoading(true);
       const response = await api.patch(`/api/collect/${collectId}/start`);
@@ -308,7 +311,7 @@ export function Coleta() {
               </Box>
             </Box>
 
-            {!isUserCollaborator && isCollectPublic === true ?
+            {!isUserCollaborator && isCollectPublic === true && coleta.status === "DISPONIVEL" ?
               <Pressable
                 bgColor="orange.500"
                 _pressed={{ bg: "orange.700" }}
@@ -328,7 +331,7 @@ export function Coleta() {
               ''
             }
 
-            {isUserPrimaryCollaborator ?
+            {isUserPrimaryCollaborator && coleta.status !== "EM_ANALISE"?
               <HStack justifyContent="space-between">
                 { isCollectStartVisible === false ?
                   <Pressable
@@ -354,12 +357,27 @@ export function Coleta() {
                       );
                     }}
                   >
-                    <Text numberOfLines={1} fontSize={20} fontFamily="heading" color="blue.200" mb={1} textAlign="center">
-                      Iniciar Coleta?
-                    </Text>
+                    { coleta.status === "DISPONIVEL" ?
+                      <Text numberOfLines={1} fontSize={20} fontFamily="heading" color="blue.200" mb={1} textAlign="center">
+                        Iniciar Coleta?
+                      </Text>
+                      :
+                      <Text numberOfLines={1} fontSize={20} fontFamily="heading" color="blue.200" mb={1} textAlign="center">
+                        Retornar para coleta?
+                      </Text>
+                    }
                   </Pressable>
                   :
-                  <OnCollectModal w="82%" label="Clique para Iniciar " collectId={collectId}/>
+                 
+                  <View w="82%">
+                    { coleta.status === "OCORRENDO" &&
+                      <OnCollectModal label="Retornar para coleta " collectId={collectId}/>
+                    }
+                    { coleta.status !== "OCORRENDO" &&
+                      <OnCollectModal label="Clique para Iniciar " collectId={collectId}/>
+                    }
+                  </View>
+                  
                 }
                 <Pressable
                   justifyContent="center"
@@ -396,7 +414,7 @@ export function Coleta() {
                       name="x-circle"
                       onPress={closeColetaModal}
                     />
-                    {isUserPrimaryCollaborator ?
+                    {isUserPrimaryCollaborator && coleta.status === "DISPONIVEL" ? 
                       <ColetaCadastroFull onRegister={closeColetaModal} collectId={coleta.id} />
                       :
                       <ColetaCadastroBasic onRegister={closeColetaModal} collectId={coleta.id} />

@@ -26,7 +26,7 @@ export function HomeColeta() {
   const [allColetas, setAllColetas] = useState<ColetaDTO[]>([]);
   const { user } = useAuth();
 
-  const userCollects = coletas.filter(collect => collect.collaborators.some(users => users.id === user.id));
+  const userCollects = coletas.filter(collect => collect.collaborators.some(users => users.id === user.id)).filter(collect => collect.status !== "EM_ANALISE");
   const [isUserCollectVisible, setIsUserCollectVisible] = useState(false);
   const [userCollectHeight, setUserCollectHeight] = useState(50);
 
