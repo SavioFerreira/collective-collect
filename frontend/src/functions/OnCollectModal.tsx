@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Modal } from 'react-native';
+import { useEffect, useState } from "react";
+import { Modal, BackHandler, Alert  } from 'react-native';
 import { HStack, VStack, Text, View, Flex, Icon, Pressable, Box, Image, ScrollView, useToast, IButtonProps, Button } from "native-base";
 import { FontAwesome6 } from '@expo/vector-icons';
 import { IViewProps } from "native-base/lib/typescript/components/basic/View/types";
@@ -120,6 +120,17 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
         });
     }
 
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            if (isModalVisible && !canFinalize) {
+                return true;
+            }
+            return false;
+        });
+    
+        return () => backHandler.remove();
+    }, [isModalVisible, canFinalize]);
+
 
     return (
 
@@ -144,7 +155,13 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
             <Modal
                 visible={isModalVisible}
                 animationType="slide"
-                onRequestClose={toggleModal}
+                onRequestClose={() => {
+                    if (canFinalize) {
+                        toggleModal();
+                    } else {
+                        Alert.alert("Atenção", "Inclua as imagens de antes e depois da coleta para finalizar!")
+                    }
+                }}
                 transparent={true}
 
             >
