@@ -7,6 +7,7 @@ import { ValidaDenuncia } from '@screens/ValidaDenuncia';
 
 import LogoCollectiveCollectSvg from '@assets/logo.svg';
 import LogoRecicleSvg from '@assets/recycleLogo.svg';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type AdmRoutes = {
     cc: undefined;
@@ -25,8 +26,8 @@ export default function AdmRoutes() {
                 const { routeNames, index } = props.state;
                 const focused = routeNames[index];
                 return (
-                    <DrawerContentScrollView showsVerticalScrollIndicator={false} {...props} style={{ backgroundColor: colors.darkBlue[800], borderWidth: 2, borderColor: colors.green[400] }}>
-
+                <SafeAreaView style={{ flex: 1, backgroundColor: colors.darkBlue[800], borderWidth: 2, borderColor: colors.green[400]}}>
+                    <DrawerContentScrollView showsVerticalScrollIndicator={false} {...props} style={{ backgroundColor: colors.darkBlue[800]}}>
                         <HStack justifyContent="center">
                             <Text textAlign="center" fontSize="lg" fontFamily="heading" mb={3} mr={2} color={colors.green[400]}>
                                 Admin control
@@ -73,6 +74,7 @@ export default function AdmRoutes() {
                         </Center>
 
                     </DrawerContentScrollView>
+                </SafeAreaView>
                 );
             }}
             screenOptions={{

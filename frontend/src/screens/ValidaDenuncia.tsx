@@ -1,11 +1,12 @@
+import { IconHeader } from "@components/IconHeader";
 import { VStack, ScrollView, Heading, Center } from "native-base";
-import { ScreenHeader } from "@components/ScreenHeader";
+
 
 export function ValidaDenuncia() {
 
   return (
     <VStack flex={1}>
-      <ScreenHeader title={"Valida Denuncia"} />
+      <IconHeader title="Validação de Denuncias" />
       <ScrollView mt={10}>
         <Center>
           <Heading>

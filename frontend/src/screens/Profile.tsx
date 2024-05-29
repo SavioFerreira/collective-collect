@@ -6,10 +6,11 @@ import * as FileSystem from 'expo-file-system';
 
 import  BackgroundImg  from '@assets/background.png';
 
-import { ScreenHeader } from '@components/ScreenHeader';
 import { UserPhoto } from '@components/UserPhoto';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
+import { HomeHeader } from '@components/HomeHeader';
+import { IconHeader } from '@components/IconHeader';
 
 const PHOTO_SIZE = 150;
 
@@ -51,7 +52,7 @@ export function Profile() {
 
   return (
     <VStack flex={1}>
-      <ScreenHeader title="Perfil" />
+      <IconHeader title="Perfil" />
       <ScrollView>
         <Image 
           source={BackgroundImg}
