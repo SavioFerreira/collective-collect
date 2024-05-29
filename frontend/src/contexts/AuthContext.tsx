@@ -5,6 +5,7 @@ import { storageUserSave, storageUserGet, storageUserRemove } from '@storage/sto
 
 import { api } from '@services/api'
 import { UserDTO } from "@dtos/UserDTO";
+import { setSignOutCallback } from '@functions/AuthManager';
 
 export type AuthContextDataProps = {
   user: UserDTO;
@@ -86,10 +87,11 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     } finally {
       setIsLoadingUserStorageData(false);
     }
- } 
+  } 
 
   useEffect(() => {
     loadUserData();
+    setSignOutCallback(signOut);
   }, [])
 
   return (
