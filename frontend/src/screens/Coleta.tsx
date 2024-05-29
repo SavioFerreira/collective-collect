@@ -20,6 +20,7 @@ import { useAuth } from '@hooks/useAuth';
 import { OnCollectModal } from '@functions/OnCollectModal';
 import { ColetaCadastroFull } from '@functions/ColetaCadastroFull';
 import { ColetaCadastroBasic } from '@functions/ColetaCadastroBasic';
+import { StatusEnum } from '@enums/StatusEnum';
 
 type RouteParamsProps = {
   collectId: string;
@@ -311,7 +312,7 @@ export function Coleta() {
               </Box>
             </Box>
 
-            {!isUserCollaborator && isCollectPublic === true && coleta.status === "DISPONIVEL" ?
+            {!isUserCollaborator && isCollectPublic  && coleta.status === StatusEnum.DISPONIVEL ?
               <Pressable
                 bgColor="orange.500"
                 _pressed={{ bg: "orange.700" }}
@@ -331,9 +332,9 @@ export function Coleta() {
               ''
             }
 
-            {isUserPrimaryCollaborator && coleta.status !== "EM_ANALISE"?
+            {isUserPrimaryCollaborator && coleta.status !== StatusEnum.EM_ANALISE ?
               <HStack justifyContent="space-between">
-                { isCollectStartVisible === false ?
+                { !isCollectStartVisible ?
                   <Pressable
                     w="82%"
                     justifyContent="center"
@@ -357,7 +358,7 @@ export function Coleta() {
                       );
                     }}
                   >
-                    { coleta.status === "DISPONIVEL" ?
+                    { coleta.status === StatusEnum.DISPONIVEL && coleta.id.toString === collectId.toString?
                       <Text numberOfLines={1} fontSize={20} fontFamily="heading" color="blue.200" mb={1} textAlign="center">
                         Iniciar Coleta?
                       </Text>
@@ -370,10 +371,10 @@ export function Coleta() {
                   :
                  
                   <View w="82%">
-                    { coleta.status === "OCORRENDO" &&
+                    { coleta.status === StatusEnum.OCORRENDO &&
                       <OnCollectModal label="Retornar para coleta " collectId={collectId}/>
                     }
-                    { coleta.status !== "OCORRENDO" &&
+                    { coleta.status !== StatusEnum.OCORRENDO &&
                       <OnCollectModal label="Clique para Iniciar " collectId={collectId}/>
                     }
                   </View>
@@ -414,7 +415,7 @@ export function Coleta() {
                       name="x-circle"
                       onPress={closeColetaModal}
                     />
-                    {isUserPrimaryCollaborator && coleta.status === "DISPONIVEL" ? 
+                    {isUserPrimaryCollaborator && coleta.status === StatusEnum.DISPONIVEL ? 
                       <ColetaCadastroFull onRegister={closeColetaModal} collectId={coleta.id} />
                       :
                       <ColetaCadastroBasic onRegister={closeColetaModal} collectId={coleta.id} />

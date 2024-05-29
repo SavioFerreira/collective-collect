@@ -41,12 +41,12 @@ type IconInfo = {
   export function getStatusIcon(status: string): IconInfo {
     const iconMap: IconMap = {
 
-      DISPONIVEL: { name: 'pending-actions', Component: MaterialIcons, color:"blue.300" },
+      DISPONIVEL: { name: 'pending-actions', Component: MaterialIcons, color:"cyan.300" },
       PENDENTE: { name: 'pending-actions', Component: MaterialIcons, color:"gray.200" },
       APROVADO: { name: 'check-circle-o', Component: FontAwesome, color:"emerald.500" },
       REJEITADO: { name: 'alert-triangle', Component: Feather, color:"red.700" },
-      EM_ANALISE: { name: 'unverified', Component: Octicons, color:"amber.300" },
-      OCORRENDO: { name: 'unverified', Component: Octicons, color:"amber.300" }
+      EM_ANALISE: { name: 'unverified', Component: Octicons, color:"purple.400" },
+      OCORRENDO: { name: 'unverified', Component: Octicons, color:"amber.500" }
     };
     return iconMap[status] || { name: 'alert-circle', Component: Feather };
   };

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { RefreshControl, TouchableOpacity } from 'react-native';
-import { HStack, VStack, FlatList, useToast, Text, Heading, Icon, View, Pressable } from "native-base";
+import { HStack, VStack, FlatList, useToast, Text, Heading, Icon, View, Pressable} from "native-base";
 import { Entypo } from '@expo/vector-icons';
 
 import { IconHeader } from "@components/IconHeader";
@@ -128,7 +128,7 @@ export function HomeColeta() {
 
       {isLoading ? <Loading /> :
         <View flex={1}>
-
+        
           {!isUserCollectVisible && !isPublicCollectVisible &&
             <VStack mr={3} ml={3} flex={1} rounded="lg" bgColor="blue.400" mb={2}>
               <HStack m={2} justifyContent="space-evenly">
@@ -261,8 +261,6 @@ export function HomeColeta() {
               </View>
             }
           </HStack>
-
-
 
         </View>
       }
