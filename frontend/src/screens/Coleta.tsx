@@ -70,10 +70,9 @@ export function Coleta() {
   async function handleStartCollect() {
 
     if (coleta.status === "OCORRENDO") setIsCollectStartVisible(true);
-   
     try {
       setIsLoading(true);
-      const response = await api.patch(`/api/collect/${collectId}/start`);
+      await api.patch(`/api/collect/${collectId}/start`);
       setIsCollectStartVisible(true)
 
     } catch (error) {
@@ -97,8 +96,6 @@ export function Coleta() {
       setIsLoading(true);
       const response = await api.get(`/api/collect/${collectId}`);
       setcoleta(response.data);
-
-
     } catch (error) {
       const isAppError = error instanceof AppError;
       const title = isAppError ? error.message : 'Não foi possível carregar os detalhes da coleta';
@@ -380,22 +377,25 @@ export function Coleta() {
                   </View>
                   
                 }
-                <Pressable
-                  justifyContent="center"
-                  bgColor="blue.500"
-                  p={4} borderRadius="md"
-                  _pressed={{ bg: "blue.700" }}
-                  onPress={openColetaModal}
-                >
-                  <Icon
-                    as={Feather}
-                    name={'edit'}
-                    color="white"
-                    size={8}
-                    alignSelf="center"
-
-                  />
-                </Pressable>
+                  <Pressable
+                    justifyContent="center"
+                    bgColor="blue.500"
+                    p={4} borderRadius="md"
+                    _pressed={{ bg: "blue.700" }}
+                    onPress={() => {
+                      coleta.status !== StatusEnum.OCORRENDO ? 
+                        openColetaModal 
+                      : 
+                        Alert.alert("Atenção!", "Não é possível editar a coleta ocorrendo")}}>
+                    <Icon
+                      as={Feather}
+                      name={'edit'}
+                      color="white"
+                      size={8}
+                      alignSelf="center"
+  
+                    />
+                  </Pressable>
               </HStack>
               :
               ''
