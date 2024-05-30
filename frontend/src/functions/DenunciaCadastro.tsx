@@ -55,7 +55,6 @@ export function DenunciaCadastro({ onRegister }: Props) {
                     if (address) setAddress(address || 'Localização não encontrada')
 
                 }).catch(error => {
-                    console.error('Erro ao obter o endereço:', error);
                     setAddress('Erro ao definir localização');
                 })
         }).then((response) => subscription = response);
@@ -142,7 +141,6 @@ export function DenunciaCadastro({ onRegister }: Props) {
                 throw new Error('Falha ao enviar Denuncia!');
             }
         } catch (error) {
-            console.error("Error:", error);
             return 'fail';
         } finally {
             setIsLoading(false);
