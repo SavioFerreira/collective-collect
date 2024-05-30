@@ -30,10 +30,10 @@ export function ValidaColeta() {
   const collectGravity = coleta.gravity !== undefined ? coleta.gravity.toLocaleLowerCase() : "";
   const pendingVerifyCollect = coletas.filter(collect => collect.status === StatusEnum.EM_ANALISE);
 
-  const collectColaborator =  coleta.collaborators !== undefined ? coleta.collaborators.map(user => user.name).join(', ') : "";
-  const collectImageBefore =  coleta.collectImageBefore !== undefined ? coleta.collectImageBefore : "";
+  const collectColaborator = coleta.collaborators !== undefined ? coleta.collaborators.map(user => user.name).join(', ') : "";
+  const collectImageBefore = coleta.collectImageBefore !== undefined ? coleta.collectImageBefore : "";
   const collectImageAfter = coleta.collectImageAfter !== undefined ? coleta.collectImageAfter : "";
-  
+
 
   const toast = useToast();
 
@@ -74,6 +74,18 @@ export function ValidaColeta() {
       <IconHeader title="Validação de Coletas" />
       {isLoading ? <Loading /> :
         <View flex={1} m={3}>
+          <View rounded="xl" overflow="hidden" w="100%" h={230} alignSelf="center" mb={2}>
+            <Video
+              ref={video}
+              source={videoPath}
+              isMuted={true}
+              resizeMode={ResizeMode.COVER}
+              shouldPlay
+              isLooping
+              style={{ width: '100%', height: '100%' }}
+            />
+          </View>
+
           <VStack flex={1} rounded="lg" bgColor="blue.400">
             <HStack m={2} justifyContent="space-evenly">
               <View m={4} />
@@ -106,27 +118,59 @@ export function ValidaColeta() {
               />
             </VStack>
           </VStack>
-          <View rounded="xl" overflow="hidden" borderWidth={2} borderColor="blue.600" w="100%" h={300} alignSelf="center" mt={3}>
-            <Video
-              ref={video}
-              source={videoPath}
-              isMuted={true}
-              resizeMode={ResizeMode.COVER}
-              shouldPlay
-              isLooping
-              style={{ width: '100%', height: '100%' }}
-            />
-          </View>
+
+          <VStack h={81} rounded="lg" bgColor="darkBlue.800" mt={2} justifyContent="space-evenly">
+            <HStack m={3} alignSelf="center">
+              <HStack alignSelf="center">
+                <Text fontFamily="body" fontSize="md" color="blue.200" mb={1} mr={1}>
+                  Coletas Aprovadas
+                </Text>
+                <Icon
+                  as={Entypo}
+                  name={'emoji-happy'}
+                  color="green.400"
+                  size="lg"
+                  alignSelf="center"
+                />
+              </HStack>
+              <VStack>
+                <Text numberOfLines={1} color="blue.200" fontSize="md" textAlign="justify" m={2} mb={3} alignSelf="center">
+                  TODO
+                </Text>
+              </VStack>
+            </HStack>
+
+            <HStack m={3} alignSelf="center">
+              <HStack alignSelf="center">
+                <Text fontFamily="body" fontSize="md" color="blue.200" mb={1} mr={1}>
+                  Coletas Rejeitadas
+                </Text>
+                <Icon
+                  as={Entypo}
+                  name={'emoji-sad'}
+                  color="red.600"
+                  size="lg"
+                  alignSelf="center"
+                />
+              </HStack>
+              <VStack>
+                <Text numberOfLines={1} color="blue.200" fontSize="md" textAlign="justify" m={2} mb={3} alignSelf="center">
+                  TODO
+                </Text>
+              </VStack>
+            </HStack>
+          </VStack>
+
           <View>
             <Modal
               visible={isModalVisible}
-              animationType="slide"
+              animationType="fade"
               onRequestClose={closeDenunciaModal}
               transparent={true}
             >
               <Flex flex={1} alignItems="center" justifyContent="center" bg="rgba(74, 169, 255, 0.87)">
-                <View bgColor="blue.500" p={3} pb={3} justifyContent="flex-end" borderRadius="lg" w="95%" h="98%" shadow={1}>
-                  <Icon alignSelf="flex-end" size={8} color="green.400"
+                <View bgColor="blue.500" pb={2} justifyContent="flex-end" w="100%" h="100%" shadow={1}>
+                  <Icon alignSelf="flex-end" size={8} color="green.400" mt={4} mr={4}
                     as={Feather}
                     name="x-circle"
                     onPress={closeDenunciaModal}
@@ -139,7 +183,7 @@ export function ValidaColeta() {
                           Validação coleta nº {coleta.id}
                         </Heading>
 
-                        <HStack bgColor="darkBlue.600" rounded="lg" mr={2} ml={2} justifyContent="space-around">
+                        <HStack bgColor="darkBlue.600" rounded="lg" justifyContent="space-around" mb={2}>
                           <HStack ml={4} mt={2}>
                             <VStack alignSelf="center">
                               <Icon
@@ -181,36 +225,36 @@ export function ValidaColeta() {
                           </HStack>
                         </HStack>
 
-                        <VStack w={350} h={250} bgColor="red.400" m={2} rounded="lg" >
+                        <VStack w={390} h={250} bgColor="red.400"  rounded="lg" mb={3} >
                           <Text color="white" textAlign="center" fontFamily='body' fontSize="lg" mt={2}>
                             Imagem antes da coleta
                           </Text>
                           <Pressable _pressed={{ opacity: 60 }}>
                             <Image
-                              source={{ uri: `${collectImageBefore}`}}
+                              source={{ uri: `${collectImageBefore}` }}
                               alt="imagem Antes"
                               resizeMode="cover"
                               position="absolute"
-                              width={350}
-                              height={220}
+                              width={390}
+                              height={216}
                               borderRadius="lg"
                               borderTopRadius={0}
                               onError={() => { Alert.alert("Erro!", "Ocorreu um erro na renderização da imagem") }}
                             />
                           </Pressable>
                         </VStack>
-                        <VStack w={350} h={250} bgColor="green.400" m={2} mt={1} rounded="lg">
+                        <VStack w={390} h={250} bgColor="green.400" rounded="lg" mb={2}>
                           <Text color="white" textAlign="center" fontFamily='body' fontSize="lg" mt={2}>
                             Imagem Depois da coleta
                           </Text>
                           <Pressable _pressed={{ opacity: 60 }}>
                             <Image
-                              source={{ uri: `${collectImageAfter}`}}
+                              source={{ uri: `${collectImageAfter}` }}
                               alt="Imagem depois"
                               resizeMode="cover"
                               position="absolute"
-                              width={350}
-                              height={220}
+                              width={390}
+                              height={216}
                               borderRadius="lg"
                               borderTopRadius={0}
                             />
@@ -250,7 +294,7 @@ export function ValidaColeta() {
                               alignSelf="center"
                             />
                             <Text fontFamily="body" fontSize="xs" color="green.400" mb={1}>
-                              Risco
+                              Gravidade
                             </Text>
                           </VStack>
                           <VStack ml={3}>
