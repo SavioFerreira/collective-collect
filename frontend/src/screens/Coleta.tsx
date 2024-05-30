@@ -105,6 +105,8 @@ export function Coleta() {
         placement: 'top',
         bgColor: 'red.500'
       })
+      handleGoBack();
+      
     } finally {
       setTimeout(() => {
         setIsLoading(false);
