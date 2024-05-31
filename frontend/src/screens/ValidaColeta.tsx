@@ -73,7 +73,6 @@ export function ValidaColeta() {
       setIsLoading(false);
     }
   }
-  
 
   async function fetchColetas() {
     setIsLoading(true);

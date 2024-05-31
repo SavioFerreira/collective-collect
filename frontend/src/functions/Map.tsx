@@ -10,6 +10,7 @@ import { getGravityIcon, getTypeIcon } from "src/functions/Icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { Alert } from "react-native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
+import { StatusEnum } from "@enums/StatusEnum";
 
 type Props = MapViewProps & {
     coords: LatLng[];
@@ -29,6 +30,8 @@ export function Map({ coords, ...rest }: Props) {
     const navigation = useNavigation<AppNavigatorRoutesProps>();
     const route = useRoute<RouteProp<DenunciasRouteParams, 'Denuncias'>>();
     const complaintId = route.params?.complaintId;
+
+    const visibleCollect =  coletas.filter(collect => collect.status !== StatusEnum.APROVADO);
 
 
     function handleOpenColetaDetails(collectId: string) {
@@ -102,7 +105,7 @@ export function Map({ coords, ...rest }: Props) {
                 customMapStyle={mapStyleHopper}
                 {...rest}
             >
-                {coletas.map((coleta, index) => {
+                {visibleCollect.map((coleta, index) => {
                     const typeIcon = getTypeIcon(coleta.type);
                     const colorIcon = getGravityIcon(coleta.gravity);
                     return (

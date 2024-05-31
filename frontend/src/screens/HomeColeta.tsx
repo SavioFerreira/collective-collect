@@ -15,6 +15,7 @@ import { AppError } from '@utils/AppError';
 import { api } from '@services/api';
 import { HelpModal } from '@components/HelpModal';
 import { useAuth } from '@hooks/useAuth';
+import { StatusEnum } from '@enums/StatusEnum';
 
 export function HomeColeta() {
 
@@ -24,11 +25,12 @@ export function HomeColeta() {
   const [allColetas, setAllColetas] = useState<ColetaDTO[]>([]);
   const { user } = useAuth();
 
-  const userCollects = coletas.filter(collect => collect.collaborators.some(users => users.id === user.id)).filter(collect => collect.status !== "EM_ANALISE");
+  const userCollects = coletas.filter(collect => collect.collaborators.some(users => users.id === user.id)).filter(collect => (collect.status !== StatusEnum.EM_ANALISE) && (collect.status !== StatusEnum.APROVADO));
+  const visibleCollect = coletas.filter(collect => collect.status !== StatusEnum.APROVADO);
   const [isUserCollectVisible, setIsUserCollectVisible] = useState(false);
   const [userCollectHeight, setUserCollectHeight] = useState(50);
 
-  const PublicCollects = coletas.filter(collect => collect.teamCollect === true);
+  const PublicCollects = coletas.filter(collect => collect.teamCollect === true && collect.status === StatusEnum.DISPONIVEL);
   const [publicCollectHeight, setPublicCollectHeight] = useState(50);
   const [isPublicCollectVisible, setIsPublicCollectVisible] = useState(false);
 
@@ -135,7 +137,7 @@ export function HomeColeta() {
                   Todas as coletas
                 </Heading>
                 <Text color="white" fontSize="xl" fontFamily="heading" alignSelf="flex-end">
-                  {coletas.length}
+                  {visibleCollect.length}
                 </Text>
               </HStack>
               <VStack mr={2} ml={2} flex={1}>
@@ -146,7 +148,7 @@ export function HomeColeta() {
                       onRefresh={fetchColetas}
                     />
                   }
-                  data={coletas}
+                  data={visibleCollect}
                   keyExtractor={item => item.id.toString()}
                   renderItem={({ item }) => (
                     <ColetaCard onPress={() => handleOpenColetaDetails(item.id.toString())} data={item} />
