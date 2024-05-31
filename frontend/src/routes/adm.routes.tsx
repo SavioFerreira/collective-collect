@@ -46,7 +46,7 @@ export default function AdmRoutes() {
                                 activeTintColor={colors.green[500]}
                             />
                             <DrawerItem
-                                label={'validaColeta'}
+                                label={'Validar Coletas'}
                                 onPress={() => { props.navigation.navigate('validaColeta') }}
                                 icon={({ color, size }) => <Feather name='tool' color={color} size={size} />}
                                 focused={focused === 'validaColeta'}
@@ -56,7 +56,7 @@ export default function AdmRoutes() {
                                 activeTintColor={colors.green[500]}
                             />
                             <DrawerItem
-                                label={'validaDenuncia'}
+                                label={'Validar Denúncias'}
                                 onPress={() => { props.navigation.navigate('validaDenuncia')}}
                                 icon={({ color, size }) => <Feather name='tool' color={color} size={size} />}
                                 focused={focused === 'validaDenuncia'}
