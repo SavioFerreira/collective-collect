@@ -24,11 +24,8 @@ export function Routes() {
   return (
     <Box flex={1} bg="blue.300">
       <NavigationContainer theme={theme}>
-        {isAuthenticated ? (
-          isAdmin ? <AdmRoutes /> : <AppRoutes />
-        ) : (
-          <AuthRoutes />
-        )}
+        {isAuthenticated && (isAdmin ? <AdmRoutes/> : <AppRoutes/>)}
+        {!isAuthenticated && <AuthRoutes/>}
       </NavigationContainer>
     </Box>
   );
