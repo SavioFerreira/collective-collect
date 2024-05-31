@@ -5,6 +5,7 @@ import br.com.cc.dto.CollectDTO;
 import br.com.cc.dto.ComplaintDTO;
 import br.com.cc.entity.Collect;
 import br.com.cc.entity.Complaint;
+import br.com.cc.enums.Status;
 import br.com.cc.exception.collect.CollectNotFoundException;
 import br.com.cc.mapper.CollectMapperService;
 import br.com.cc.service.CollectService;
@@ -94,6 +95,12 @@ public class CollectController {
 	@PatchMapping("/{id}/complete")
 	public ResponseEntity<CollectDTO> completeCollect(@PathVariable Long id, @RequestParam("beforeImage") MultipartFile beforeImage, @RequestParam("afterImage") MultipartFile afterImage) {
 		collectService.completeCollect(id, beforeImage, afterImage);
+		return ResponseEntity.ok().build();
+	}
+
+	@PatchMapping("/{id}/validate")
+	public ResponseEntity<CollectDTO> validateCollect(@PathVariable Long id, @RequestBody Status status) {
+		collectService.validateCollect(id,status);
 		return ResponseEntity.ok().build();
 	}
 }

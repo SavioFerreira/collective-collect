@@ -1,6 +1,7 @@
 package br.com.cc.service;
 import br.com.cc.dto.CollectCollaboratorDTO;
 import br.com.cc.entity.Collect;
+import br.com.cc.enums.Status;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -12,9 +13,11 @@ public interface CollectService {
 
     void addCollaboratorToCollect(Long collectId, CollectCollaboratorDTO collaboratorDTO);
 
-    Optional<Collect> startCollect(Long id);
+    void startCollect(Long id);
 
-    Optional<Collect> completeCollect(Long id,  MultipartFile beforeImage,  MultipartFile afterImage);
+    void completeCollect(Long id, MultipartFile beforeImage, MultipartFile afterImage);
+
+    void validateCollect(long id, Status status);
 
     List<Collect> findAll();
 

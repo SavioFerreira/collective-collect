@@ -107,8 +107,8 @@ public class CollectServiceImpl implements CollectService {
 	}
 
 	@Override
-	public Optional<Collect> startCollect(Long id)  {
-		return collectRepository.findById(id).map(collect -> {
+	public void startCollect(Long id)  {
+		collectRepository.findById(id).map(collect -> {
 			collect.setStatus(Status.OCORRENDO);
 			collect.setCollectDate(LocalDateTime.now());
 			collectRepository.save(collect);
@@ -117,8 +117,8 @@ public class CollectServiceImpl implements CollectService {
 	}
 
 	@Override
-	public Optional<Collect> completeCollect(Long id,  MultipartFile beforeImage,  MultipartFile afterImage)  {
-		return collectRepository.findById(id).map(collect -> {
+	public void completeCollect(Long id, MultipartFile beforeImage, MultipartFile afterImage)  {
+		collectRepository.findById(id).map(collect -> {
 			collect.setCollectDate(LocalDateTime.now());
 			String imageBeforeUrl = null;
 			String imageAfterUrl = null;
@@ -132,6 +132,17 @@ public class CollectServiceImpl implements CollectService {
 			collect.setCollectImageBefore(imageBeforeUrl);
 			collect.setCollectImageAfter(imageAfterUrl);
 			collect.setStatus(Status.EM_ANALISE);
+			collectRepository.save(collect);
+			return collect;
+		});
+	}
+
+	@Override
+	public void validateCollect(long id, Status status) {
+
+		collectRepository.findById(id).map(collect -> {
+			collect.setStatus(status);
+			if (collect.getStatus().equals(Status.APROVADO)) collect.getCollaborators().clear();
 			collectRepository.save(collect);
 			return collect;
 		});
