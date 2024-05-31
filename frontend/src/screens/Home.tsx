@@ -1,4 +1,4 @@
-import { Center, Pressable, VStack, Alert, ScrollView, Image } from "native-base";
+import { Center, VStack, ScrollView } from "native-base";
 
 import LogoHomeSvg from '@assets/coletaColetiva.svg';
 

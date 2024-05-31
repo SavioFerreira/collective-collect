@@ -1,5 +1,5 @@
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
-import { Heading, HStack, Text, VStack, Icon, Center } from 'native-base';
+import { TouchableOpacity } from 'react-native';
+import { Heading, HStack, VStack, Icon, Center } from 'native-base';
 
 import { Entypo } from '@expo/vector-icons';
 import NewsSvg from '@assets/news.svg';

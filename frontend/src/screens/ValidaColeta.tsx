@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { Alert, Modal, RefreshControl } from 'react-native';
-import { HStack, VStack, FlatList, useToast, Text, Heading, View, Image, Pressable, Icon, ScrollView, Flex } from "native-base";
+import { HStack, VStack, FlatList, useToast, Text, Heading, View, Image, Pressable, Icon, ScrollView } from "native-base";
 import { ResizeMode, Video } from 'expo-av';
 import { Fontisto, Feather, Entypo, MaterialIcons } from '@expo/vector-icons';
 
@@ -11,7 +11,6 @@ import { Loading } from '@components/Loading';
 import { ColetaDTO } from '@dtos/ColetaDTO';
 import { AppError } from '@utils/AppError';
 import { api } from '@services/api';
-import { useAuth } from '@hooks/useAuth';
 import { StatusEnum } from '@enums/StatusEnum';
 import { FormatDate } from '@functions/FormatDate';
 
@@ -24,17 +23,14 @@ export function ValidaColeta() {
   const video = React.useRef(null);
   const [coleta, setcoleta] = useState<ColetaDTO>({} as ColetaDTO);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { user } = useAuth();
 
   const collectType = coleta.type !== undefined ? coleta.type.toLocaleLowerCase() : "";
-  const collectGravity = coleta.gravity !== undefined ? coleta.gravity.toLocaleLowerCase() : "";
   const pendingVerifyCollect = coletas.filter(collect => collect.status === StatusEnum.EM_ANALISE);
 
   const collectColaborator = coleta.collaborators !== undefined ? coleta.collaborators.map(user => user.name).join(', ') : "";
   const collectAddress = coleta.locale?.address !== undefined ? coleta.locale.address : "";
   const collectImageBefore = coleta.collectImageBefore !== undefined ? coleta.collectImageBefore : "";
   const collectImageAfter = coleta.collectImageAfter !== undefined ? coleta.collectImageAfter : "";
-
 
   const toast = useToast();
 

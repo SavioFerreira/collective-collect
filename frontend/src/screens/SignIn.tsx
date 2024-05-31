@@ -39,7 +39,6 @@ export function SignIn() {
     resolver: yupResolver(signInSchema)
   });
 
-
   async function handleSignIn({ email, password }: FormData) {
 
     try {
@@ -129,7 +128,6 @@ export function SignIn() {
             />
           </Center>
         </VStack>
-
         
         <Center mt={5} px={10}>
           <Text

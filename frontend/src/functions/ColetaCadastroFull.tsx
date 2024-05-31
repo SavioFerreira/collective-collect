@@ -1,22 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Heading, Center, Switch, Button, useTheme, useToast, VStack, Spacer, Box } from "native-base";
+import { View, Text, Heading, Center, Switch, Button, useTheme, useToast, VStack, Box } from "native-base";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { ScrollView } from 'react-native';
 import { api } from '@services/api';
 import { useAuth } from '@hooks/useAuth';
-import { UserDTO } from '@dtos/UserDTO';
 import { AppError } from '@utils/AppError';
 
 type Props = {
     onRegister: () => void;
     collectId: number;
-};
-
-type RegisterOnCollectForm = {
-    user: UserDTO; 
-    collectId: number;
-    date: string;
-    teamCollect: boolean;
 };
 
 export function ColetaCadastroFull({ onRegister, collectId }: Props) {
@@ -120,7 +112,7 @@ export function ColetaCadastroFull({ onRegister, collectId }: Props) {
                         </Text>
                         <Switch
                             thumbColor={teamCollect ? colors.darkBlue[600] : colors.green[500]}
-                            trackColor={{ false: colors.green[300], true: colors.darkBlue[200] }}
+                            trackColor={{ false: colors.green[300], true: colors.darkBlue[200]}}
                             ios_backgroundColor={colors.green[500]}
                             mr={3}
                             onToggle={toggleSwitch}

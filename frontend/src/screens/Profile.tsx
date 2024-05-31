@@ -9,7 +9,6 @@ import  BackgroundImg  from '@assets/background.png';
 import { UserPhoto } from '@components/UserPhoto';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
-import { HomeHeader } from '@components/HomeHeader';
 import { IconHeader } from '@components/IconHeader';
 
 const PHOTO_SIZE = 150;

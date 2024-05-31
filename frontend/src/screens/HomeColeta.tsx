@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { RefreshControl, TouchableOpacity } from 'react-native';
+import { RefreshControl } from 'react-native';
 import { HStack, VStack, FlatList, useToast, Text, Heading, Icon, View, Pressable} from "native-base";
 import { Entypo } from '@expo/vector-icons';
 
@@ -15,13 +15,11 @@ import { AppError } from '@utils/AppError';
 import { api } from '@services/api';
 import { HelpModal } from '@components/HelpModal';
 import { useAuth } from '@hooks/useAuth';
-import {getTypeIcon} from '@functions/Icons'
 
 export function HomeColeta() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [types, setTypes] = useState(Object.values(ResiduoType));
-  const [iconTypes, setIconTypes] = useState(Object.values(getTypeIcon));
   const [coletas, setColetas] = useState<ColetaDTO[]>([]);
   const [allColetas, setAllColetas] = useState<ColetaDTO[]>([]);
   const { user } = useAuth();
@@ -129,7 +127,7 @@ export function HomeColeta() {
       {isLoading ? <Loading /> :
         <View flex={1}>
         
-          {!isUserCollectVisible && !isPublicCollectVisible &&
+          {(!isUserCollectVisible || userCollects.length === 0) && (!isPublicCollectVisible || PublicCollects.length === 0) &&
             <VStack mr={3} ml={3} flex={1} rounded="lg" bgColor="blue.400" mb={2}>
               <HStack m={2} justifyContent="space-evenly">
                 <View m={4} />

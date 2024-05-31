@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Heading, Center, Switch, Button, useTheme, useToast, VStack, Spacer, Box } from "native-base";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Alert, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Heading, Center, Button, useToast} from "native-base";
+import { ScrollView } from 'react-native';
 import { api } from '@services/api';
 import { useAuth } from '@hooks/useAuth';
-import { UserDTO } from '@dtos/UserDTO';
-import { FormatDate } from './FormatDate';
 import { AppError } from '@utils/AppError';
-import { boolean } from 'yup';
 
 type Props = {
     onRegister: () => void;

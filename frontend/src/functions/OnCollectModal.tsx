@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Modal, BackHandler, Alert  } from 'react-native';
-import { HStack, VStack, Text, View, Flex, Icon, Pressable, Box, Image, ScrollView, useToast, IButtonProps, Button } from "native-base";
+import { HStack, VStack, Text, View, Flex, Icon, Pressable, Image, ScrollView, useToast, Button } from "native-base";
 import { FontAwesome6 } from '@expo/vector-icons';
 import { IViewProps } from "native-base/lib/typescript/components/basic/View/types";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -90,7 +90,7 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
 
         try {
             
-            const response = await api.patch(`/api/collect/${collectId}/complete`, formData, {
+            await api.patch(`/api/collect/${collectId}/complete`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -130,7 +130,6 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
     
         return () => backHandler.remove();
     }, [isModalVisible, canFinalize]);
-
 
     return (
 

@@ -7,12 +7,10 @@ import ColetaSvg from '@assets/garrafa.svg';
 import DenunciaSvg from '@assets/handsworld.svg';
 
 import { Home } from '@screens/Home';
-import { HomeDenuncia } from '@screens/HomeDenuncia';
 import { HomeColeta } from '@screens/HomeColeta';
 import { Profile } from '@screens/Profile';
 import { Coleta } from '@screens/Coleta';
 import { Denuncia } from '@screens/Denuncia';
-
 
 type AppRoutes = {
   home: undefined;
@@ -20,7 +18,6 @@ type AppRoutes = {
   denuncias: {complaintId: string};
   profile: undefined;
   detalhesColeta: {collectId: string};
-  detalhesDenuncia: undefined
 }
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
@@ -77,7 +74,7 @@ export function AppRoutes() {
 
       <Screen
         name='denuncias'
-        component={HomeDenuncia}
+        component={Denuncia}
         options={{
           tabBarIcon: ({ color }) => (
             <DenunciaSvg
@@ -98,12 +95,6 @@ export function AppRoutes() {
       <Screen
         name='detalhesColeta'
         component={Coleta}
-        options={{ tabBarButton: () => null }}
-      />
-
-      <Screen
-        name='detalhesDenuncia'
-        component={Denuncia}
         options={{ tabBarButton: () => null }}
       />
     </Navigator>

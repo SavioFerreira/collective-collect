@@ -1,10 +1,10 @@
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
-import { Heading, HStack, Text, VStack, Icon, useToast } from 'native-base';
+import { Heading, HStack, Text, VStack, Icon } from 'native-base';
 
 import { ColetaDTO } from '@dtos/ColetaDTO';
 import { getGravityIcon, getStatusIcon, getTypeIcon } from 'src/functions/Icons';
 import { FormatDate } from 'src/functions/FormatDate';
-import { useState } from 'react';
+
 
 type Props = TouchableOpacityProps & {
   data: ColetaDTO;
@@ -12,13 +12,11 @@ type Props = TouchableOpacityProps & {
 
 export function ColetaCard({ data, ...rest }: Props) {
 
-  const [coleta, setColeta] = useState<ColetaDTO>({} as ColetaDTO); 
   const gravityIcon = getGravityIcon(data.gravity);
   const statusIcon = getStatusIcon(data.status);
   const typeIcon = getTypeIcon(data.type);
   const status = data.status.toLocaleLowerCase().replace("_", " ");
   const showDate = data.collectDate != undefined || null ? FormatDate(data.collectDate): "Agenda pendente";
-  const toast = useToast();
 
 
   return (

@@ -1,5 +1,4 @@
-
-export enum ResiduoType  {
+export enum ResiduoType {
     TODOS = "TODOS",
     PLASTICO = "PLASTICO",
     VIDRO = "VIDRO",

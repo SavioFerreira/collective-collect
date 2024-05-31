@@ -1,7 +1,6 @@
-
-export enum ResiduoGravity  {
+export enum ResiduoGravity {
     BAIXO = "BAIXO",
     MEDIO = "MEDIO",
     ALTO = "ALTO",
-    CRITICO = "CRITICO",
+    CRITICO = "CRITICO"
 }
