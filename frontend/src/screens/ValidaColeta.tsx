@@ -15,15 +15,15 @@ import { StatusEnum } from '@enums/StatusEnum';
 import { FormatDate } from '@functions/FormatDate';
 
 import videoPath from '@assets/working-collect.mp4';
+import { useAuth } from '@hooks/useAuth';
 
 export function ValidaColeta() {
-
   const [isLoading, setIsLoading] = useState(true);
   const [coletas, setColetas] = useState<ColetaDTO[]>([]);
   const video = React.useRef(null);
   const [coleta, setcoleta] = useState<ColetaDTO>({} as ColetaDTO);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const {user} = useAuth();
   const collectType = coleta.type !== undefined ? coleta.type.toLocaleLowerCase() : "";
   const pendingVerifyCollect = coletas.filter(collect => collect.status === StatusEnum.EM_ANALISE);
 
@@ -41,6 +41,39 @@ export function ValidaColeta() {
   function closeDenunciaModal() {
     setIsModalVisible(!isModalVisible);
   };
+
+  async function handleValidadeCollect(statusValue: StatusEnum) {
+    setIsLoading(true);
+
+    try {
+      await api.patch(`api/collect/${coleta.id}/validate`, JSON.stringify(statusValue), {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      fetchColetas();
+      closeDenunciaModal();
+      toast.show({
+        title: "Coleta " + coleta.id + " validada com sucesso!\n" + "Obrigado " + user.name,
+        placement: 'top',
+        bgColor: 'green.500',
+      })
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError ? error.message : 'Ocorreu um erro ao finalizar a validação.\n Tente novamente';
+  
+      closeDenunciaModal();
+      toast.show({
+        title: title,
+        placement: 'top',
+        bgColor: 'red.500'
+      })
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  
 
   async function fetchColetas() {
     setIsLoading(true);
@@ -71,17 +104,65 @@ export function ValidaColeta() {
       <IconHeader title="Validação de Coletas" />
       {isLoading ? <Loading /> :
         <View flex={1} m={3}>
-          <View rounded="xl" overflow="hidden" w="100%" h={230} alignSelf="center" mb={2}>
-            <Video
-              ref={video}
-              source={videoPath}
-              isMuted={true}
-              resizeMode={ResizeMode.COVER}
-              shouldPlay
-              isLooping
-              style={{ width: '100%', height: '100%' }}
-            />
-          </View>
+          <VStack h="38%" rounded="lg" bgColor="blue.400" mb={2} justifyContent="space-around">
+            <HStack alignSelf="center" mt={2}>
+              <HStack alignSelf="center">
+                <Icon
+                  as={Entypo}
+                  name={'emoji-happy'}
+                  color="green.400"
+                  size="lg"
+                  alignSelf="center"
+                  mr={1}
+                />
+                <Text fontFamily="body" fontSize="md" color="white">
+                  Total de coletas aprovadas
+                </Text>
+              </HStack>
+              <VStack ml={2}>
+                <Text numberOfLines={1} color="green.400" fontSize="md" fontFamily="heading" textAlign="justify" alignSelf="center">
+                  TODO
+                </Text>
+              </VStack>
+            </HStack>
+
+            <HStack alignSelf="center">
+              <HStack alignSelf="center">
+                <Icon
+                  as={Entypo}
+                  name={'emoji-sad'}
+                  color="red.600"
+                  size="lg"
+                  alignSelf="center"
+                  mr={2}
+                />
+                <Text fontFamily="body" fontSize="md" color="white">
+                  Total de coletas rejeitadas
+                </Text>
+              </HStack>
+              <VStack ml={2}>
+                <Text numberOfLines={1} color="red.600" fontFamily="heading" fontSize="md" textAlign="justify" alignSelf="center">
+                  TODO
+                </Text>
+              </VStack>
+            </HStack>
+
+            <HStack mt={0}>
+            <View rounded="lg" borderTopRadius={0} overflow="hidden" w="100%" h={220} alignSelf="center">
+              <Video
+                ref={video}
+                onLoad={() => <Loading />}
+                onLoadStart={() => <Loading />}
+                source={videoPath}
+                isMuted={true}
+                resizeMode={ResizeMode.COVER}
+                shouldPlay
+                isLooping
+                style={{ width: '100%', height: '100%' }}
+              />
+            </View>
+            </HStack>
+          </VStack>
 
           <VStack flex={1} rounded="lg" bgColor="blue.400">
             <HStack m={2} justifyContent="space-evenly">
@@ -114,48 +195,6 @@ export function ValidaColeta() {
                 showsVerticalScrollIndicator={false}
               />
             </VStack>
-          </VStack>
-
-          <VStack h={81} rounded="lg" bgColor="darkBlue.800" mt={2} justifyContent="space-evenly">
-            <HStack m={3} alignSelf="center">
-              <HStack alignSelf="center">
-                <Text fontFamily="body" fontSize="md" color="blue.200" mb={1} mr={1}>
-                  Coletas Aprovadas
-                </Text>
-                <Icon
-                  as={Entypo}
-                  name={'emoji-happy'}
-                  color="green.400"
-                  size="lg"
-                  alignSelf="center"
-                />
-              </HStack>
-              <VStack>
-                <Text numberOfLines={1} color="blue.200" fontSize="md" textAlign="justify" m={2} mb={3} alignSelf="center">
-                  TODO
-                </Text>
-              </VStack>
-            </HStack>
-
-            <HStack m={3} alignSelf="center">
-              <HStack alignSelf="center">
-                <Text fontFamily="body" fontSize="md" color="blue.200" mb={1} mr={1}>
-                  Coletas Rejeitadas
-                </Text>
-                <Icon
-                  as={Entypo}
-                  name={'emoji-sad'}
-                  color="red.600"
-                  size="lg"
-                  alignSelf="center"
-                />
-              </HStack>
-              <VStack>
-                <Text numberOfLines={1} color="blue.200" fontSize="md" textAlign="justify" m={2} mb={3} alignSelf="center">
-                  TODO
-                </Text>
-              </VStack>
-            </HStack>
           </VStack>
 
           <View>
@@ -297,7 +336,7 @@ export function ValidaColeta() {
                           </VStack>
                         </VStack>
 
-                        <HStack justifyContent="space-evenly" mr={3} ml={3} p={2} rounded="lg" bgColor="darkBlue.700">
+                        <HStack justifyContent="space-evenly" mr={3} ml={3} p={2} rounded="lg" bgColor="darkBlue.700" isDisabled={isLoading}>
                           <Pressable onPress={() => {
                             Alert.alert(
                               "Confirmação!",
@@ -309,12 +348,12 @@ export function ValidaColeta() {
                                 },
                                 {
                                   text: "Sim",
-                                  onPress: () => { }
+                                  onPress: () => {handleValidadeCollect(StatusEnum.APROVADO)}
                                 }
                               ]
                             );
                           }} _pressed={{ opacity: 60 }}>
-                            <Icon as={Fontisto} name="like" size={9} color="green.400" alignSelf="center" />
+                            <Icon as={Fontisto} name="like" size={9} color="green.400" alignSelf="center"/>
                             <Text color="green.400" fontSize="lg" >Aprovar</Text>
                           </Pressable>
                           <Pressable onPress={() => {
@@ -328,7 +367,7 @@ export function ValidaColeta() {
                                 },
                                 {
                                   text: "Sim",
-                                  onPress: () => { }
+                                  onPress: () => {handleValidadeCollect(StatusEnum.REJEITADO)}
                                 }
                               ]
                             );
