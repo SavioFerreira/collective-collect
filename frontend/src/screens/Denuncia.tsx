@@ -89,7 +89,7 @@ export function Denuncia() {
       }
 
       {currentCoords ?
-        <VStack flex={1} alignItems="center" justifyContent="center" px={5}>
+        <VStack flex={1} alignItems="center" justifyContent="center" px={3}>
           <Map coords={[currentCoords]} />
         </VStack>
         :
@@ -111,7 +111,7 @@ export function Denuncia() {
       }
 
 
-      <HStack mb={5} mt={5} px={5}>
+      <HStack mb={3} mt={3} px={3}>
         <Pressable
           bgColor="green.500"
           _pressed={{ bg: "green.600" }}
