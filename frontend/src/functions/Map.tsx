@@ -12,6 +12,8 @@ import { Alert } from "react-native";
 import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { StatusEnum } from "@enums/StatusEnum";
 
+import AvatarSvg from '@assets/avatar.svg';
+
 type Props = MapViewProps & {
     coords: LatLng[];
 };
@@ -90,7 +92,7 @@ export function Map({ coords, ...rest }: Props) {
     }, [coletas, complaintId]);
 
     return (
-        <View w="full" h="full" borderWidth={2} borderColor="blue.500" borderRadius={10} overflow="hidden">
+        <View w="full" h="full" borderWidth={3} borderColor="green.500" borderRadius={10} overflow="hidden">
             <MapView
                 ref={mapRef}
                 provider={PROVIDER_GOOGLE}
@@ -147,15 +149,7 @@ export function Map({ coords, ...rest }: Props) {
                     coordinate={coords[0]}
                 >
                     <VStack>
-                        <Text textAlign="center" color="blue.600" fontSize="sm">
-                            Você
-                        </Text>
-                        <Icon
-                            as={Entypo}
-                            name="user"
-                            size={10}
-                            color="darkBlue.600"
-                        />
+                        <AvatarSvg width={45} height={45}/>
                     </VStack>
                 </Marker>
             </MapView>
