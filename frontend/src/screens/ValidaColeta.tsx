@@ -43,6 +43,7 @@ export function ValidaColeta() {
   }
 
   function closeDenunciaModal() {
+    setIsRequestMessage(false)
     setIsModalVisible(!isModalVisible);
   };
 
