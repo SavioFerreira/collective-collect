@@ -16,14 +16,18 @@ import { FormatDate } from '@functions/FormatDate';
 
 import videoPath from '@assets/working-collect.mp4';
 import { useAuth } from '@hooks/useAuth';
+import { string } from 'yup';
+import { Input } from '@components/Input';
 
 export function ValidaColeta() {
   const [isLoading, setIsLoading] = useState(true);
   const [coletas, setColetas] = useState<ColetaDTO[]>([]);
   const video = React.useRef(null);
   const [coleta, setcoleta] = useState<ColetaDTO>({} as ColetaDTO);
+  const [message, setMessage] = useState<string>();
+  const [isRequestMessage, setIsRequestMessage] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const {user} = useAuth();
+  const { user } = useAuth();
   const collectType = coleta.type !== undefined ? coleta.type.toLocaleLowerCase() : "";
   const pendingVerifyCollect = coletas.filter(collect => collect.status === StatusEnum.EM_ANALISE);
 
@@ -44,15 +48,24 @@ export function ValidaColeta() {
 
   async function handleValidadeCollect(statusValue: StatusEnum) {
     setIsLoading(true);
+    setIsRequestMessage(false)
 
+    let payload;
+    if (statusValue === StatusEnum.APROVADO) {
+      payload = JSON.stringify({ status: StatusEnum.APROVADO, message: 'Aprovado' });
+    }  
+    else if (statusValue === StatusEnum.REJEITADO) {
+      payload = JSON.stringify({ status: StatusEnum.REJEITADO, message: message });
+    }
     try {
-      await api.patch(`api/collect/${coleta.id}/validate`, JSON.stringify(statusValue), {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      
+        await api.patch(`api/collect/${coleta.id}/validate`, payload, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
       fetchColetas();
+      setMessage(undefined);
       closeDenunciaModal();
       toast.show({
         title: "Coleta " + coleta.id + " validada com sucesso!\n" + "Obrigado " + user.name,
@@ -62,7 +75,7 @@ export function ValidaColeta() {
     } catch (error) {
       const isAppError = error instanceof AppError;
       const title = isAppError ? error.message : 'Ocorreu um erro ao finalizar a validação.\n Tente novamente';
-  
+
       closeDenunciaModal();
       toast.show({
         title: title,
@@ -147,19 +160,19 @@ export function ValidaColeta() {
             </HStack>
 
             <HStack mt={0}>
-            <View rounded="lg" borderTopRadius={0} overflow="hidden" w="100%" h={220} alignSelf="center">
-              <Video
-                ref={video}
-                onLoad={() => <Loading />}
-                onLoadStart={() => <Loading />}
-                source={videoPath}
-                isMuted={true}
-                resizeMode={ResizeMode.COVER}
-                shouldPlay
-                isLooping
-                style={{ width: '100%', height: '100%' }}
-              />
-            </View>
+              <View rounded="lg" borderTopRadius={0} overflow="hidden" w="100%" h={220} alignSelf="center">
+                <Video
+                  ref={video}
+                  onLoad={() => <Loading />}
+                  onLoadStart={() => <Loading />}
+                  source={videoPath}
+                  isMuted={true}
+                  resizeMode={ResizeMode.COVER}
+                  shouldPlay
+                  isLooping
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </View>
             </HStack>
           </VStack>
 
@@ -335,6 +348,26 @@ export function ValidaColeta() {
                           </VStack>
                         </VStack>
 
+                        { isRequestMessage &&
+                          <VStack bgColor="darkBlue.600" rounded="lg" justifyContent="start" mr={3} ml={3} mb={2} isFocused={isRequestMessage}>
+                            <HStack ml={4}>
+                              <VStack alignSelf="start" mr={4} mt={2}>
+                                <Icon
+                                  as={Feather}
+                                  name={'users'}
+                                  color="green.400"
+                                  size="lg"
+                                  alignSelf="center"
+                                />
+                                <Text fontFamily="body" fontSize="xs" color="green.400" mb={1}>
+                                  Motivo
+                                </Text>
+                              </VStack>
+                            </HStack>
+                            <Input  placeholder="Mensagem" bg="blue.400" numberOfLines={4}  mr={2} ml={2} h={12} isDisabled={isRequestMessage} onChangeText={setMessage}/>
+                          </VStack>
+                        }
+
                         <HStack justifyContent="space-evenly" mr={3} ml={3} p={2} rounded="lg" bgColor="darkBlue.700" isDisabled={isLoading}>
                           <Pressable onPress={() => {
                             Alert.alert(
@@ -347,12 +380,12 @@ export function ValidaColeta() {
                                 },
                                 {
                                   text: "Sim",
-                                  onPress: () => {handleValidadeCollect(StatusEnum.APROVADO)}
+                                  onPress: () => { handleValidadeCollect(StatusEnum.APROVADO) }
                                 }
                               ]
                             );
                           }} _pressed={{ opacity: 60 }}>
-                            <Icon as={Fontisto} name="like" size={9} color="green.400" alignSelf="center"/>
+                            <Icon as={Fontisto} name="like" size={9} color="green.400" alignSelf="center" />
                             <Text color="green.400" fontSize="lg" >Aprovar</Text>
                           </Pressable>
                           <Pressable onPress={() => {
@@ -366,7 +399,14 @@ export function ValidaColeta() {
                                 },
                                 {
                                   text: "Sim",
-                                  onPress: () => {handleValidadeCollect(StatusEnum.REJEITADO)}
+                                  onPress: () => {
+                                    setIsRequestMessage(true)
+                                    {(message?.length !== undefined && message?.length > 5) ? 
+                                       handleValidadeCollect(StatusEnum.REJEITADO) 
+                                      :
+                                      Alert.alert("Atenção!", "Inclua o motivo da rejeição da coleta"); 
+                                    }
+                                  }
                                 }
                               ]
                             );
