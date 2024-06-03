@@ -1,5 +1,6 @@
 package br.com.cc.service.impl;
 import br.com.cc.dto.CollectCollaboratorDTO;
+import br.com.cc.dto.CollectValidationDTO;
 import br.com.cc.entity.Collect;
 import br.com.cc.entity.User;
 import br.com.cc.enums.AuthUserRole;
@@ -138,10 +139,10 @@ public class CollectServiceImpl implements CollectService {
 	}
 
 	@Override
-	public void validateCollect(long id, Status status) {
+	public void validateCollect(long id, CollectValidationDTO collectValidationDTO) {
 
 		collectRepository.findById(id).map(collect -> {
-			collect.setStatus(status);
+			collect.setStatus(collectValidationDTO.getStatus());
 			if (collect.getStatus().equals(Status.APROVADO)) collect.getCollaborators().clear();
 			collectRepository.save(collect);
 			return collect;

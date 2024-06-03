@@ -2,6 +2,7 @@ package br.com.cc.controller;
 
 import br.com.cc.dto.CollectCollaboratorDTO;
 import br.com.cc.dto.CollectDTO;
+import br.com.cc.dto.CollectValidationDTO;
 import br.com.cc.dto.ComplaintDTO;
 import br.com.cc.entity.Collect;
 import br.com.cc.entity.Complaint;
@@ -99,8 +100,8 @@ public class CollectController {
 	}
 
 	@PatchMapping("/{id}/validate")
-	public ResponseEntity<CollectDTO> validateCollect(@PathVariable Long id, @RequestBody Status status) {
-		collectService.validateCollect(id,status);
+	public ResponseEntity<CollectDTO> validateCollect(@PathVariable Long id, @RequestBody CollectValidationDTO collectValidationDTO) {
+		collectService.validateCollect(id, collectValidationDTO);
 		return ResponseEntity.ok().build();
 	}
 }
