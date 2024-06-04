@@ -9,8 +9,8 @@ import WastehomeSvg from '@assets/wasteHome.svg';
 export function HistoryCard() {
 
   const ICON_HEIGHT = 50;
-
   const ICON_WIDTH = 45;
+  
   return (
     <VStack px={5} mr={5} ml={5} borderRadius="lg" bg="blue.500" >
       <Text color="white" alignSelf="center"fontFamily="heading" fontSize="lg" mb={2} >

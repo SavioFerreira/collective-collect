@@ -28,6 +28,7 @@ export function Map({ coords, ...rest }: Props) {
     const lastCoord = coords[coords.length - 1];
     const mapRef = useRef<MapView | null>(null);
     const [coletas, setColetas] = useState<ColetaDTO[]>([]);
+    const [mapStyle, setMapStyle] = useState();
     const toast = useToast();
     const navigation = useNavigation<AppNavigatorRoutesProps>();
     const route = useRoute<RouteProp<DenunciasRouteParams, 'Denuncias'>>();
@@ -51,9 +52,10 @@ export function Map({ coords, ...rest }: Props) {
             mapRef.current.animateToRegion({
                 latitude: lastCoord.latitude,
                 longitude: lastCoord.longitude,
-                latitudeDelta: 0.005,
-                longitudeDelta: 0.005
+                latitudeDelta: 0.004,
+                longitudeDelta: 0.004
             }, 1000);
+            
         }
     };
 
@@ -83,8 +85,8 @@ export function Map({ coords, ...rest }: Props) {
                 const region = {
                     latitude: targetComplaint.locale.latitude,
                     longitude: targetComplaint.locale.longitude,
-                    latitudeDelta: 0.002,
-                    longitudeDelta: 0.002
+                    latitudeDelta: 0.001,
+                    longitudeDelta: 0.001
                 };
                 mapRef.current?.animateToRegion(region, 1000);
             }
@@ -100,8 +102,8 @@ export function Map({ coords, ...rest }: Props) {
                 region={{
                     latitude: lastCoord.latitude,
                     longitude: lastCoord.longitude,
-                    latitudeDelta: 0.005,
-                    longitudeDelta: 0.005
+                    latitudeDelta: 0.004,
+                    longitudeDelta: 0.004
                 }}
                 onMapLoaded={onMapLoaded}
                 customMapStyle={mapStyleHopper}
@@ -156,19 +158,43 @@ export function Map({ coords, ...rest }: Props) {
             <VStack
                 zIndex={1}
                 position="absolute"
-                right={3}
+                right={2}
                 top={1}
+                bgColor= 'rgba(14, 53, 160, 0.103)'
+                rounded="lg"
+                p={1}
             >
                 <Text color="darkBlue.600" fontFamily="heading" fontSize="xs">
                     Centralizar
                 </Text>
                 <Icon
-                    as={Entypo}
-                    name="location-pin"
-                    size="9"
-                    color="darkBlue.600"
-                    alignSelf="center"
-                    onPress={centerMapOnUserLocation}
+                  as={Entypo}
+                  name="location-pin"
+                  size="9"
+                  color="darkBlue.600"
+                  alignSelf="center"
+                  onPress={centerMapOnUserLocation}
+                />
+            </VStack>
+            <VStack
+                zIndex={1}
+                position="absolute"
+                right={2}
+                bottom={2} 
+                bgColor= 'rgba(160, 80, 14, 0.137)'
+                rounded="lg"
+                p={1}
+            >
+                <Text color="orange.600" fontFamily="heading" fontSize="xs">
+                    Atualizar
+                </Text>
+                <Icon
+                  as={Entypo}
+                  name="ccw"
+                  size="9"
+                  color="orange.600"
+                  alignSelf="center"
+                  onPress={() => fetchColetas()}
                 />
             </VStack>
         </View>

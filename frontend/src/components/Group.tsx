@@ -13,8 +13,8 @@ export function Group({name, isActive, ...rest}: Props) {
   return (
     <Pressable
       mr={2}
-      w={'40'}
-      h={10}
+      w={'32'}
+      h={8}
       bg="darkBlue.700"
       rounded="md"
       justifyContent="center"
@@ -31,13 +31,13 @@ export function Group({name, isActive, ...rest}: Props) {
       <Text
         color={isActive ? "orange.400" : "white"}
         textTransform="uppercase"
-        fontSize="sm"
+        fontSize="xs"
         fontWeight="thin"
         mr={2}
       >
         {name}
       </Text>
-      <Icon as={typeIcon.Component} name={typeIcon.name} size={6} color={isActive ? "orange.400" : "white"}/>
+      <Icon as={typeIcon.Component} name={typeIcon.name} size={5} color={isActive ? "orange.400" : "white"}/>
       </HStack>
 
     </Pressable>

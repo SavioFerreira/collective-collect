@@ -28,7 +28,7 @@ export function HelpModal({ label, description,  ...rest }: Props) {
                     as={Entypo}
                     name={"help-with-circle"}
                     color="darkBlue.700"
-                    size={8}
+                    size={6}
                 />
             </Pressable>
             <Modal
@@ -53,7 +53,7 @@ export function HelpModal({ label, description,  ...rest }: Props) {
                                         ml={3}
                                     />
                                 </HStack>
-                                <Text numberOfLines={10} fontSize="lg" fontFamily="body" fontStyle="italic" color="white" maxW="97%" textAlign="justify">
+                                <Text numberOfLines={20} fontSize="lg" fontFamily="body" fontStyle="italic" color="white" maxW="97%" textAlign="justify">
                                     {description}
                                 </Text>
                             </VStack>
