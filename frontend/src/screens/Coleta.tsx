@@ -386,7 +386,7 @@ export function Coleta() {
                     _pressed={{ bg: "blue.700" }}
                     onPress={() => {
                       coleta.status !== StatusEnum.OCORRENDO ? 
-                        openColetaModal 
+                        openColetaModal() 
                       : 
                         Alert.alert("Atenção!", "Não é possível editar a coleta ocorrendo")}}>
                     <Icon
@@ -417,7 +417,7 @@ export function Coleta() {
                       name="x-circle"
                       onPress={closeColetaModal}
                     />
-                    {isUserPrimaryCollaborator && coleta.status === StatusEnum.DISPONIVEL ? 
+                    {isUserPrimaryCollaborator && coleta.status !== StatusEnum.OCORRENDO ? 
                       <ColetaCadastroFull onRegister={closeColetaModal} collectId={coleta.id} />
                       :
                       <ColetaCadastroBasic onRegister={closeColetaModal} collectId={coleta.id} />

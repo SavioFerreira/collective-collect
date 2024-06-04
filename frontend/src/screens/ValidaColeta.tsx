@@ -16,7 +16,6 @@ import { FormatDate } from '@functions/FormatDate';
 
 import videoPath from '@assets/working-collect.mp4';
 import { useAuth } from '@hooks/useAuth';
-import { string } from 'yup';
 import { Input } from '@components/Input';
 
 export function ValidaColeta() {
@@ -118,7 +117,7 @@ export function ValidaColeta() {
       {isLoading ? <Loading /> :
         <View flex={1} m={3}>
           <VStack h="38%" rounded="lg" bgColor="blue.400" mb={2} justifyContent="space-around">
-            <HStack alignSelf="center" mt={2}>
+            <HStack alignSelf="center" mt={1}>
               <HStack alignSelf="center">
                 <Icon
                   as={Entypo}
@@ -134,12 +133,12 @@ export function ValidaColeta() {
               </HStack>
               <VStack ml={2}>
                 <Text numberOfLines={1} color="green.400" fontSize="md" fontFamily="heading" textAlign="justify" alignSelf="center">
-                  TODO
+                  {coletas.filter(collect => collect.status === StatusEnum.APROVADO).length}
                 </Text>
               </VStack>
             </HStack>
 
-            <HStack alignSelf="center">
+            <HStack alignSelf="center" mt={1}>
               <HStack alignSelf="center">
                 <Icon
                   as={Entypo}
@@ -155,7 +154,7 @@ export function ValidaColeta() {
               </HStack>
               <VStack ml={2}>
                 <Text numberOfLines={1} color="red.600" fontFamily="heading" fontSize="md" textAlign="justify" alignSelf="center">
-                  TODO
+                {coletas.filter(collect => collect.status === StatusEnum.REJEITADO).length}
                 </Text>
               </VStack>
             </HStack>
@@ -202,7 +201,7 @@ export function ValidaColeta() {
                 )}
                 ListEmptyComponent={() => (
                   <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >
-                    Não há coletas disponíveis no momento. {'\n'}Volte mais tarde.
+                    Não há coletas para análise no momento. {'\n'}Volte mais tarde.
                   </Text>
                 )}
                 showsVerticalScrollIndicator={false}
