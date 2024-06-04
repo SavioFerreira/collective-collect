@@ -117,7 +117,7 @@ export function ValidaColeta() {
       {isLoading ? <Loading /> :
         <View flex={1} m={3}>
           <VStack h="38%" rounded="lg" bgColor="blue.400" mb={2} justifyContent="space-around">
-            <HStack alignSelf="center" mt={1}>
+            <HStack alignSelf="center" mt={1} m={3}>
               <HStack alignSelf="center">
                 <Icon
                   as={Entypo}
@@ -138,7 +138,7 @@ export function ValidaColeta() {
               </VStack>
             </HStack>
 
-            <HStack alignSelf="center" mt={1}>
+            <HStack alignSelf="center" mt={1} m={3}> 
               <HStack alignSelf="center">
                 <Icon
                   as={Entypo}
@@ -160,7 +160,7 @@ export function ValidaColeta() {
             </HStack>
 
             <HStack mt={0}>
-              <View rounded="lg" borderTopRadius={0} overflow="hidden" w="100%" h={220} alignSelf="center">
+              <View rounded="lg" borderTopRadius={0} overflow="hidden" w="100%" h={200} alignSelf="center">
                 <Video
                   ref={video}
                   onLoad={() => <Loading />}

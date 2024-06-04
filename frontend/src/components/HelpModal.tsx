@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Modal, TouchableWithoutFeedback } from 'react-native';
-import { HStack, VStack, Text, View, Flex, Icon, Pressable } from "native-base";
+import { HStack, VStack, Text, View, Flex, Icon, Pressable, ScrollView } from "native-base";
 import { FontAwesome6 } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { IViewProps } from "native-base/lib/typescript/components/basic/View/types";
@@ -9,10 +9,10 @@ import { IViewProps } from "native-base/lib/typescript/components/basic/View/typ
 type Props = IViewProps & {
     label: string;
     description: string;
-   
+
 }
 
-export function HelpModal({ label, description,  ...rest }: Props) {
+export function HelpModal({ label, description, ...rest }: Props) {
     const [isModalVisible, SetIsModalVisible] = useState(false);
 
     function toggleModal() {
@@ -37,29 +37,29 @@ export function HelpModal({ label, description,  ...rest }: Props) {
                 onRequestClose={toggleModal}
                 transparent={true}
             >
-                <TouchableWithoutFeedback onPress={toggleModal}>
-                    <Flex flex={1} alignItems="center" justifyContent="initial" bg="rgba(0, 0, 0, 0.623)">
+                <Pressable flex={1} alignItems="center" justifyContent="initial" bg="rgba(0, 0, 0, 0.623)" onPress={toggleModal}>
                         <View bgColor="darkBlue.700" p={8} justifyContent="center" borderRadius="lg" w="95%" >
-                            <VStack space={3} borderWidth={1} borderColor="blue.400" p={2} rounded="lg">
-                                <HStack justifyContent='center'>
-                                    <Text numberOfLines={1} fontSize="xl" fontFamily="heading" color="white" mb={1} textAlign="center">
-                                        {label}
+                            <ScrollView>
+                                <VStack space={3} borderWidth={1} borderColor="blue.400" p={2} rounded="lg">
+                                    <HStack justifyContent='center'>
+                                        <Text numberOfLines={1} fontSize="xl" fontFamily="heading" color="white" mb={1} textAlign="center">
+                                            {label}
+                                        </Text>
+                                        <Icon
+                                            as={FontAwesome6}
+                                            name={"map-location-dot"}
+                                            color="green.500"
+                                            size={7}
+                                            ml={3}
+                                        />
+                                    </HStack>
+                                    <Text numberOfLines={40} fontSize="lg" fontFamily="body" fontStyle="italic" color="white" maxW="97%" textAlign="justify">
+                                        {description}
                                     </Text>
-                                    <Icon
-                                        as={FontAwesome6}
-                                        name={"map-location-dot"}
-                                        color="green.500"
-                                        size={7}
-                                        ml={3}
-                                    />
-                                </HStack>
-                                <Text numberOfLines={20} fontSize="lg" fontFamily="body" fontStyle="italic" color="white" maxW="97%" textAlign="justify">
-                                    {description}
-                                </Text>
-                            </VStack>
+                                </VStack>
+                            </ScrollView>
                         </View>
-                    </Flex>
-                </TouchableWithoutFeedback>
+                    </Pressable>
             </Modal>
         </View>
     );

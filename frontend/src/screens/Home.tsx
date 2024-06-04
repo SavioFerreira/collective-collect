@@ -1,7 +1,6 @@
 import { Center, VStack, ScrollView, HStack, Icon, Text, View, useToast } from "native-base";
 
 import LogoHomeSvg from '@assets/coletaColetiva.svg';
-import { Entypo } from '@expo/vector-icons';
 import { HomeHeader } from "@components/HomeHeader";
 import { NewsCard } from "@components/NewsCard";
 import { ResizeMode, Video } from 'expo-av';
@@ -17,7 +16,6 @@ import { api } from "@services/api";
 import { useFocusEffect } from "@react-navigation/native";
 
 import { RefreshControl } from 'react-native';
-import { HistoryCard } from "@components/HistoryCard";
 
 import CoopHomeSvg from '@assets/cooperation.svg';
 import WastehomeSvg from '@assets/wasteHome.svg';
@@ -64,8 +62,8 @@ export function Home() {
             onRefresh={handleGetUserContributions}
           />
         }>
-          <NewsCard />
-          <VStack h="40%" m={5} rounded="lg" bgColor="blue.400" mb={2} justifyContent="center" alignSelf="center">
+          <NewsCard mr={5} ml={5} mb={2} mt={2}/>
+          <VStack h="40%" ml={5} mr={5} rounded="lg" bgColor="blue.400" mb={2} justifyContent="center" alignSelf="center">
             <HStack alignSelf="center" mt={1} flex={1}>
               <HStack alignSelf="center" mr={10}>
                 <View >
@@ -98,7 +96,7 @@ export function Home() {
               </VStack>
             </HStack>
 
-            <HStack mt={0}>
+            <HStack>
               <View rounded="lg" borderTopRadius={0} overflow="hidden" w="100%" h={150} alignSelf="center">
                 <Video
                   ref={video}
@@ -114,7 +112,7 @@ export function Home() {
               </View>
             </HStack>
           </VStack>
-          <VStack px={5} m={5} borderRadius="lg" bg="blue.500">
+          <VStack  mr={5} ml={5} borderRadius="lg" bg="blue.500">
             <Center h="32">
               <LogoHomeSvg
                 height={120}
