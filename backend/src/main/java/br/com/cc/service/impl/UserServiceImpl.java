@@ -61,15 +61,6 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-//    @Override
-//    public User updateById(Long id, User updateUser) {
-//        if (userRepository.existsById(id)) {
-//            updateUser.setId(id);
-//            return userRepository.save(updateUser);
-//        }
-//        return null;
-//    }
-
     @Override
     public User updateById(Long id, Map<String, Object> updates) {
         Optional<User> existingUserOpt = userRepository.findById(id);

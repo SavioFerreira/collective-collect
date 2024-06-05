@@ -10,7 +10,6 @@ public interface UserService {
     List<User> findAll();
     Optional<User> findById(Long id);
 
-    //User updateById(Long id, User user);
     User updateById(Long id, Map<String, Object> updates);
     boolean deleteById(Long id);
 
