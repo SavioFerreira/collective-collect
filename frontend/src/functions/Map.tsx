@@ -14,9 +14,6 @@ import { StatusEnum } from "@enums/StatusEnum";
 
 import AvatarSvg from '@assets/avatar.svg';
 
-
-
-
 type Props = MapViewProps & {
     coords: LatLng[];
 };
@@ -38,7 +35,6 @@ export function Map({ coords, ...rest }: Props) {
     const complaintId = route.params?.complaintId;
 
     const visibleCollect = coletas.filter(collect => collect.status !== StatusEnum.APROVADO);
-
 
     function handleOpenColetaDetails(collectId: string) {
         navigation.navigate('detalhesColeta', { collectId });

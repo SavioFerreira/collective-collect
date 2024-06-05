@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Heading, Center, Button, useTheme, HStack, VStack, Input, Icon, Select, CheckIcon, Pressable, useToast } from "native-base";
-import { Alert, ScrollView } from 'react-native';
+import { Alert, ScrollView, Modal } from 'react-native';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { ResiduoGravity } from '../enums/ResiduoGravityEnum';
 import { ResiduoType } from '../enums/ResiduoTypesEnum';
@@ -11,6 +11,11 @@ import { useImagePicker } from '@hooks/useImagePicker';
 import { getAddressLocation } from '../utils/getArdressLocation';
 import * as Location from 'expo-location';
 import { FormatDate } from 'src/functions/FormatDate';
+import { Map } from '@functions/Map'
+
+import { FontAwesome6, Feather } from '@expo/vector-icons';
+import { LocationObjectCoords } from 'expo-location';
+import { SelectInputMap } from './selectInputMap';
 
 type Props = {
     onRegister: () => void;
@@ -25,10 +30,13 @@ export function DenunciaCadastro({ onRegister }: Props) {
     const [address, setAddress] = useState("");
     const [latitude, setLatitude] = useState<number | undefined>();
     const [longitude, setLongitude] = useState<number | undefined>();
+    const [currentCoords, setCurrentCoords] = useState<LocationObjectCoords | null>(null);
 
     const [wasteType, setWasteType] = useState<ResiduoType | undefined>();
     const [gravityType, setGravityType] = useState<ResiduoGravity | undefined>();
     const [isLoading, setIsLoading] = useState(false);
+
+    const [isOpenModal, setIsOpenModal] = useState(false);
 
     const handleWasteTypeChange = (itemValue: string) => {
         setWasteType(itemValue as ResiduoType);
@@ -39,14 +47,14 @@ export function DenunciaCadastro({ onRegister }: Props) {
     };
 
     useEffect(() => {
-        
+
         let subscription: Location.LocationSubscription;
 
         Location.watchPositionAsync({
             accuracy: Location.LocationAccuracy.High,
             timeInterval: 1000
         }, (location) => {
-
+            setCurrentCoords(location.coords)
             setLatitude(location.coords.latitude);
             setLongitude(location.coords.longitude);
             getAddressLocation(location.coords)
@@ -91,7 +99,7 @@ export function DenunciaCadastro({ onRegister }: Props) {
             type: wasteType ?? ResiduoType.INDEFINIDO,
             gravity: gravityType ?? ResiduoGravity.ALTO,
             status: undefined,
-            locale: {address, latitude, longitude},
+            locale: { address, latitude, longitude },
             complaintDate: new Date().toISOString(),
             image: imageUri ?? 'imagem indisponivel'
         };
@@ -230,13 +238,11 @@ export function DenunciaCadastro({ onRegister }: Props) {
                     <Text color='blue.300' fontFamily="body" fontSize="sm" mb={1} textAlign="left" fontStyle="italic">
                         Local/Endereço da Denúncia
                     </Text>
-                    <Input h={10} mb={2} bgColor="darkBlue.600" fontSize="md" color="green.400" borderWidth={0}
-                        _focus={{ borderWidth: 1, borderColor: 'blue.300', bgColor: 'darkBlue.700' }}
-                        placeholder='Localização' placeholderTextColor={colors.green[400]}
-                        textAlign="justify"
-                        onChangeText={setAddress}
-                        value={address}
-                    />
+                    <Pressable rounded="md" bgColor="darkBlue.600" _pressed={{ opacity: 70 }} onPress={() => { setIsOpenModal(true) }} h={10}>
+                        <Text m={2} fontSize="md" color="green.400" maxW="90%" numberOfLines={1} textAlign="justify">
+                            {address}
+                        </Text>
+                    </Pressable>
 
                     <Text color='blue.300' fontFamily="body" fontSize="sm" mb={1} textAlign="left" fontStyle="italic">
                         Captura do resíduo
@@ -287,6 +293,56 @@ export function DenunciaCadastro({ onRegister }: Props) {
                     isLoading={isLoading}>
                     Concluir Cadastro
                 </Button>
+                <Modal
+                    visible={isOpenModal}
+                    animationType="fade"
+                    transparent={true}
+                >
+                    <View flex={1} alignItems="center" justifyContent="center" bg="rgba(0, 0, 0, 0.623)">
+                        <View bgColor="darkBlue.700" p={2} justifyContent="center" borderRadius="lg" w="90%" h="80%">
+                            <ScrollView>
+                                <VStack borderWidth={1} borderColor="blue.400" p={2} rounded="lg" h={600} justifyContent="center" alignSelf="center">
+                                    <HStack justifyContent="space-between" mb={4}>
+                                        <Icon
+                                            as={FontAwesome6}
+                                            name={"map-location-dot"}
+                                            color="green.500"
+                                            size={7}
+                                            ml={3}
+                                        />
+                                        <Text numberOfLines={1} fontSize="lg" fontFamily="heading" color="white" textAlign="center">
+                                            Selecione a localização
+                                        </Text>
+                                        <Icon
+                                            as={Feather}
+                                            name={"x-circle"}
+                                            color="green.500"
+                                            size={7}
+                                            ml={3}
+                                            onPress={() => setIsOpenModal(false)}
+                                        />
+                                    </HStack>
+                                    <Input 
+                                        h={10} mb={2} bgColor="darkBlue.800" fontSize="md" color="green.400" borderWidth={0} mt={2} 
+                                        _focus={{ borderWidth: 1, borderColor: 'blue.300', bgColor: 'darkBlue.700' }}
+                                        placeholder='Digite a localização ou selecione no mapa'
+                                        placeholderTextColor={colors.green[400]}
+                                        numberOfLines={3}
+                                        textAlign="justify"
+                                        onChangeText={() => {}}
+                                        value={''}
+                                    />
+
+                                    <HStack justifyContent='center' h={400}>
+                                        {(currentCoords) &&
+                                            <SelectInputMap coords={[currentCoords]} />
+                                        }
+                                    </HStack>
+                                </VStack>
+                            </ScrollView>
+                        </View>
+                    </View>
+                </Modal>
             </ScrollView>
         </View >
     );
