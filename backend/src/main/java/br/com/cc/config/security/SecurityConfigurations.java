@@ -31,6 +31,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/api/complaint/*", "/api/collect/*").authenticated()
                         .requestMatchers("/api/user/**").hasRole("ADMIN")
                         .requestMatchers("/api/ccimages/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/chat/*").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                        .requestMatchers(HttpMethod.POST, "/api/message/*").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                         .requestMatchers(HttpMethod.POST, "/api/complaint/*").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                         .requestMatchers(HttpMethod.PUT, "/api/complaint/*").hasAnyAuthority("ROLE_ADMIN", "ROLE_AUTHOR")
                         .requestMatchers(HttpMethod.POST, "/api/collect/*").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
