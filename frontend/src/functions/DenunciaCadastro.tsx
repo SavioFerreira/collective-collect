@@ -302,13 +302,12 @@ export function DenunciaCadastro({ onRegister }: Props) {
                         <View bgColor="darkBlue.700" p={2} justifyContent="center" borderRadius="lg" w="90%" h="80%">
                             <ScrollView>
                                 <VStack borderWidth={1} borderColor="blue.400" p={2} rounded="lg" h={600} justifyContent="center" alignSelf="center">
-                                    <HStack justifyContent="space-between" mb={4}>
+                                    <HStack justifyContent="space-evenly" mb={4}>
                                         <Icon
                                             as={FontAwesome6}
                                             name={"map-location-dot"}
                                             color="green.500"
                                             size={7}
-                                            ml={3}
                                         />
                                         <Text numberOfLines={1} fontSize="lg" fontFamily="heading" color="white" textAlign="center">
                                             Selecione a localização
@@ -318,7 +317,6 @@ export function DenunciaCadastro({ onRegister }: Props) {
                                             name={"x-circle"}
                                             color="green.500"
                                             size={7}
-                                            ml={3}
                                             onPress={() => setIsOpenModal(false)}
                                         />
                                     </HStack>

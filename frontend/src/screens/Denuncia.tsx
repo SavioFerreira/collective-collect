@@ -110,7 +110,6 @@ export function Denuncia() {
         </VStack>
       }
 
-
       <HStack mb={3} mt={3} px={3}>
         <Pressable
           bgColor="green.500"
