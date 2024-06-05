@@ -46,23 +46,23 @@ export function LocationInfo({ label, description, ...rest }: Props) {
                 transparent={true}
             >
                 <TouchableWithoutFeedback onPress={toggleModal}>
-                    <Flex flex={1} alignItems="center" justifyContent="initial" bg="rgba(7, 147, 190, 0.4)">
-                        <View bgColor="cyan.200" p={10} justifyContent="center" borderRadius="lg" w="90%">
-                            <VStack space={3}>
-                                <HStack justifyContent='center'>
-                                    <Text numberOfLines={1} fontSize="xl" fontFamily="heading" color="darkBlue.700" mb={1} textAlign="center">
+                    <Flex flex={1} alignItems="center" justifyContent="initial" bg="rgba(0, 0, 0, 0.623)">
+                        <View bgColor="darkBlue.700" p={5} justifyContent="center" borderRadius="lg" w="90%">
+                            <VStack borderWidth={1} borderColor="blue.400" space={3} borderRadius="lg">
+                                <HStack justifyContent='center' p={1}>
+                                    <Text numberOfLines={1} fontSize="xl" fontFamily="heading" color="white" mb={1} textAlign="center">
                                         {label}
                                     </Text>
                                     <Icon
 
                                         as={FontAwesome6}
                                         name={"map-location-dot"}
-                                        color="blue.700"
+                                        color="green.500"
                                         size={7}
                                         ml={3}
                                     />
                                 </HStack>
-                                <Text numberOfLines={4} fontSize="lg" fontFamily="body" color="darkBlue.700" maxW="97%" textAlign="justify">
+                                <Text numberOfLines={4} fontSize="lg" fontFamily="body" color="white" maxW="97%" textAlign="justify" p={2}>
                                     {description}
                                 </Text>
                             </VStack>
