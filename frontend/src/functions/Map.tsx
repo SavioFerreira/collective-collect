@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import MapView, { MapViewProps, PROVIDER_GOOGLE, LatLng, Marker } from "react-native-maps";
 import { Icon, VStack, Text, View, useToast } from "native-base";
 import { Entypo } from '@expo/vector-icons';
-import { mapStyleHopper } from "@utils/mapStyle";
+import { mapStyleAllBlue } from "@utils/mapStyle";
 import { api } from "@services/api";
 import { ColetaDTO } from "@dtos/ColetaDTO";
 import { AppError } from "@utils/AppError";
@@ -13,6 +13,9 @@ import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { StatusEnum } from "@enums/StatusEnum";
 
 import AvatarSvg from '@assets/avatar.svg';
+
+
+
 
 type Props = MapViewProps & {
     coords: LatLng[];
@@ -34,7 +37,7 @@ export function Map({ coords, ...rest }: Props) {
     const route = useRoute<RouteProp<DenunciasRouteParams, 'Denuncias'>>();
     const complaintId = route.params?.complaintId;
 
-    const visibleCollect =  coletas.filter(collect => collect.status !== StatusEnum.APROVADO);
+    const visibleCollect = coletas.filter(collect => collect.status !== StatusEnum.APROVADO);
 
 
     function handleOpenColetaDetails(collectId: string) {
@@ -55,7 +58,7 @@ export function Map({ coords, ...rest }: Props) {
                 latitudeDelta: 0.004,
                 longitudeDelta: 0.004
             }, 1000);
-            
+
         }
     };
 
@@ -94,7 +97,7 @@ export function Map({ coords, ...rest }: Props) {
     }, [coletas, complaintId]);
 
     return (
-        <View w="full" h="full" borderWidth={3} borderColor="green.500" borderRadius={10} overflow="hidden">
+        <View w="full" h="full" borderWidth={0} borderColor="green.500" borderRadius={10} overflow="hidden">
             <MapView
                 ref={mapRef}
                 provider={PROVIDER_GOOGLE}
@@ -106,7 +109,7 @@ export function Map({ coords, ...rest }: Props) {
                     longitudeDelta: 0.004
                 }}
                 onMapLoaded={onMapLoaded}
-                customMapStyle={mapStyleHopper}
+                customMapStyle={mapStyleAllBlue}
                 {...rest}
             >
                 {visibleCollect.map((coleta, index) => {
@@ -118,7 +121,6 @@ export function Map({ coords, ...rest }: Props) {
                             coordinate={{ latitude: coleta.locale.latitude ?? 0, longitude: coleta.locale.longitude ?? 0 }}
                             title={coleta.title}
                             description={` STATUS: ${coleta.status}`}
-
                             onPress={() => {
                                 Alert.alert(
                                     "Ir para detalhes da coleta?",
@@ -136,12 +138,14 @@ export function Map({ coords, ...rest }: Props) {
                                 );
                             }}
                         >
-                            <Icon
-                                as={typeIcon.Component}
-                                name={typeIcon.name}
-                                color={colorIcon.color}
-                                size={10}
-                            />
+                            <View rounded="full" p={2} bgColor="blue.400">
+                                <Icon
+                                    as={typeIcon.Component}
+                                    name={typeIcon.name}
+                                    color={colorIcon.color}
+                                    size={8}
+                                />
+                            </View>
                         </Marker>
                     );
                 })}
@@ -151,7 +155,7 @@ export function Map({ coords, ...rest }: Props) {
                     coordinate={coords[0]}
                 >
                     <VStack>
-                        <AvatarSvg width={45} height={45}/>
+                        <AvatarSvg width={45} height={45} />
                     </VStack>
                 </Marker>
             </MapView>
@@ -160,41 +164,41 @@ export function Map({ coords, ...rest }: Props) {
                 position="absolute"
                 right={2}
                 top={1}
-                bgColor= 'rgba(14, 53, 160, 0.103)'
+                bgColor='rgba(45, 2, 145, 0.137)'
                 rounded="lg"
                 p={1}
             >
-                <Text color="darkBlue.600" fontFamily="heading" fontSize="xs">
+                <Text color="blue.600" fontFamily="heading" fontSize="xs">
                     Centralizar
                 </Text>
                 <Icon
-                  as={Entypo}
-                  name="location-pin"
-                  size="9"
-                  color="darkBlue.600"
-                  alignSelf="center"
-                  onPress={centerMapOnUserLocation}
+                    as={Entypo}
+                    name="location-pin"
+                    size="9"
+                    color="blue.600"
+                    alignSelf="center"
+                    onPress={centerMapOnUserLocation}
                 />
             </VStack>
             <VStack
                 zIndex={1}
                 position="absolute"
                 right={2}
-                bottom={2} 
-                bgColor= 'rgba(160, 80, 14, 0.137)'
+                bottom={2}
+                bgColor='rgba(45, 2, 145, 0.137)'
                 rounded="lg"
                 p={1}
             >
-                <Text color="orange.600" fontFamily="heading" fontSize="xs">
+                <Text color="blue.600" fontFamily="heading" fontSize="xs">
                     Atualizar
                 </Text>
                 <Icon
-                  as={Entypo}
-                  name="ccw"
-                  size="9"
-                  color="orange.600"
-                  alignSelf="center"
-                  onPress={() => fetchColetas()}
+                    as={Entypo}
+                    name="ccw"
+                    size="9"
+                    color="blue.600"
+                    alignSelf="center"
+                    onPress={() => fetchColetas()}
                 />
             </VStack>
         </View>

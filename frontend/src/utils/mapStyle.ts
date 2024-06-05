@@ -1,33 +1,68 @@
-export const mapStyleHopper =
-[
+export const mapStyleAllBlue = [
     {
-        "featureType": "poi.business",
-        "stylers": [
-            { "visibility": "off" }
-        ]
-    },
-    {
-        "featureType": "poi",
-        "elementType": "labels.icon",
-        "stylers": [
-            { "visibility": "off" }
-        ]
-    },
-    {
-        "featureType": "water",
+        "featureType": "all",
         "elementType": "geometry",
         "stylers": [
             {
-                "hue": "#165c64"
+                "color": "#63b5e9" 
+            }
+        ]
+    },
+    {
+        "featureType": "all",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#3366FF" 
+            }
+        ]
+    },
+    {
+        "featureType": "all",
+        "elementType": "labels.text.stroke",
+        "stylers": [
+            {
+                "visibility": "off" 
+            }
+        ]
+    },
+    
+    {
+        "featureType": "all",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "gamma": 0.01
             },
             {
-                "saturation": 34
+                "lightness": 20
+            }
+        ]
+    },
+    {
+        "featureType": "all",
+        "elementType": "labels.text.stroke",
+        "stylers": [
+            {
+                "saturation": -31
             },
             {
-                "lightness": -69
+                "lightness": -33
             },
             {
-                "visibility": "on"
+                "weight": 2
+            },
+            {
+                "gamma": 0.8
+            }
+        ]
+    },
+    {
+        "featureType": "all",
+        "elementType": "labels.icon",
+        "stylers": [
+            {
+                "visibility": "off"
             }
         ]
     },
@@ -36,34 +71,31 @@ export const mapStyleHopper =
         "elementType": "geometry",
         "stylers": [
             {
-                "hue": "#b7caaa"
+                "lightness": 30
             },
             {
-                "saturation": -14
-            },
-            {
-                "lightness": -18
-            },
-            {
-                "visibility": "on"
+                "saturation": 30
             }
         ]
     },
     {
-        "featureType": "landscape.man_made",
-        "elementType": "all",
+        "featureType": "poi",
+        "elementType": "geometry",
         "stylers": [
             {
-                "hue": "#cbdac1"
+                "saturation": 20
+            }
+        ]
+    },
+    {
+        "featureType": "poi.park",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "lightness": 20
             },
             {
-                "saturation": -6
-            },
-            {
-                "lightness": -9
-            },
-            {
-                "visibility": "on"
+                "saturation": -20
             }
         ]
     },
@@ -72,242 +104,34 @@ export const mapStyleHopper =
         "elementType": "geometry",
         "stylers": [
             {
-                "hue": "#8d9b83"
+                "lightness": 10
             },
             {
-                "saturation": -89
-            },
-            {
-                "lightness": -12
-            },
-            {
-                "visibility": "on"
+                "saturation": -30
             }
         ]
     },
     {
-        "featureType": "road.highway",
-        "elementType": "geometry",
+        "featureType": "road",
+        "elementType": "geometry.stroke",
         "stylers": [
             {
-                "hue": "#d4dad0"
+                "saturation": 10
             },
             {
-                "saturation": -88
+                "lightness": 30
             },
             {
-                "lightness": 54
-            },
-            {
-                "visibility": "simplified"
+                "color": '#CCFFFF'
             }
         ]
     },
     {
-        "featureType": "poi.business",
-        "stylers": [
-            { "visibility": "off" }
-        ]
-    },
-    {
-        "featureType": "poi",
-        "elementType": "labels.icon",
-        "stylers": [
-            { "visibility": "off" }
-        ]
-    },
-    {
-        "featureType": "transit.line",
-        "elementType": "all",
-        "stylers": [
-            { "visibility": "off" }
-        ]
-    },
-    {
-        "featureType": "transit.station.bus",
-        "elementType": "all",
-        "stylers": [
-            { "visibility": "off" }
-        ]
-    },
-
-    {
-        "featureType": "road.arterial",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "hue": "#bdc5b6"
-            },
-            {
-                "saturation": -89
-            },
-            {
-                "lightness": -3
-            },
-            {
-                "visibility": "simplified"
-            }
-        ]
-    },
-    {
-        "featureType": "road.local",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "hue": "#bdc5b6"
-            },
-            {
-                "saturation": -89
-            },
-            {
-                "lightness": -26
-            },
-            {
-                "visibility": "on"
-            }
-        ]
-    },
-    {
-        "featureType": "poi.park",
+        "featureType": "water",
         "elementType": "all",
         "stylers": [
             {
-                "hue": "#8ba975"
-            },
-            {
-                "saturation": -46
-            },
-            {
-                "lightness": -28
-            },
-            {
-                "visibility": "on"
-            }
-        ]
-    },
-    {
-        "featureType": "transit",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "hue": "#a43218"
-            },
-            {
-                "saturation": 74
-            },
-            {
-                "lightness": -51
-            },
-            {
-                "visibility": "simplified"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative.province",
-        "elementType": "all",
-        "stylers": [
-            {
-                "hue": "#ffffff"
-            },
-            {
-                "saturation": 0
-            },
-            {
-                "lightness": 100
-            },
-            {
-                "visibility": "simplified"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative.neighborhood",
-        "elementType": "all",
-        "stylers": [
-            {
-                "hue": "#ffffff"
-            },
-            {
-                "saturation": 0
-            },
-            {
-                "lightness": 100
-            },
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative.locality",
-        "elementType": "labels",
-        "stylers": [
-            {
-                "hue": "#ffffff"
-            },
-            {
-                "saturation": 0
-            },
-            {
-                "lightness": 100
-            },
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative.land_parcel",
-        "elementType": "all",
-        "stylers": [
-            {
-                "hue": "#ffffff"
-            },
-            {
-                "saturation": 0
-            },
-            {
-                "lightness": 100
-            },
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative",
-        "elementType": "all",
-        "stylers": [
-            {
-                "hue": "#3a3935"
-            },
-            {
-                "saturation": 5
-            },
-            {
-                "lightness": -57
-            },
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "poi.medical",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "hue": "#cba923"
-            },
-            {
-                "saturation": 50
-            },
-            {
-                "lightness": -46
-            },
-            {
-                "visibility": "on"
+                "lightness": -20
             }
         ]
     }
