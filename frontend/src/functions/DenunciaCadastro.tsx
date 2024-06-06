@@ -16,6 +16,7 @@ import { Map } from '@functions/Map'
 import { FontAwesome6, Feather } from '@expo/vector-icons';
 import { LocationObjectCoords } from 'expo-location';
 import { SelectInputMap } from './selectInputMap';
+import { AppError } from '@utils/AppError';
 
 type Props = {
     onRegister: () => void;
@@ -131,7 +132,7 @@ export function DenunciaCadastro({ onRegister }: Props) {
             const dateTimeImageSelected = FormatDate(date.toString()).replaceAll('/', '-').replaceAll(':', '-').replaceAll(' ', '_');
             formData.append('image', {
                 uri: complaint.image,
-                type: 'image/png',
+                type: 'image/png' || 'image/jpeg',
                 name: `complaint_${dateTimeImageSelected.toString()}_autor-${complaint.author.id}.png`
             } as any);
         }
@@ -149,6 +150,15 @@ export function DenunciaCadastro({ onRegister }: Props) {
                 throw new Error('Falha ao enviar Denuncia!');
             }
         } catch (error) {
+            onRegister();
+
+            const title = error instanceof AppError ? error.message : 'Falha\n Não foi possível realizar a denúncia. Tente novamente mais tarde.';
+            toast.show({
+                title: title,
+                placement: 'top',
+                duration: 2000,
+                bgColor: 'red.500',
+            });
             return 'fail';
         } finally {
             setIsLoading(false);
