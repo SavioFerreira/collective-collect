@@ -48,6 +48,7 @@ export function Coleta() {
 
   const isUserCollaborator = coleta.collaborators?.some(colab => colab.id === user.id);
   const isUserPrimaryCollaborator = coleta.collaborators?.[0]?.id === user.id;
+  const isCollectCollaboratorEmpy = coleta.collaborators?.filter(user => user).length === 0;
   const isCollectPublic = coleta.teamCollect;
 
   function handleViewComplaintOnMap(complaintId: string) {
@@ -311,7 +312,7 @@ export function Coleta() {
               </Box>
             </Box>
 
-            {!isUserCollaborator && isCollectPublic  && coleta.status === StatusEnum.DISPONIVEL ?
+            {!isUserCollaborator && isCollectPublic  && (coleta.status === StatusEnum.DISPONIVEL || coleta.status === StatusEnum.PENDENTE) ?
               <Pressable
                 bgColor="orange.500"
                 _pressed={{ bg: "orange.700" }}
@@ -417,10 +418,10 @@ export function Coleta() {
                       name="x-circle"
                       onPress={closeColetaModal}
                     />
-                    {isUserPrimaryCollaborator && coleta.status !== StatusEnum.OCORRENDO ? 
-                      <ColetaCadastroFull onRegister={closeColetaModal} collectId={coleta.id} />
-                      :
-                      <ColetaCadastroBasic onRegister={closeColetaModal} collectId={coleta.id} />
+                    { (isUserPrimaryCollaborator || isCollectCollaboratorEmpy) && coleta.status !== StatusEnum.OCORRENDO ?
+                      <ColetaCadastroFull onRegister={closeColetaModal} collectId={coleta.id}/>
+                    :
+                      <ColetaCadastroBasic onRegister={closeColetaModal} collectId={coleta.id}/>
                     }
                   </View>
                 </Flex>
