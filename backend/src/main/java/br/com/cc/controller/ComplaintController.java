@@ -57,7 +57,6 @@ public class ComplaintController {
 		return ResponseEntity.ok(complaintMapperService.convertComplaintToDTO(saved));
 	}
 
-
 	@PutMapping("/{id}")
 	public ResponseEntity<ComplaintDTO> updateById(@PathVariable Long id, @RequestBody ComplaintDTO complaintDto) {
 		Complaint updated = complaintService.updateById(id, complaintMapperService.convertComplaintDtoToEntity(complaintDto));

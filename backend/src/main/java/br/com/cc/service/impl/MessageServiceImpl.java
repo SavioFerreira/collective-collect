@@ -29,7 +29,7 @@ public class MessageServiceImpl implements MessageService {
     MessageRepository messageRepository;
 
     @Override
-    public Message sendMessage(Chat chat, UserDTO user, String content) {
+    public Message sendMessage(Chat chat, User user, String content) {
         Message message = new Message();
         message.setChat(chat);
         message.setUser(user);

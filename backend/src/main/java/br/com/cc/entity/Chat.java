@@ -21,5 +21,6 @@ public class Chat {
     @ManyToOne
     private Collect collect;
 
+    @OneToMany
     private List<Message> messages = new ArrayList<>();
 }

@@ -2,8 +2,10 @@ package br.com.cc.service.impl;
 
 import br.com.cc.entity.ImageStorage;
 import br.com.cc.service.ImageStorageService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -24,12 +26,19 @@ public class ImageStorageServiceImpl  implements ImageStorageService {
     @Override
     public String uploadImage(MultipartFile image) throws IOException {
         String imageName = StringUtils.cleanPath(image.getOriginalFilename());
-        Path targetLocation = imageStorageLocation.resolve(imageName);
-        image.transferTo(targetLocation);
+
+        try {
+            Path targetLocation = imageStorageLocation.resolve(imageName);
+            image.transferTo(targetLocation);
 
         return ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/ccimages/download/")
                 .path(imageName)
                 .toUriString();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return "Falha no envio da imagem.";
+        }
     }
 }

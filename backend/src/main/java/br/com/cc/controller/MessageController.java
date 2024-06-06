@@ -2,6 +2,7 @@ package br.com.cc.controller;
 
 import br.com.cc.dto.MessageDTO;
 import br.com.cc.entity.Message;
+import br.com.cc.entity.User;
 import br.com.cc.mapper.UserMapperService;
 import br.com.cc.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,13 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private UserMapperService userMapperService;
+
     @PostMapping
     public Message sendMessage(@RequestBody MessageDTO messageDTO) {
-        return messageService.sendMessage(messageDTO.getChat(), messageDTO.getUser() , messageDTO.getContent());
+        User user = userMapperService.convertUserToEntity(messageDTO.getUser());
+        return messageService.sendMessage(messageDTO.getChat(), user, messageDTO.getContent());
     }
 }
 

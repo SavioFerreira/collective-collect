@@ -99,7 +99,7 @@ public class CollectServiceImpl implements CollectService {
 			throw new InvalidCollectRegistrationException("Você já está registrado para essa coleta!");
 		}
 
-		if (collaboratorDTO.isTeamCollect() && !isUserPrimaryCollaborator){
+		if (!collect.isTeamCollect()){
 			throw new InvalidCollectRegistrationException("Essa coleta não está disponível para outros usuários!");
 		}
 

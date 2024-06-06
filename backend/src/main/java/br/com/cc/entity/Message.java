@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 public class Message {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +22,7 @@ public class Message {
     private Chat chat;
 
     @ManyToOne
-    private UserDTO user;
+    private User user;
 
     private String content;
     private LocalDateTime timestamp;
