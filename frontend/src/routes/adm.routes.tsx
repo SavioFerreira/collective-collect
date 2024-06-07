@@ -1,16 +1,18 @@
 import { DrawerContentScrollView, DrawerItem, createDrawerNavigator } from '@react-navigation/drawer';
 import { Feather } from '@expo/vector-icons';
 import { AppRoutes } from './app.routes';
-import { Center, HStack, Heading, Spacer, Text, VStack, useTheme } from 'native-base';
+import { Center, HStack, Text, VStack, useTheme } from 'native-base';
 import { ValidaColeta } from '@screens/ValidaColeta';
 
 import LogoCollectiveCollectSvg from '@assets/logo.svg';
 import LogoRecicleSvg from '@assets/recycleLogo.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { GerenciaDenuncia } from '@screens/GerenciaDenuncia';
 
 type AdmRoutes = {
     cc: undefined;
     validaColeta: undefined;
+    gerenciaDenuncia: undefined;
 }
 
 const { Navigator, Screen } = createDrawerNavigator<AdmRoutes>();
@@ -53,6 +55,16 @@ export default function AdmRoutes() {
                                 inactiveTintColor={colors.green[700]}
                                 activeTintColor={colors.green[500]}
                             />
+                            <DrawerItem
+                                label={'Gerenciar Denúncias'}
+                                onPress={() => { props.navigation.navigate('gerenciaDenuncia') }}
+                                icon={({ color, size }) => <Feather name='tool' color={color} size={size} />}
+                                focused={focused === 'gerenciaDenuncia'}
+                                activeBackgroundColor={colors.darkBlue[700]}
+                                inactiveBackgroundColor={colors.darkBlue[200]}
+                                inactiveTintColor={colors.green[700]}
+                                activeTintColor={colors.green[500]}
+                            />
                         </VStack>
                         <Center>
                             <LogoCollectiveCollectSvg
@@ -73,6 +85,7 @@ export default function AdmRoutes() {
         >
             <Screen name='cc' component={AppRoutes} />
             <Screen name='validaColeta' component={ValidaColeta} />
+            <Screen name='gerenciaDenuncia' component={GerenciaDenuncia} />
         </Navigator>
     );
 }
