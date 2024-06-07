@@ -21,6 +21,7 @@ import { OnCollectModal } from '@functions/OnCollectModal';
 import { ColetaCadastroFull } from '@functions/ColetaCadastroFull';
 import { ColetaCadastroBasic } from '@functions/ColetaCadastroBasic';
 import { StatusEnum } from '@enums/StatusEnum';
+import { ChatModal } from '@components/ChatModal';
 
 type RouteParamsProps = {
   collectId: string;
@@ -274,24 +275,7 @@ export function Coleta() {
                     </VStack>
                     {isUserCollaborator ?
                       <VStack ml={2} mr={2} alignSelf="center">
-                        <Pressable
-                          _pressed={{ opacity: 60 }}
-                          borderRadius="md"
-                          alignItems="center"
-                          justifyContent="center"
-                          onPress={() => {}}
-                        >
-                          <Icon
-                            as={MaterialIcons}
-                            name={'chat'}
-                            color="yellow.400"
-                            size="lg"
-                            alignSelf="center"
-                          />
-                          <Text fontFamily="body" fontSize="xs" color="yellow.400" mb={1}>
-                            Iniciar Chat
-                          </Text>
-                        </Pressable>
+                        <ChatModal coleta={coleta} />
                       </VStack>
                       :
                       <VStack ml={2} mr={2}>
