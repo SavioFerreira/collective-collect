@@ -31,4 +31,9 @@ public class ChatServiceImpl implements ChatService {
         chat.setCollect(collect);
         return chatRepository.save(chat);
     }
+
+    @Override
+    public Optional<Chat> findByCollectId(Long id) {
+        return chatRepository.findById(id);
+    }
 }
