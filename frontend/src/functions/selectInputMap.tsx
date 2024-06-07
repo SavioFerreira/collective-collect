@@ -1,61 +1,81 @@
-import React, { useRef } from "react";
-import MapView, { MapViewProps, PROVIDER_GOOGLE, LatLng, Marker } from "react-native-maps";
+import React, { useRef, useState } from "react";
+import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import { Icon, VStack, Text, View } from "native-base";
 import { Entypo } from '@expo/vector-icons';
 import { mapStyleAllBlue } from "@utils/mapStyle";
-
 import AvatarSvg from '@assets/avatar.svg';
+import { getAddressLocation } from "@utils/getArdressLocation";
+import { LocationObjectCoords } from "expo-location";
 
-type Props = MapViewProps & {
-    coords: LatLng[];
+type Props = {
+    coords: { latitude: number, longitude: number }[];
+    onSelectLocation: (location: { latitude: number, longitude: number , address: string }) => void;
 };
 
-export function SelectInputMap({ coords, ...rest }: Props) {
+type SelectedLocation = {
+    latitude: number;
+    longitude: number;
+    address: string;
+}
+
+export function SelectInputMap({ coords, onSelectLocation }: Props) {
+
+    const [selectedLocation, setSelectedLocation] = useState<SelectedLocation | null>(null);
     const lastCoord = coords[coords.length - 1];
     const mapRef = useRef<MapView | null>(null);
 
-    async function onMapLoaded() {
-        if (coords.length > 1) {
-            mapRef.current?.fitToSuppliedMarkers(['user'], { edgePadding: { top: 50, right: 50, bottom: 50, left: 50 } });
-        }
-    }
 
-    function centerMapOnUserLocation() {
-        if (mapRef.current) {
-            mapRef.current.animateToRegion({
-                latitude: lastCoord.latitude,
-                longitude: lastCoord.longitude,
-                latitudeDelta: 0.004,
-                longitudeDelta: 0.004
-            }, 1000);
-
-        }
+    const handleSelectLocation = async (event: any) => {
+        const { latitude, longitude } = event.nativeEvent.coordinate;
+        const fakeLocationObject: LocationObjectCoords = {
+            latitude,
+            longitude,
+            altitude: null,
+            accuracy: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null
+        };
+        const address = await getAddressLocation(fakeLocationObject);
+        setSelectedLocation({ latitude, longitude, address: address || "Endereço não encontrado" });
+        onSelectLocation({ latitude, longitude, address: address || "Endereço não encontrado" });
     };
 
+
     return (
-        <View w="full" h="full" borderWidth={0} borderColor="green.500" borderRadius={10} overflow="hidden">
+        <View w="full" h="full" overflow="hidden" rounded="lg">
             <MapView
                 ref={mapRef}
                 provider={PROVIDER_GOOGLE}
                 style={{ width: '100%', height: '100%' }}
-                region={{
+                initialRegion={{
                     latitude: lastCoord.latitude,
                     longitude: lastCoord.longitude,
                     latitudeDelta: 0.004,
                     longitudeDelta: 0.004
                 }}
-                onMapLoaded={onMapLoaded}
+                onPress={handleSelectLocation}
                 customMapStyle={mapStyleAllBlue}
-                {...rest}
             >
+                {selectedLocation && (
+                    <Marker
+                        coordinate={{ latitude: selectedLocation.latitude, longitude: selectedLocation.longitude }}
+                        title="Local Selecionado"
+                        description={selectedLocation.address}
+                    >
+                        <Icon
+                            as={Entypo}
+                            name={"location-pin"}
+                            color={"orange.700"}
+                            size={12}
+                        />
+                    </Marker>
+                )}
                 <Marker
                     title="Você"
-                    identifier="user"
                     coordinate={coords[0]}
                 >
-                    <VStack>
-                        <AvatarSvg width={45} height={45} />
-                    </VStack>
+                    <AvatarSvg width={45} height={45} />
                 </Marker>
             </MapView>
             <VStack
@@ -72,11 +92,16 @@ export function SelectInputMap({ coords, ...rest }: Props) {
                 </Text>
                 <Icon
                     as={Entypo}
-                    name="location-pin"
+                    name="location"
                     size="9"
                     color="blue.600"
                     alignSelf="center"
-                    onPress={centerMapOnUserLocation}
+                    onPress={() => mapRef.current?.animateToRegion({
+                        latitude: lastCoord.latitude,
+                        longitude: lastCoord.longitude,
+                        latitudeDelta: 0.004,
+                        longitudeDelta: 0.004
+                    }, 1000)}
                 />
             </VStack>
         </View>
