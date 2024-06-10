@@ -24,7 +24,9 @@ export function ColetaCadastroFull({ onRegister, collectId }: Props) {
     const { colors } = useTheme();
     const toast = useToast();
 
-    const toggleSwitch = () => setTeamCollect(previousState => !previousState);
+    function toggleSwitch() {
+     setTeamCollect(previousState => !previousState);
+    }  
 
     const onChange = (_event: any, selectedDate?: Date) => {
         const currentDate = selectedDate || date;
@@ -45,7 +47,9 @@ export function ColetaCadastroFull({ onRegister, collectId }: Props) {
     async function handleRegisterCollaborator() {
         setIsLoading(true);
         try {
-            const response = await api.post(`/api/collect/${collectId}/addParticipant`, { date: date.toISOString(), teamCollect, user, collectId });
+            const timezoneOffset = date.getTimezoneOffset() * 60000;
+            const localISOTime = new Date(date.getTime() - timezoneOffset).toISOString();
+            const response = await api.post(`/api/collect/${collectId}/addParticipant`, { date: localISOTime, teamCollect, user, collectId });
             if (response.status === 200) {
                 onRegister();
                 toast.show({
