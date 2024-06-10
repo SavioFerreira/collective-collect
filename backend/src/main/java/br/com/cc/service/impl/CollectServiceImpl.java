@@ -81,16 +81,11 @@ public class CollectServiceImpl implements CollectService {
 		}
 
 		boolean isAlreadyCollaborator = collect.getCollaborators().stream().anyMatch(user -> user.getId().equals(collaboratorDTO.getUser().getId()));
-		boolean isUserAdmin = collaboratorDTO.getUser().getRole().equals(AuthUserRole.ADMIN);
 
 		User[] userPrimaryCollaborator = collect.getCollaborators().toArray(new User[0]);
-		boolean isUserPrimaryCollaborator = false;
+		boolean isUserPrimaryCollaborator = Objects.equals(userPrimaryCollaborator[0].getId(), collaboratorDTO.getUser().getId());
 
-		if (userPrimaryCollaborator.length > 0) {
-			isUserPrimaryCollaborator = Objects.equals(userPrimaryCollaborator[0].getId(), collaboratorDTO.getUser().getId());
-		}
-
-		if (isUserAdmin || isUserPrimaryCollaborator ) {
+		if (isUserPrimaryCollaborator) {
 			collect.setTeamCollect(collaboratorDTO.isTeamCollect());
 			collect.setCollectDate(collaboratorDTO.getDate());
 		}
@@ -99,11 +94,13 @@ public class CollectServiceImpl implements CollectService {
 			throw new InvalidCollectRegistrationException("Você já está registrado para essa coleta!");
 		}
 
-		if (!collect.isTeamCollect()){
+		if (!collect.isTeamCollect() && !isUserPrimaryCollaborator) {
 			throw new InvalidCollectRegistrationException("Essa coleta não está disponível para outros usuários!");
 		}
 
-		collect.getCollaborators().add(userMapperService.convertUserToEntity(collaboratorDTO.getUser()));
+		if (!isAlreadyCollaborator) {
+			collect.getCollaborators().add(userMapperService.convertUserToEntity(collaboratorDTO.getUser()));
+		}
 		collectRepository.save(collect);
 	}
 
