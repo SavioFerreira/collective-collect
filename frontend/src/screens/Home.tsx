@@ -83,7 +83,7 @@ export function Home() {
             <HStack alignSelf="center" mt={-3} flex={1}>
               <HStack alignSelf="center" mr={5}>
                 <View>
-                  <CoopHomeSvg width={35} height={35}/>
+                  <CoopHomeSvg width={30} height={35}/>
                 </View>
                 <Text fontFamily="body" fontSize="md" color="white" ml={2} alignSelf="center">
                   Denuncias Realizadas
@@ -91,7 +91,7 @@ export function Home() {
               </HStack>
               <VStack alignSelf="center">
                 <Text numberOfLines={1} color="red.600" fontFamily="heading" fontSize="md" textAlign="justify" alignSelf="center">
-                  {coletas.filter(collect => collect.status === StatusEnum.REJEITADO).length}
+                  {coletas.filter(collect => collect).length}
                 </Text>
               </VStack>
             </HStack>

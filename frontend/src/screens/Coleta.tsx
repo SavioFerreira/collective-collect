@@ -342,11 +342,12 @@ export function Coleta() {
                       );
                     }}
                   >
-                    { coleta.status === StatusEnum.DISPONIVEL && coleta.id.toString === collectId.toString?
+                    { coleta.status === StatusEnum.PENDENTE && coleta.id.toString() === collectId.toString() &&
                       <Text numberOfLines={1} fontSize={20} fontFamily="heading" color="blue.200" mb={1} textAlign="center">
                         Iniciar Coleta?
                       </Text>
-                      :
+                    }
+                    { coleta.status === StatusEnum.OCORRENDO && coleta.id.toString() === collectId.toString() &&
                       <Text numberOfLines={1} fontSize={20} fontFamily="heading" color="blue.200" mb={1} textAlign="center">
                         Retornar para coleta?
                       </Text>

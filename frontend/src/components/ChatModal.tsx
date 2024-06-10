@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Modal } from 'react-native';
+import { KeyboardAvoidingView, Platform, Modal } from 'react-native';
 import { HStack, VStack, Text, View, Icon, Pressable, ScrollView, FlatList, Input } from "native-base";
 import { MaterialIcons, FontAwesome6, Feather } from '@expo/vector-icons';
 import { IViewProps } from "native-base/lib/typescript/components/basic/View/types";
@@ -21,6 +21,7 @@ type MessageDTO = {
     user: UserDTO
 }
 
+
 export function ChatModal({ coleta, ...rest }: Props) {
     const [isModalVisible, SetIsModalVisible] = useState(false);
     const { user } = useAuth();
@@ -33,26 +34,16 @@ export function ChatModal({ coleta, ...rest }: Props) {
     }
 
     async function fetchMessage() {
-        const response = await api.get(`api/chat/${coleta.id}`);
-        const data = await response.data();
-        setMessage(data);
+        // código para buscar mensagens
     };
 
     async function sendMessage() {
-        await api.post('api/message/', {
-                chart: {id: coleta.id},
-                user: {id: user.id, name: user.name, email: user.email },
-                content: content
-            });
-
-        setContent('');
-        fetchMessage();
+        // código para enviar mensagens
     };
 
     useEffect(() => {
-         fetchMessage();
+        fetchMessage();
     }, []);
-
 
     return (
         <View alignItems="flex-start" {...rest}>
@@ -75,79 +66,64 @@ export function ChatModal({ coleta, ...rest }: Props) {
                 transparent={true}
             >
                 <Pressable flex={1} alignItems="center" justifyContent="center" bg="rgba(0, 0, 0, 0.623)">
-                    <View bgColor="darkBlue.300" p={5} justifyContent="center" borderRadius="lg" w="95%" h="90%" >
-                        <Icon alignSelf="flex-end" size={8} color="blue.700"
+                    <View bgColor="darkBlue.300" p={5} pt={1} pb={1} justifyContent="end" borderRadius="lg" w="95%" h="80%">
+                        <Icon alignSelf="flex-end" size={8} color="green.400"
                             as={Feather}
                             name="x-circle"
-                            mb={4}
                             onPress={toggleModal}
                         />
-
-                        <VStack borderWidth={1} borderColor="blue.200" p={2} rounded="lg" h={600}>
-                            <HStack justifyContent="space-around" mb={4}>
-                                <Icon
-                                    as={MaterialIcons}
-                                    name={"chat"}
-                                    color="blue.700"
-                                    size={7}
-                                    alignSelf="center"
-                                />
-                                <Text numberOfLines={1} fontSize="md" fontFamily="heading" color="white">
-                                    Coleta {coleta.id} - {FormatDate(coleta.collectDate)}
-                                </Text>
-                                <Icon
-                                    as={FontAwesome6}
-                                    name={"map-location-dot"}
-                                    color="blue.700"
-                                    size={7}
-                                    alignSelf="center"
-                                />
-                            </HStack>
-                            <View flex={1} bgColor="blue.400" rounded="lg">
-                                <FlatList
-                                    data={message}
-                                    renderItem={({ item }) => (
-                                      <Text>{item.user.name}: {item.content}</Text>
-                                    )}
-
-                                    keyExtractor={item => item.id.toString()}
-                                />
-                            </View>
-                            <HStack rounded="lg" bgColor="blue.600" mt={2}>
-                                    <VStack m={1}>
-                                        <Icon
-                                            as={FontAwesome6}
-                                            name={"user"}
-                                            color="green.400"
-                                            size={7}
-                                            ml={1}
-                                        />
-                                        <Text numberOfLines={1} fontSize="md" fontFamily="body" color="green.400">
-                                            {user.name}
-                                        </Text>
-                                    </VStack>
-                                    <View flex={1} alignSelf="center">
-                                        <Input
-                                            value={content}
-                                            onChangeText={setContent}
-                                            placeholder="Digitar"
-                                            placeholderTextColor="green.400"
-                                            fontSize="md"
-                                            color="white"
-                                        />
-                                    </View>
-                                    <Pressable onPress={sendMessage} _pressed={{ opacity: 60 }} alignSelf="center" m={1}>
-                                        <Icon
-                                            textAlign="center"
-                                            alignSelf="center"
-                                            as={MaterialIcons}
-                                            name={"send"}
-                                            color="green.400"
-                                            size="lg"
-                                        />
-                                    </Pressable>
+                        <VStack>
+                            <VStack>
+                                <HStack justifyContent="space-around" mb={2}>
+                                    <Text numberOfLines={1} fontSize="md" fontFamily="body" color="white">
+                                        Coleta {coleta.id} - {FormatDate(coleta.collectDate)}
+                                    </Text>
                                 </HStack>
-
+                                <View bgColor="blue.400" rounded="lg">
+                                    <FlatList
+                                        h="230"
+                                        data={message}
+                                        renderItem={({ item }) => (
+                                            <Text>{item.user.name}: {item.content}</Text>
+                                        )}
+                                        keyExtractor={item => item.id.toString()}
+                                    />
+                                </View>
+                            </VStack>
+                            <HStack rounded="lg" bgColor="blue.500" mt={2}>
+                                <VStack m={1}>
+                                    <Icon
+                                        as={FontAwesome6}
+                                        name={"user"}
+                                        color="green.400"
+                                        size={7}
+                                        ml={1}
+                                    />
+                                    <Text numberOfLines={1} fontSize="md" fontFamily="body" color="green.400">
+                                        {user.name}
+                                    </Text>
+                                </VStack>
+                                <View flex={1} alignSelf="center">
+                                    <Input
+                                        value={content}
+                                        onChangeText={setContent}
+                                        placeholder="Digitar"
+                                        placeholderTextColor="green.400"
+                                        fontSize="md"
+                                        color="white"
+                                    />
+                                </View>
+                                <Pressable onPress={sendMessage} _pressed={{ opacity: 60 }} alignSelf="center" m={1}>
+                                    <Icon
+                                        textAlign="center"
+                                        alignSelf="center"
+                                        as={MaterialIcons}
+                                        name={"send"}
+                                        color="green.400"
+                                        size="lg"
+                                    />
+                                </Pressable>
+                            </HStack>
                         </VStack>
                     </View>
                 </Pressable>

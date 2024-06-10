@@ -9,6 +9,9 @@ import { Loading } from '@components/Loading';
 import { AppError } from '@utils/AppError';
 import { api } from '@services/api';
 
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { AppNavigatorRoutesProps } from '@routes/app.routes'
+
 import videoPath from '@assets/working-collect.mp4';
 import { useAuth } from '@hooks/useAuth';
 import { DenunciaCard } from '@components/DenunciaCard';
@@ -16,17 +19,22 @@ import { DenunciaDTO } from '@dtos/DenunciaDTO';
 
 export function GerenciaDenuncia() {
   const [isLoading, setIsLoading] = useState(true);
-  const [denuncias, setDenuncias] = useState<DenunciaDTO[]>([]);
+  const [complaint, setComplaint] = useState<DenunciaDTO[]>([]);
   const video = React.useRef(null);
   const { user } = useAuth();
+  const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   const toast = useToast();
+
+  function handleOpenComplaintDetail(complaintId: string) {
+    navigation.navigate('detalhesDenuncia', { complaintId });
+  }
 
   async function fetchDenuncias() {
     setIsLoading(true);
     try {
       const { data } = await api.get('api/complaint');
-      setDenuncias(data);
+      setComplaint(data);
     } catch (error) {
       const isAppError = error instanceof AppError;
       const title = isAppError ? error.message : 'Não foi possível carregar os detalhes da denúncia';
@@ -74,7 +82,7 @@ export function GerenciaDenuncia() {
                 Denuncias Disponíveis
               </Heading>
               <Text color="white" fontSize="xl" fontFamily="heading" alignSelf="flex-end">
-                {denuncias.length}
+                {complaint.length}
               </Text>
             </HStack>
             <VStack mr={2} ml={2} flex={1}>
@@ -85,10 +93,10 @@ export function GerenciaDenuncia() {
                     onRefresh={fetchDenuncias}
                   />
                 }
-                data={denuncias}
+                data={complaint}
                 keyExtractor={item => item.id?.toString() ?? ''}
                 renderItem={({ item }) => (
-                  <DenunciaCard data={item}/>
+                  <DenunciaCard data={item} onPress={ () => handleOpenComplaintDetail(item.id?.toString() ?? '')}/>
                 )}
                 ListEmptyComponent={() => (
                   <Text color="white" textAlign="center" fontFamily='body' fontSize="md" >

@@ -78,6 +78,7 @@ public class CollectServiceImpl implements CollectService {
 			collect.setTeamCollect(collaboratorDTO.isTeamCollect());
 			collect.setCollectDate(collaboratorDTO.getDate());
 			collect.setStatus(Status.PENDENTE);
+			collect.getCollaborators().add(userMapperService.convertUserToEntity(collaboratorDTO.getUser()));
 		}
 
 		boolean isAlreadyCollaborator = collect.getCollaborators().stream().anyMatch(user -> user.getId().equals(collaboratorDTO.getUser().getId()));
