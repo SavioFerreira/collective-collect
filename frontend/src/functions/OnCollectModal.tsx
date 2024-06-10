@@ -36,6 +36,11 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
         navigation.navigate("coletas");
     }
 
+    function resetPhotos() {
+        setPhotoBefore(null);
+        setPhotoAfter(null);
+    }
+
     function toggleModal() {
         SetIsModalVisible(!isModalVisible);
     }
@@ -111,6 +116,7 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
             }, 1000);
         }
         toggleModal();
+        resetPhotos(); 
         handleGoBack();
         toast.show({
             title: "Enviamos a coleta para a análise, obrigado por sua colaboração.",
@@ -123,7 +129,8 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
             if (isModalVisible && !canFinalize) {
-                return true;
+                Alert.alert("Atenção", "Finalize a coleta antes de sair!");
+                return true; 
             }
             return false;
         });
@@ -155,11 +162,7 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
                 visible={isModalVisible}
                 animationType="slide"
                 onRequestClose={() => {
-                    if (canFinalize) {
-                        toggleModal();
-                    } else {
-                        Alert.alert("Atenção", "Inclua as imagens de antes e depois da coleta para finalizar!")
-                    }
+                    Alert.alert("Atenção", "Finalize a coleta antes de sair!");
                 }}
                 transparent={true}
 
@@ -286,7 +289,7 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
                                 isDisabled={!canFinalize}
                                 _pressed={{ opacity: 70 }}
                                 onPress={handleCompletCollect}
-                                isLoading={!canFinalize && isLoading}>
+                                isLoading={isLoading}>
                                 Finalizar
                             </Button>
                         </ScrollView>
