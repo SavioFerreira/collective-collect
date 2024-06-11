@@ -3,11 +3,11 @@ import br.com.cc.dto.CollectCollaboratorDTO;
 import br.com.cc.dto.CollectValidationDTO;
 import br.com.cc.entity.Collect;
 import br.com.cc.entity.User;
-import br.com.cc.enums.AuthUserRole;
 import br.com.cc.enums.Status;
 import br.com.cc.exception.collect.InvalidCollectRegistrationException;
 import br.com.cc.mapper.UserMapperService;
 import br.com.cc.repository.CollectRepository;
+import br.com.cc.repository.UserRepository;
 import br.com.cc.service.CollectService;
 import br.com.cc.service.ImageStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,9 @@ public class CollectServiceImpl implements CollectService {
 
 	@Autowired
 	private CollectRepository collectRepository;
+
+	@Autowired
+	UserRepository userRepository;
 
 	@Autowired
 	UserMapperService userMapperService;
@@ -74,36 +77,35 @@ public class CollectServiceImpl implements CollectService {
 	public void addCollaboratorToCollect(Long collectId, CollectCollaboratorDTO collaboratorDTO) {
 		Collect collect = collectRepository.findById(collectId).orElseThrow(() -> new RuntimeException("Coleta não encontrada"));
 
-		if (collect.getCollaborators().isEmpty()){
+		boolean isFirstCollaborator = collect.getCollaborators().isEmpty();
+
+		if (collect.getLeaderId() != null){
+			System.out.println("O usuário " + collect.getLeaderId() + " é o líder maximo.");
+			System.out.println("O id: " + collect.getLeaderId() + " é do user:" + userRepository.findById(collect.getLeaderId()).map(User::getName));
+		}
+
+		if (isFirstCollaborator) {
+			collect.setLeaderId(collaboratorDTO.getUser().getId());
 			collect.setTeamCollect(collaboratorDTO.isTeamCollect());
 			collect.setCollectDate(collaboratorDTO.getDate());
 			collect.setStatus(Status.PENDENTE);
-			collect.getCollaborators().add(userMapperService.convertUserToEntity(collaboratorDTO.getUser()));
+		} else {
+			if (collect.getLeaderId().equals(collaboratorDTO.getUser().getId())) {
+					collect.setTeamCollect(collaboratorDTO.isTeamCollect());
+					collect.setCollectDate(collaboratorDTO.getDate());
+			}
 		}
 
-		boolean isAlreadyCollaborator = collect.getCollaborators().stream().anyMatch(user -> user.getId().equals(collaboratorDTO.getUser().getId()));
-
-		User[] userPrimaryCollaborator = collect.getCollaborators().toArray(new User[0]);
-		boolean isUserPrimaryCollaborator = Objects.equals(userPrimaryCollaborator[0].getId(), collaboratorDTO.getUser().getId());
-
-		if (isUserPrimaryCollaborator) {
-			collect.setTeamCollect(collaboratorDTO.isTeamCollect());
-			collect.setCollectDate(collaboratorDTO.getDate());
-		}
-
-		if (isAlreadyCollaborator && !isUserPrimaryCollaborator) {
-			throw new InvalidCollectRegistrationException("Você já está registrado para essa coleta!");
-		}
-
-		if (!collect.isTeamCollect() && !isUserPrimaryCollaborator) {
-			throw new InvalidCollectRegistrationException("Essa coleta não está disponível para outros usuários!");
-		}
+		boolean isAlreadyCollaborator = collect.getCollaborators().stream()
+				.anyMatch(user -> user.getId().equals(collaboratorDTO.getUser().getId()));
 
 		if (!isAlreadyCollaborator) {
 			collect.getCollaborators().add(userMapperService.convertUserToEntity(collaboratorDTO.getUser()));
 		}
+
 		collectRepository.save(collect);
 	}
+
 
 	@Override
 	public void startCollect(Long id)  {

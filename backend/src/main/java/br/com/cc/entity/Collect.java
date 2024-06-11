@@ -24,6 +24,7 @@ public class Collect {
 	private String collectImageBefore;
 	private String collectImageAfter;
 	private boolean teamCollect;
+	private Long leaderId;
 
 	@Embedded
 	private WasteInfo wasteInfo;

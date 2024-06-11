@@ -25,6 +25,7 @@ public class CollectDTO {
     private String collectImageAfter;
     private Set<UserDTO> collaborators;
     private boolean teamCollect;
+    private Long leaderId;
     private String title;
     private String description;
     private Locale locale;
