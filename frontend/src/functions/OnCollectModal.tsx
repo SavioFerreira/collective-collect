@@ -129,7 +129,7 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
             if (isModalVisible && !canFinalize) {
-                Alert.alert("Atenção", "Finalize a coleta antes de sair!");
+                Alert.alert("Atenção", "Finalize a coleta antes de sair");
                 return true; 
             }
             return false;
@@ -172,11 +172,10 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
                         <ScrollView showsVerticalScrollIndicator={false}>
 
                             <HStack justifyContent='center'>
-                                <Text numberOfLines={1} fontSize={30} fontFamily="heading" color="blue.200" mb={1} textAlign="center">
+                                <Text numberOfLines={1} fontSize={25} fontFamily="heading" color="blue.200" mb={1} textAlign="center">
                                     {label}
                                 </Text>
                                 <Icon
-
                                     as={FontAwesome6}
                                     name={"map-location-dot"}
                                     color="green.400"

@@ -48,7 +48,8 @@ export function Coleta() {
   const [isCollectStartVisible, setIsCollectStartVisible] = useState(false);
 
   const isUserCollaborator = coleta.collaborators?.some(colab => colab.id === user.id);
-  const isUserPrimaryCollaborator = coleta.collaborators?.[0]?.id === user.id;
+  const isCollectLeader = coleta?.leaderId === user.id;
+
   const isCollectCollaboratorEmpy = coleta.collaborators?.filter(user => user).length === 0;
   const isCollectPublic = coleta.teamCollect;
 
@@ -63,6 +64,7 @@ export function Coleta() {
   function openColetaModal() {
     setIsModalVisible(true);
   }
+
 
   const closeColetaModal = () => {
     setIsModalVisible(!isModalVisible);
@@ -266,9 +268,9 @@ export function Coleta() {
                     <VStack >
 
                       <Text numberOfLines={4} color="warmGray.100" fontSize="md" textAlign="justify" m={2} mb={3} alignSelf="center">
-                        {coleta.collaborators.map(user => user.name).join(', ')}
+                        {coleta.collaborators.map(user => user.name.toString()).join(', ')}
                       </Text>
-                      <Text numberOfLines={4} color="warmGray.100" fontSize="xs" textAlign="justify" alignSelf="center" fontStyle="italic">
+                      <Text numberOfLines={1} color="warmGray.100" fontSize="xs" textAlign="justify" alignSelf="center" fontStyle="italic">
                         Agenda: {showCollectDate}
                       </Text>
 
@@ -278,9 +280,7 @@ export function Coleta() {
                         <ChatModal coleta={coleta} />
                       </VStack>
                       :
-                      <VStack ml={2} mr={2}>
-
-                      </VStack>
+                      <VStack ml={2} mr={2}></VStack>
 
                     }
 
@@ -296,7 +296,7 @@ export function Coleta() {
               </Box>
             </Box>
 
-            {!isUserCollaborator && isCollectPublic  && (coleta.status === StatusEnum.DISPONIVEL || coleta.status === StatusEnum.PENDENTE) ?
+            {!isUserCollaborator && isCollectPublic  && (coleta.status !== StatusEnum.OCORRENDO) && (coleta.status !== StatusEnum.APROVADO) ?
               <Pressable
                 bgColor="orange.500"
                 _pressed={{ bg: "orange.700" }}
@@ -316,7 +316,7 @@ export function Coleta() {
               ''
             }
 
-            {isUserPrimaryCollaborator && coleta.status !== StatusEnum.EM_ANALISE ?
+            {isCollectLeader && (coleta.status !== StatusEnum.EM_ANALISE) ?
               <HStack justifyContent="space-between">
                 { !isCollectStartVisible ?
                   <Pressable
@@ -342,7 +342,7 @@ export function Coleta() {
                       );
                     }}
                   >
-                    { coleta.status === StatusEnum.PENDENTE && coleta.id.toString() === collectId.toString() &&
+                    { coleta.status !== StatusEnum.OCORRENDO && coleta.id.toString() === collectId.toString() &&
                       <Text numberOfLines={1} fontSize={20} fontFamily="heading" color="blue.200" mb={1} textAlign="center">
                         Iniciar Coleta?
                       </Text>
@@ -360,7 +360,7 @@ export function Coleta() {
                       <OnCollectModal label="Retornar para coleta " collectId={collectId}/>
                     }
                     { coleta.status !== StatusEnum.OCORRENDO &&
-                      <OnCollectModal label="Clique para Iniciar " collectId={collectId}/>
+                      <OnCollectModal label="Clique para Iniciar " borderWidth={1} borderColor="white" rounded="md" collectId={collectId}/>
                     }
                   </View>
                   
@@ -403,7 +403,7 @@ export function Coleta() {
                       name="x-circle"
                       onPress={closeColetaModal}
                     />
-                    { (isUserPrimaryCollaborator || isCollectCollaboratorEmpy) && coleta.status !== StatusEnum.OCORRENDO ?
+                    { (isCollectLeader || isCollectCollaboratorEmpy) && coleta.status !== StatusEnum.OCORRENDO ?
                       <ColetaCadastroFull onRegister={closeColetaModal} collectId={coleta.id}/>
                     :
                       <ColetaCadastroBasic onRegister={closeColetaModal} collectId={coleta.id}/>
