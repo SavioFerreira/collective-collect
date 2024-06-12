@@ -1,11 +1,14 @@
 package br.com.cc.service.impl;
 
+import br.com.cc.dto.ChatDTO;
 import br.com.cc.entity.Chat;
 import br.com.cc.entity.Collect;
 import br.com.cc.entity.User;
 import br.com.cc.enums.AuthUserRole;
+import br.com.cc.exception.collect.CollectNotFoundException;
 import br.com.cc.exception.user.InvalidUserAdminDeletionException;
 import br.com.cc.repository.ChatRepository;
+import br.com.cc.repository.CollectRepository;
 import br.com.cc.repository.UserRepository;
 import br.com.cc.service.ChatService;
 import br.com.cc.service.UserService;
@@ -21,19 +24,32 @@ import java.util.Optional;
 
 @Service
 public class ChatServiceImpl implements ChatService {
-
     @Autowired
     private ChatRepository chatRepository;
 
+    @Autowired
+    private CollectRepository collectRepository;
+
     @Override
-    public Chat create(Collect collect) {
+    public ChatDTO createChatForCollect(Long collectId) {
+        Collect collect = collectRepository.findById(collectId)
+                .orElseThrow(() -> new CollectNotFoundException("Essa coleta não foi encontrada"));
+
         Chat chat = new Chat();
         chat.setCollect(collect);
-        return chatRepository.save(chat);
+        ChatDTO chatDTO = new ChatDTO();
+        chatDTO.setId(chat.getId());
+        chatDTO.setCollectId(chat.getCollect().getId());
+        return chatDTO;
     }
 
     @Override
-    public Optional<Chat> findByCollectId(Long id) {
-        return chatRepository.findById(id);
+    public ChatDTO  getChatByCollectId(Long collectId) {
+        Chat chat = chatRepository.findByCollectId(collectId)
+                .orElseThrow(() -> new IllegalStateException("Chat não encontrado"));
+        ChatDTO chatDTO = new ChatDTO();
+        chatDTO.setId(chat.getId());
+        chatDTO.setCollectId(chat.getCollect().getId());
+        return chatDTO;
     }
 }

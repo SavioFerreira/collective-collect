@@ -1,13 +1,10 @@
 package br.com.cc.service;
 
-import br.com.cc.entity.Chat;
-import br.com.cc.entity.Collect;
-
-import java.util.Optional;
+import br.com.cc.dto.ChatDTO;
 
 public interface ChatService {
 
-    Chat create(Collect collect);
+    ChatDTO createChatForCollect(Long collectId);
 
-    Optional<Chat> findByCollectId(Long id);
+    ChatDTO getChatByCollectId(Long id);
 }
