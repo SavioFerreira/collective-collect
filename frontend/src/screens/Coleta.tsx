@@ -78,7 +78,7 @@ export function Coleta() {
       setIsLoading(true);
       await api.patch(`/api/collect/${collectId}/start`);
       setIsCollectStartVisible(true)
-
+      fetchColetaDetails();
     } catch (error) {
       const isAppError = error instanceof AppError;
       const title = isAppError ? error.message : 'Não foi possível carregar os detalhes da coleta';
@@ -296,7 +296,7 @@ export function Coleta() {
               </Box>
             </Box>
 
-            {!isUserCollaborator && isCollectPublic  && (coleta.status !== StatusEnum.OCORRENDO) && (coleta.status !== StatusEnum.APROVADO) ?
+            {!isUserCollaborator && isCollectPublic  && (coleta.status !== (StatusEnum.EM_ANALISE)) && (coleta.status !== (StatusEnum.APROVADO)) ?
               <Pressable
                 bgColor="orange.500"
                 _pressed={{ bg: "orange.700" }}

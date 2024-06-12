@@ -127,15 +127,6 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
     }
 
     useEffect(() => {
-        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-            if (isModalVisible && !canFinalize) {
-                Alert.alert("Atenção", "Finalize a coleta antes de sair");
-                return true; 
-            }
-            return false;
-        });
-    
-        return () => backHandler.remove();
     }, [isModalVisible, canFinalize]);
 
     return (
@@ -168,7 +159,7 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
 
             >
                 <Flex flex={1} alignItems="center" bg="rgba(74, 169, 255, 0.87)">
-                    <View bgColor="blue.500" p={5} justifyContent="initial" borderRadius="lg" w="92%" h="98%">
+                    <View bgColor="blue.500" p={4} justifyContent="initial" borderRadius="lg" w="95%" h="98%">
                         <ScrollView showsVerticalScrollIndicator={false}>
 
                             <HStack justifyContent='center'>
@@ -240,7 +231,7 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
                             <HStack flexDirection="row" alignSelf="center">
 
                                 <Pressable onPress={() => { handlePhotoSelection("before") }}>
-                                    <View bgColor="red.500" rounded="md" w={160} h={150} m={1}>
+                                    <View bgColor="red.500" rounded="lg" w={160} h={150} m={1}>
                                         <Text numberOfLines={2} fontSize="md" fontFamily="body" color="blue.200" textAlign="center">
                                             Adicione a  imagem de antes da coleta
                                         </Text>
@@ -261,7 +252,7 @@ export function OnCollectModal({ label, collectId, ...rest }: Props) {
                                 <View p={1} />
 
                                 <Pressable disabled={photoBefore !== null ? false : true} onPress={() => handlePhotoSelection('after')}>
-                                    <View bgColor="green.500" rounded="md" w={160} h={150} m={1}>
+                                    <View bgColor="green.500" rounded="lg" w={160} h={150} m={1}>
                                         <Text numberOfLines={2} fontSize="md" fontFamily="body" color="blue.200" textAlign="center">
                                             Adicione a  imagem de depois da coleta
                                         </Text>
