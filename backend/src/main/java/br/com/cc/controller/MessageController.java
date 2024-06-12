@@ -2,32 +2,26 @@ package br.com.cc.controller;
 
 import br.com.cc.dto.MessageDTO;
 import br.com.cc.entity.Message;
-import br.com.cc.entity.User;
-import br.com.cc.mapper.UserMapperService;
 import br.com.cc.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/message")
+@RequestMapping("/api/chat/{chatId}/messages")
 public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    @Autowired
-    private UserMapperService userMapperService;
-
-    @PostMapping
-    public Message sendMessage(@RequestBody MessageDTO messageDTO) {
-        User user = userMapperService.convertUserToEntity(messageDTO.getUser());
-        return messageService.sendMessage(messageDTO.getChat(), user, messageDTO.getContent());
+    @GetMapping
+    public List<MessageDTO> getMessages(@PathVariable Long chatId) {
+        return messageService.getMessagesByChatId(chatId);
     }
 
-    @GetMapping("/{chatId}")
-    public Optional<Message> getMessages(@PathVariable Long chatId) {
-        return messageService.findByChatId(chatId);
+    @PostMapping
+    public MessageDTO sendMessage(@PathVariable Long chatId, @RequestBody String content) {
+        return messageService.sendMessage(chatId, content);
     }
 }
 

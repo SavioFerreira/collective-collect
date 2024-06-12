@@ -1,14 +1,12 @@
 package br.com.cc.service;
 
-import br.com.cc.entity.Chat;
+import br.com.cc.dto.MessageDTO;
 import br.com.cc.entity.Message;
-import br.com.cc.entity.User;
-
-import java.util.Optional;
+import java.util.List;
 
 public interface MessageService {
 
-    Message sendMessage(Chat chat, User user, String content);
+    MessageDTO sendMessage(Long chatId, String content);
 
-    Optional<Message> findByChatId(Long id);
+    List<MessageDTO> getMessagesByChatId(Long chatId);
 }

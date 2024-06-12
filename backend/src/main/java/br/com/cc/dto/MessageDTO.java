@@ -1,16 +1,14 @@
 package br.com.cc.dto;
 
-import br.com.cc.entity.Chat;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 public class MessageDTO {
 
-    private Chat chat;
-    private UserDTO user;
+    private Long id;
     private String content;
+    private Long chatId;
+    private Long userId;
 }
