@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class ChatDTO {
 
-    private Long id;
+    private Long chatId;
     private Long collectId;
 }

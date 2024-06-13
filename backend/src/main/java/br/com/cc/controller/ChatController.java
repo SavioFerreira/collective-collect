@@ -1,11 +1,9 @@
 package br.com.cc.controller;
 
 import br.com.cc.dto.ChatDTO;
-
 import br.com.cc.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequestMapping("/api/collect/{collectId}/chat")

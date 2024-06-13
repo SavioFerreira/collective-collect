@@ -37,9 +37,11 @@ public class ChatServiceImpl implements ChatService {
 
         Chat chat = new Chat();
         chat.setCollect(collect);
+        chat = chatRepository.save(chat);
+
         ChatDTO chatDTO = new ChatDTO();
-        chatDTO.setId(chat.getId());
-        chatDTO.setCollectId(chat.getCollect().getId());
+        chatDTO.setChatId(chat.getId());
+        chatDTO.setCollectId(collect.getId());
         return chatDTO;
     }
 
@@ -47,8 +49,9 @@ public class ChatServiceImpl implements ChatService {
     public ChatDTO  getChatByCollectId(Long collectId) {
         Chat chat = chatRepository.findByCollectId(collectId)
                 .orElseThrow(() -> new IllegalStateException("Chat não encontrado"));
+
         ChatDTO chatDTO = new ChatDTO();
-        chatDTO.setId(chat.getId());
+        chatDTO.setChatId(chat.getId());
         chatDTO.setCollectId(chat.getCollect().getId());
         return chatDTO;
     }

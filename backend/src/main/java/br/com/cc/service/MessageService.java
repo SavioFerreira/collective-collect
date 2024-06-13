@@ -1,7 +1,6 @@
 package br.com.cc.service;
 
 import br.com.cc.dto.MessageDTO;
-import br.com.cc.entity.Message;
 import java.util.List;
 
 public interface MessageService {

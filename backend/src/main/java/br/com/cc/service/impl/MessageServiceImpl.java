@@ -40,7 +40,8 @@ public class MessageServiceImpl implements MessageService {
         messageDTO.setId(message.getId());
         messageDTO.setContent(message.getContent());
         messageDTO.setChatId(message.getChat().getId());
-        messageDTO.setUserId(message.getUser().getId());
+        messageDTO.setUserName(message.getUser().getName());
+        messageDTO.setTimestamp(message.getTimestamp());
         return messageDTO;
     }
 
@@ -52,7 +53,8 @@ public class MessageServiceImpl implements MessageService {
             dto.setId(message.getId());
             dto.setContent(message.getContent());
             dto.setChatId(message.getChat().getId());
-            dto.setUserId(message.getUser().getId());
+            dto.setUserName(message.getUser().getName());
+            dto.setTimestamp(message.getTimestamp());
             return dto;
         }).collect(Collectors.toList());
     }

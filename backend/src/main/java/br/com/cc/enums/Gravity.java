@@ -15,7 +15,4 @@ public enum Gravity {
         this.description = description;
     }
 
-    public String getDescription() {
-        return description;
-    }
 }

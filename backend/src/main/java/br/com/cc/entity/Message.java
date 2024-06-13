@@ -1,6 +1,5 @@
 package br.com.cc.entity;
 
-import br.com.cc.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

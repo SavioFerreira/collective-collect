@@ -6,5 +6,5 @@ public interface ChatService {
 
     ChatDTO createChatForCollect(Long collectId);
 
-    ChatDTO getChatByCollectId(Long id);
+    ChatDTO getChatByCollectId(Long collectId);
 }

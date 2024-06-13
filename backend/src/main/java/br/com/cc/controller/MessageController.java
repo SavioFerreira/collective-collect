@@ -1,7 +1,6 @@
 package br.com.cc.controller;
 
 import br.com.cc.dto.MessageDTO;
-import br.com.cc.entity.Message;
 import br.com.cc.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

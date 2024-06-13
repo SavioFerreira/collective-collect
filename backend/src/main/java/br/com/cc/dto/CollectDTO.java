@@ -5,9 +5,10 @@ import br.com.cc.enums.Gravity;
 import br.com.cc.enums.Status;
 import br.com.cc.enums.WasteType;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
