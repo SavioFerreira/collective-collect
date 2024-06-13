@@ -239,7 +239,7 @@ export function Coleta() {
                 <Text minH={10} maxH={20} fontStyle="italic" lineHeight={18} numberOfLines={4} color="warmGray.100" fontSize="md" textAlign="justify">
                   {coleta.description}
                 </Text>
-                <HStack justifyContent="space-between" mt={1}>
+                <HStack justifyContent="space-between">
                   <Text fontFamily="body" fontSize="xs" color="yellow.400">
                     {showComplaintDate}
                   </Text>
@@ -253,7 +253,6 @@ export function Coleta() {
                 {coleta.collaborators.length > 0 ?
                   <HStack bg="green.700" mb={1} pt={2} pb={1} px={2} flex={1} borderRadius="lg" borderTopRadius={0} justifyContent="space-evenly">
                     <VStack ml={2} mr={2} alignSelf="center">
-
                       <Icon
                         as={Feather}
                         name={'users'}
@@ -265,15 +264,13 @@ export function Coleta() {
                         Membros
                       </Text>
                     </VStack>
-                    <VStack >
-
-                      <Text numberOfLines={4} color="warmGray.100" fontSize="md" textAlign="justify" m={2} mb={3} alignSelf="center">
+                    <VStack>
+                      <Text numberOfLines={3} minW="70%" maxW="70%" color="warmGray.100" fontSize="md" textAlign="center" alignSelf="center">
                         {coleta.collaborators.map(user => user.name.toString()).join(', ')}
                       </Text>
                       <Text numberOfLines={1} color="warmGray.100" fontSize="xs" textAlign="justify" alignSelf="center" fontStyle="italic">
                         Agenda: {showCollectDate}
                       </Text>
-
                     </VStack>
                     {isUserCollaborator ?
                       <VStack ml={2} mr={2} alignSelf="center">
