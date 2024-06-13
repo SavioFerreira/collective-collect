@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, Modal } from 'react-native';
-import { HStack, VStack, Text, View, Icon, Pressable, ScrollView, FlatList, Input } from "native-base";
+import { Alert, Modal } from 'react-native';
+import { HStack, VStack, Text, View, Icon, Pressable, FlatList, Input } from "native-base";
 import { MaterialIcons, FontAwesome6, Feather } from '@expo/vector-icons';
 import { IViewProps } from "native-base/lib/typescript/components/basic/View/types";
 import { ColetaDTO } from "@dtos/ColetaDTO";
 import { FormatDate } from "@functions/FormatDate";
 import { useAuth } from "@hooks/useAuth";
 import { api } from "@services/api";
-import { UserDTO } from "@dtos/UserDTO";
+import { AppError } from "@utils/AppError";
 
 
 type Props = IViewProps & {
@@ -18,7 +18,7 @@ type MessageDTO = {
     id: string;
     content: string;
     timestamp: string;
-    user: UserDTO
+    userName: string
 }
 
 
@@ -27,23 +27,59 @@ export function ChatModal({ coleta, ...rest }: Props) {
     const { user } = useAuth();
 
     const [message, setMessage] = useState<MessageDTO[]>([]);
-    const [content, setContent] = useState('');
+    const [content, setContent] = useState<string>('');
 
     function toggleModal() {
         SetIsModalVisible(!isModalVisible);
     }
 
-    async function fetchMessage() {
-        // código para buscar mensagens
-    };
+    async function fetchChatAndMessages() {
+        try {
+            const response = await api.get(`/api/collect/${coleta.id}/chat`);
+            const chat = response.data;
+            const messageResponse = await api.get(`/api/chat/${chat.chatId}/messages`);
+            setMessage(messageResponse.data);
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : 'Não foi possível carregar as mensagens do chat';
+        }
+    }
 
     async function sendMessage() {
-        // código para enviar mensagens
-    };
+        try {
+            let response = await api.get(`/api/collect/${coleta.id}/chat`);
+            if (!response.data || !response.data.chatId) {
+                response = await api.post(`/api/collect/${coleta.id}/chat`);
+            }
+            
+            const chat = response.data;
+            const messageResponse = await api.post(`/api/chat/${chat.chatId}/messages`, { content });
+            if (messageResponse.status === 200) {
+                setMessage(prev => [...prev, messageResponse.data]);
+                setContent('');
+            }
+
+            if (messageResponse.status === 200) { 
+                setMessage([ messageResponse.data]);
+                setContent(''); 
+                fetchChatAndMessages();
+            }
+            else {
+                console.log(messageResponse.status)
+            }
+
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : 'Não foi possível enviar a mensagem no chat';
+            Alert.alert("Atenção", title);
+        }
+    }
 
     useEffect(() => {
-        fetchMessage();
-    }, []);
+        if (isModalVisible) {
+            fetchChatAndMessages();
+        }
+    }, [isModalVisible]);
 
     return (
         <View alignItems="flex-start" {...rest}>
@@ -72,25 +108,39 @@ export function ChatModal({ coleta, ...rest }: Props) {
                             name="x-circle"
                             onPress={toggleModal}
                         />
-                        <VStack>
-                            <VStack>
-                                <HStack justifyContent="space-around" mb={2}>
-                                    <Text numberOfLines={1} fontSize="md" fontFamily="body" color="white">
-                                        Coleta {coleta.id} - {FormatDate(coleta.collectDate)}
+                        <VStack flex={1}>
+                            <VStack flex={1} mb={2}>
+                                <VStack justifyContent="space-around" alignSelf="center" mb={2}>
+                                    <Text numberOfLines={1} fontSize="md" fontFamily="heading" color="white" textAlign="center">
+                                        Coleta n°{coleta.id} 
                                     </Text>
-                                </HStack>
-                                <View bgColor="blue.400" rounded="lg">
+                                    <Text numberOfLines={1} fontSize="sm" fontFamily="body" color="white">
+                                        Agendada para: {FormatDate(coleta.collectDate)}
+                                    </Text>
+                                </VStack>
+                                <View bgColor="blue.400" rounded="lg" flex={1}>
                                     <FlatList
-                                        h="230"
+                                        maxH="95%"
+                                        minH="95%"
                                         data={message}
                                         renderItem={({ item }) => (
-                                            <Text>{item.user.name}: {item.content}</Text>
+                                            <VStack mt={3} ml={5} mr={5} p={2} rounded="lg" bgColor="blueGray.300">
+                                                <Text fontFamily="heading" fontSize="md" color="blue.700">
+                                                    {item.userName.replaceAll('+', ' ')}
+                                                </Text>
+                                                <Text fontSize={10} color="blue.500">
+                                                {FormatDate(item?.timestamp)}
+                                                </Text>
+                                                <Text fontSize="sm" color="blue.700">
+                                                {item.content.replaceAll('+', ' ')}
+                                                </Text>
+                                            </VStack>
                                         )}
                                         keyExtractor={item => item.id.toString()}
                                     />
                                 </View>
                             </VStack>
-                            <HStack rounded="lg" bgColor="blue.500" mt={2}>
+                            <HStack rounded="lg" bgColor="blue.500" minH={60} maxH={60}>
                                 <VStack m={1}>
                                     <Icon
                                         as={FontAwesome6}
@@ -113,7 +163,7 @@ export function ChatModal({ coleta, ...rest }: Props) {
                                         color="white"
                                     />
                                 </View>
-                                <Pressable onPress={sendMessage} _pressed={{ opacity: 60 }} alignSelf="center" m={1}>
+                                <Pressable onPress={() => sendMessage()} _pressed={{ opacity: 60 }} alignSelf="center" m={1}>
                                     <Icon
                                         textAlign="center"
                                         alignSelf="center"
