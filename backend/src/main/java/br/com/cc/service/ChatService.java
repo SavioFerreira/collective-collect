@@ -4,7 +4,7 @@ import br.com.cc.dto.ChatDTO;
 
 public interface ChatService {
 
-    ChatDTO createChatForCollect(Long collectId);
+    ChatDTO getOrCreateChatByCollectId(Long collectId);
 
-    ChatDTO getChatByCollectId(Long collectId);
+
 }
