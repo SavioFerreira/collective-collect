@@ -1,6 +1,7 @@
 package br.com.cc.controller;
 
 import br.com.cc.dto.MessageDTO;
+import br.com.cc.entity.MessageRequest;
 import br.com.cc.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +20,8 @@ public class MessageController {
     }
 
     @PostMapping
-    public MessageDTO sendMessage(@PathVariable Long chatId, @RequestBody String content) {
-        return messageService.sendMessage(chatId, content);
+    public MessageDTO sendMessage(@PathVariable Long chatId, @RequestBody MessageRequest content) {
+        return messageService.sendMessage(chatId, content.getContent());
     }
 }
 

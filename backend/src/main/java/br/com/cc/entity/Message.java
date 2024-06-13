@@ -23,6 +23,7 @@ public class Message {
     @ManyToOne
     private User user;
 
+    @Column(length = 1000)
     private String content;
     private LocalDateTime timestamp;
 }

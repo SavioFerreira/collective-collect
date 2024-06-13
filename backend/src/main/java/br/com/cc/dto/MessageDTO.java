@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class MessageDTO {
 
     private Long id;
+
     private String content;
     private Long chatId;
     private String userName;

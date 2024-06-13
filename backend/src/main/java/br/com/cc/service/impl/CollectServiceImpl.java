@@ -2,9 +2,7 @@ package br.com.cc.service.impl;
 import br.com.cc.dto.CollectCollaboratorDTO;
 import br.com.cc.dto.CollectValidationDTO;
 import br.com.cc.entity.Collect;
-import br.com.cc.entity.User;
 import br.com.cc.enums.Status;
-import br.com.cc.exception.collect.InvalidCollectRegistrationException;
 import br.com.cc.mapper.UserMapperService;
 import br.com.cc.repository.CollectRepository;
 import br.com.cc.repository.UserRepository;
@@ -17,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -79,11 +76,6 @@ public class CollectServiceImpl implements CollectService {
 
 		boolean isFirstCollaborator = collect.getCollaborators().isEmpty();
 
-		if (collect.getLeaderId() != null){
-			System.out.println("O usuário " + collect.getLeaderId() + " é o líder maximo.");
-			System.out.println("O id: " + collect.getLeaderId() + " é do user:" + userRepository.findById(collect.getLeaderId()).map(User::getName));
-		}
-
 		if (isFirstCollaborator) {
 			collect.setLeaderId(collaboratorDTO.getUser().getId());
 			collect.setTeamCollect(collaboratorDTO.isTeamCollect());
@@ -140,7 +132,6 @@ public class CollectServiceImpl implements CollectService {
 
 	@Override
 	public void validateCollect(long id, CollectValidationDTO collectValidationDTO) {
-
 		collectRepository.findById(id).map(collect -> {
 			collect.setStatus(collectValidationDTO.getStatus());
 			if (collect.getStatus().equals(Status.APROVADO)) collect.getCollaborators().clear();
