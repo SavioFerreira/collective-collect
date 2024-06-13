@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { Alert, Modal } from 'react-native';
-import { HStack, VStack, Text, View, Icon, Pressable, FlatList, Input } from "native-base";
+import { useEffect, useState, useRef } from "react";
+import { Modal, FlatList } from 'react-native';
+import { HStack, VStack, Text, View, Icon, Pressable, Input, useToast } from "native-base";
 import { MaterialIcons, FontAwesome6, Feather } from '@expo/vector-icons';
 import { IViewProps } from "native-base/lib/typescript/components/basic/View/types";
 import { ColetaDTO } from "@dtos/ColetaDTO";
@@ -25,9 +25,15 @@ type MessageDTO = {
 export function ChatModal({ coleta, ...rest }: Props) {
     const [isModalVisible, SetIsModalVisible] = useState(false);
     const { user } = useAuth();
-
+    const toast = useToast();
     const [message, setMessage] = useState<MessageDTO[]>([]);
     const [content, setContent] = useState<string>('');
+
+    const flatListRef = useRef<FlatList<MessageDTO>>(null);
+
+    const scrollToBottom = () => {
+        flatListRef.current?.scrollToEnd({ animated: true });
+    };
 
     function toggleModal() {
         SetIsModalVisible(!isModalVisible);
@@ -48,30 +54,37 @@ export function ChatModal({ coleta, ...rest }: Props) {
     async function sendMessage() {
         try {
             let response = await api.get(`/api/collect/${coleta.id}/chat`);
-            if (!response.data || !response.data.chatId) {
-                response = await api.post(`/api/collect/${coleta.id}/chat`);
-            }
-            
             const chat = response.data;
-            const messageResponse = await api.post(`/api/chat/${chat.chatId}/messages`, { content });
-            if (messageResponse.status === 200) {
-                setMessage(prev => [...prev, messageResponse.data]);
-                setContent('');
+    
+            if (content.trim()) {
+                if(content.length >= 255){
+                    content.slice(0, 254);
+                    console.log(content)
+                }
+                const messageResponse = await api.post(`/api/chat/${chat.chatId}/messages`, { content }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                if (messageResponse.status === 200) {
+                    console.log("dados da mensagem:");
+                    console.log(messageResponse.data);
+                    setMessage(prev => [...prev, messageResponse.data]);  
+                    setContent('');
+                    scrollToBottom(); 
+                    fetchChatAndMessages();
+                }
             }
-
-            if (messageResponse.status === 200) { 
-                setMessage([ messageResponse.data]);
-                setContent(''); 
-                fetchChatAndMessages();
-            }
-            else {
-                console.log(messageResponse.status)
-            }
-
         } catch (error) {
             const isAppError = error instanceof AppError;
             const title = isAppError ? error.message : 'Não foi possível enviar a mensagem no chat';
-            Alert.alert("Atenção", title);
+            toggleModal()
+            toast.show({
+                title: title,
+                placement: 'top',
+                bgColor: 'orange.400'
+              })
         }
     }
 
@@ -80,6 +93,12 @@ export function ChatModal({ coleta, ...rest }: Props) {
             fetchChatAndMessages();
         }
     }, [isModalVisible]);
+
+    useEffect(() => {
+        if (message.length > 0) {
+            scrollToBottom();
+        }
+    }, [message]);
 
     return (
         <View alignItems="flex-start" {...rest}>
@@ -112,27 +131,27 @@ export function ChatModal({ coleta, ...rest }: Props) {
                             <VStack flex={1} mb={2}>
                                 <VStack justifyContent="space-around" alignSelf="center" mb={2}>
                                     <Text numberOfLines={1} fontSize="md" fontFamily="heading" color="white" textAlign="center">
-                                        Coleta n°{coleta.id} 
+                                        Coleta n°{coleta.id}
                                     </Text>
                                     <Text numberOfLines={1} fontSize="sm" fontFamily="body" color="white">
                                         Agendada para: {FormatDate(coleta.collectDate)}
                                     </Text>
                                 </VStack>
-                                <View bgColor="blue.400" rounded="lg" flex={1}>
+                                <View bgColor="blue.500" rounded="lg" flex={1}>
                                     <FlatList
-                                        maxH="95%"
-                                        minH="95%"
+                                        style={{ maxHeight: "95%", minHeight: "95%" }}
                                         data={message}
+                                        ref={flatListRef}
                                         renderItem={({ item }) => (
-                                            <VStack mt={3} ml={5} mr={5} p={2} rounded="lg" bgColor="blueGray.300">
+                                            <VStack mt={3} ml={5} mr={5} p={2} rounded="lg" bgColor="blue.300">
                                                 <Text fontFamily="heading" fontSize="md" color="blue.700">
-                                                    {item.userName.replaceAll('+', ' ')}
+                                                    {item.userName.toString()}
                                                 </Text>
                                                 <Text fontSize={10} color="blue.500">
-                                                {FormatDate(item?.timestamp)}
+                                                    {FormatDate(item?.timestamp)}
                                                 </Text>
                                                 <Text fontSize="sm" color="blue.700">
-                                                {item.content.replaceAll('+', ' ')}
+                                                    {item.content}
                                                 </Text>
                                             </VStack>
                                         )}
@@ -141,15 +160,16 @@ export function ChatModal({ coleta, ...rest }: Props) {
                                 </View>
                             </VStack>
                             <HStack rounded="lg" bgColor="blue.500" minH={60} maxH={60}>
-                                <VStack m={1}>
+                                <VStack m={1} maxW={12} alignSelf="center">
                                     <Icon
                                         as={FontAwesome6}
                                         name={"user"}
                                         color="green.400"
-                                        size={7}
+                                        size={5}
                                         ml={1}
+                                        alignSelf="center"
                                     />
-                                    <Text numberOfLines={1} fontSize="md" fontFamily="body" color="green.400">
+                                    <Text numberOfLines={1} fontSize="sm" fontFamily="body" color="green.400" maxW="16">
                                         {user.name}
                                     </Text>
                                 </VStack>
@@ -158,9 +178,14 @@ export function ChatModal({ coleta, ...rest }: Props) {
                                         value={content}
                                         onChangeText={setContent}
                                         placeholder="Digitar"
-                                        placeholderTextColor="green.400"
+                                        placeholderTextColor="blue.500"
                                         fontSize="md"
-                                        color="white"
+                                        color="blue.700"
+                                        cursorColor="cyan"
+                                        bgColor="blue.300"
+                                        returnKeyType="send"
+                                        maxLength={1000}
+                                        onSubmitEditing={() => sendMessage()}
                                     />
                                 </View>
                                 <Pressable onPress={() => sendMessage()} _pressed={{ opacity: 60 }} alignSelf="center" m={1}>
