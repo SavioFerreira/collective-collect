@@ -41,7 +41,7 @@ export function HomeHeader() {
             Olá,
           </Text>
 
-          <Heading color="white" fontSize="lg" fontFamily="heading">
+          <Heading color="white" fontSize="lg" fontFamily="heading" maxW="85%" minW="85%" numberOfLines={2}>
             {user.name.replace(user.name.charAt(0), user.name.charAt(0).toLocaleUpperCase())}
           </Heading>
         </VStack>

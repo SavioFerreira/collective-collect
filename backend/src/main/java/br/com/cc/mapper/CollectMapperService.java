@@ -23,6 +23,7 @@ public class CollectMapperService {
         dto.setComplaintDate(collect.getComplaint().getComplaintDate());
         dto.setCollectImageBefore(collect.getCollectImageBefore());
         dto.setCollectImageAfter(collect.getCollectImageAfter());
+        dto.setLeaderId(collect.getLeaderId());
         dto.setGravity(collect.getWasteInfo().getGravity());
         dto.setType(collect.getWasteInfo().getWasteType());
         dto.setTitle(collect.getWasteInfo().getTitle());
@@ -44,6 +45,7 @@ public class CollectMapperService {
         collect.setCollectImageBefore(dto.getCollectImageBefore());
         collect.setCollectImageAfter(dto.getCollectImageAfter());
         collect.setTeamCollect(dto.isTeamCollect());
+        collect.setLeaderId(dto.getLeaderId());
         collect.setCollaborators(convertToUserEntitySet(dto.getCollaborators()));
 
         WasteInfo wasteInfo = new WasteInfo();

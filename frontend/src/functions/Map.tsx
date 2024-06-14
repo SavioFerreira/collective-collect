@@ -134,12 +134,14 @@ export function Map({ coords, ...rest }: Props) {
                                 );
                             }}
                         >
-                            <View rounded="full" p={2} bgColor="blue.400">
-                                <Icon
+                            <View rounded="full" p={1} bgColor={colorIcon.color} borderWidth={2} borderColor="green.500">
+                                <Icon 
                                     as={typeIcon.Component}
                                     name={typeIcon.name}
-                                    color={colorIcon.color}
-                                    size={8}
+                                    color="blue.600"
+                                    m={1}
+                                    size={7}
+                                    textAlign="center"
                                 />
                             </View>
                         </Marker>
@@ -151,7 +153,7 @@ export function Map({ coords, ...rest }: Props) {
                     coordinate={coords[0]}
                 >
                     <VStack>
-                        <AvatarSvg width={45} height={45} />
+                        <AvatarSvg width={40} height={40} />
                     </VStack>
                 </Marker>
             </MapView>

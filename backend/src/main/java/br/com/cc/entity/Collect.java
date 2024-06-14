@@ -3,7 +3,9 @@ package br.com.cc.entity;
 import br.com.cc.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -24,6 +26,7 @@ public class Collect {
 	private String collectImageBefore;
 	private String collectImageAfter;
 	private boolean teamCollect;
+	private Long leaderId;
 
 	@Embedded
 	private WasteInfo wasteInfo;

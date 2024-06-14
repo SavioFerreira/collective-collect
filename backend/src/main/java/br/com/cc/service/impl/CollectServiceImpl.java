@@ -1,15 +1,16 @@
 package br.com.cc.service.impl;
+import br.com.cc.dto.ChatDTO;
 import br.com.cc.dto.CollectCollaboratorDTO;
 import br.com.cc.dto.CollectValidationDTO;
 import br.com.cc.entity.Collect;
-import br.com.cc.entity.User;
-import br.com.cc.enums.AuthUserRole;
 import br.com.cc.enums.Status;
-import br.com.cc.exception.collect.InvalidCollectRegistrationException;
 import br.com.cc.mapper.UserMapperService;
 import br.com.cc.repository.CollectRepository;
+import br.com.cc.repository.UserRepository;
+import br.com.cc.service.ChatService;
 import br.com.cc.service.CollectService;
 import br.com.cc.service.ImageStorageService;
+import br.com.cc.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -27,10 +27,19 @@ public class CollectServiceImpl implements CollectService {
 	private CollectRepository collectRepository;
 
 	@Autowired
-	UserMapperService userMapperService;
+	private UserRepository userRepository;
+
+	@Autowired
+	private UserMapperService userMapperService;
 
 	@Autowired
 	private ImageStorageService imageStorageService;
+
+	@Autowired
+	private MessageService messageService;
+
+	@Autowired
+	private ChatService chatService;
 
 	@Override
 	public List<Collect> findAll() {
@@ -74,38 +83,30 @@ public class CollectServiceImpl implements CollectService {
 	public void addCollaboratorToCollect(Long collectId, CollectCollaboratorDTO collaboratorDTO) {
 		Collect collect = collectRepository.findById(collectId).orElseThrow(() -> new RuntimeException("Coleta não encontrada"));
 
-		if (collect.getCollaborators().isEmpty()){
+		boolean isFirstCollaborator = collect.getCollaborators().isEmpty();
+
+		if (isFirstCollaborator) {
+			collect.setLeaderId(collaboratorDTO.getUser().getId());
 			collect.setTeamCollect(collaboratorDTO.isTeamCollect());
 			collect.setCollectDate(collaboratorDTO.getDate());
 			collect.setStatus(Status.PENDENTE);
+		} else {
+			if (collect.getLeaderId().equals(collaboratorDTO.getUser().getId())) {
+					collect.setTeamCollect(collaboratorDTO.isTeamCollect());
+					collect.setCollectDate(collaboratorDTO.getDate());
+			}
 		}
 
-		boolean isAlreadyCollaborator = collect.getCollaborators().stream().anyMatch(user -> user.getId().equals(collaboratorDTO.getUser().getId()));
-		boolean isUserAdmin = collaboratorDTO.getUser().getRole().equals(AuthUserRole.ADMIN);
+		boolean isAlreadyCollaborator = collect.getCollaborators().stream()
+				.anyMatch(user -> user.getId().equals(collaboratorDTO.getUser().getId()));
 
-		User[] userPrimaryCollaborator = collect.getCollaborators().toArray(new User[0]);
-		boolean isUserPrimaryCollaborator = false;
-
-		if (userPrimaryCollaborator.length > 0) {
-			isUserPrimaryCollaborator = Objects.equals(userPrimaryCollaborator[0].getId(), collaboratorDTO.getUser().getId());
+		if (!isAlreadyCollaborator) {
+			collect.getCollaborators().add(userMapperService.convertUserToEntity(collaboratorDTO.getUser()));
 		}
 
-		if (isUserAdmin || isUserPrimaryCollaborator ) {
-			collect.setTeamCollect(collaboratorDTO.isTeamCollect());
-			collect.setCollectDate(collaboratorDTO.getDate());
-		}
-
-		if (isAlreadyCollaborator && !isUserPrimaryCollaborator) {
-			throw new InvalidCollectRegistrationException("Você já está registrado para essa coleta!");
-		}
-
-		if (collaboratorDTO.isTeamCollect() && !isUserPrimaryCollaborator){
-			throw new InvalidCollectRegistrationException("Essa coleta não está disponível para outros usuários!");
-		}
-
-		collect.getCollaborators().add(userMapperService.convertUserToEntity(collaboratorDTO.getUser()));
 		collectRepository.save(collect);
 	}
+
 
 	@Override
 	public void startCollect(Long id)  {
@@ -140,10 +141,19 @@ public class CollectServiceImpl implements CollectService {
 
 	@Override
 	public void validateCollect(long id, CollectValidationDTO collectValidationDTO) {
-
 		collectRepository.findById(id).map(collect -> {
 			collect.setStatus(collectValidationDTO.getStatus());
-			if (collect.getStatus().equals(Status.APROVADO)) collect.getCollaborators().clear();
+			ChatDTO chatDTO = chatService.getOrCreateChatByCollectId(id);
+
+			if (collect.getStatus().equals(Status.REJEITADO)) {
+				messageService.sendMessage(chatDTO.getChatId(), collectValidationDTO.getMessage());
+			}
+
+			if (collect.getStatus().equals(Status.APROVADO)){
+				collect.getCollaborators().clear();
+				chatService.deleteByCollectId(id);
+			}
+
 			collectRepository.save(collect);
 			return collect;
 		});

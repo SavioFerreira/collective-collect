@@ -1,5 +1,5 @@
 import { TouchableOpacity } from 'react-native';
-import { Heading, HStack, VStack, Icon, Center } from 'native-base';
+import { Heading, HStack, VStack, Icon, Center, View } from 'native-base';
 
 import { Entypo } from '@expo/vector-icons';
 import NewsSvg from '@assets/news.svg';
@@ -19,15 +19,7 @@ export function NewsCard({...rest}: Props){
         <Heading color="white" alignSelf="center" >
           Novidades!
         </Heading>
-        <TouchableOpacity activeOpacity={.7}>
-          <Icon
-            as={Entypo}
-            name="info-with-circle"
-            color="cyan.300"
-            size={6}
-            mb={3}
-          />
-        </TouchableOpacity>
+        <View m={3}></View>
       </HStack>
       <Center m={1} mb={2}>
         <NewsSvg

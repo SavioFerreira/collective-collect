@@ -2,7 +2,6 @@ package br.com.cc.service;
 import br.com.cc.dto.CollectCollaboratorDTO;
 import br.com.cc.dto.CollectValidationDTO;
 import br.com.cc.entity.Collect;
-import br.com.cc.enums.Status;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

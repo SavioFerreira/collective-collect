@@ -53,16 +53,16 @@ export function ValidaColeta() {
     let payload;
     if (statusValue === StatusEnum.APROVADO) {
       payload = JSON.stringify({ status: StatusEnum.APROVADO, message: 'Aprovado' });
-    }  
+    }
     else if (statusValue === StatusEnum.REJEITADO) {
       payload = JSON.stringify({ status: StatusEnum.REJEITADO, message: message });
     }
     try {
-        await api.patch(`api/collect/${coleta.id}/validate`, payload, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+      await api.patch(`api/collect/${coleta.id}/validate`, payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
       fetchColetas();
       setMessage(undefined);
@@ -116,51 +116,53 @@ export function ValidaColeta() {
       <IconHeader title="Validação de Coletas" />
       {isLoading ? <Loading /> :
         <View flex={1} m={3}>
-          <VStack h="38%" rounded="lg" bgColor="blue.400" mb={2} justifyContent="space-around">
-            <HStack alignSelf="center" mt={1} m={3}>
+          <VStack h="40%" rounded="lg" bgColor="blue.400" mb={2} justifyContent="space-around">
+            <VStack flex={1} justifyContent="space-evenly">
               <HStack alignSelf="center">
-                <Icon
-                  as={Entypo}
-                  name={'emoji-happy'}
-                  color="green.400"
-                  size="lg"
-                  alignSelf="center"
-                  mr={1}
-                />
-                <Text fontFamily="body" fontSize="md" color="white">
-                  Total de coletas aprovadas
-                </Text>
+                <HStack alignSelf="center">
+                  <Icon
+                    as={Entypo}
+                    name={'emoji-happy'}
+                    color="green.400"
+                    size="lg"
+                    alignSelf="center"
+                    mr={1}
+                  />
+                  <Text fontFamily="body" fontSize="md" color="white">
+                    Total de coletas aprovadas
+                  </Text>
+                </HStack>
+                <VStack ml={2}>
+                  <Text numberOfLines={1} color="green.400" fontSize="md" fontFamily="heading" textAlign="justify" alignSelf="center">
+                    {coletas.filter(collect => collect.status === StatusEnum.APROVADO).length}
+                  </Text>
+                </VStack>
               </HStack>
-              <VStack ml={2}>
-                <Text numberOfLines={1} color="green.400" fontSize="md" fontFamily="heading" textAlign="justify" alignSelf="center">
-                  {coletas.filter(collect => collect.status === StatusEnum.APROVADO).length}
-                </Text>
-              </VStack>
-            </HStack>
 
-            <HStack alignSelf="center" mt={1} m={3}> 
               <HStack alignSelf="center">
-                <Icon
-                  as={Entypo}
-                  name={'emoji-sad'}
-                  color="red.600"
-                  size="lg"
-                  alignSelf="center"
-                  mr={2}
-                />
-                <Text fontFamily="body" fontSize="md" color="white">
-                  Total de coletas rejeitadas
-                </Text>
+                <HStack alignSelf="center">
+                  <Icon
+                    as={Entypo}
+                    name={'emoji-sad'}
+                    color="red.600"
+                    size="lg"
+                    alignSelf="center"
+                    mr={2}
+                  />
+                  <Text fontFamily="body" fontSize="md" color="white">
+                    Total de coletas rejeitadas
+                  </Text>
+                </HStack>
+                <VStack ml={2}>
+                  <Text numberOfLines={1} color="red.600" fontFamily="heading" fontSize="md" textAlign="justify" alignSelf="center">
+                    {coletas.filter(collect => collect.status === StatusEnum.REJEITADO).length}
+                  </Text>
+                </VStack>
               </HStack>
-              <VStack ml={2}>
-                <Text numberOfLines={1} color="red.600" fontFamily="heading" fontSize="md" textAlign="justify" alignSelf="center">
-                {coletas.filter(collect => collect.status === StatusEnum.REJEITADO).length}
-                </Text>
-              </VStack>
-            </HStack>
+            </VStack>
 
             <HStack mt={0}>
-              <View rounded="lg" borderTopRadius={0} overflow="hidden" w="100%" h={200} alignSelf="center">
+              <View rounded="lg" borderTopRadius={0} overflow="hidden" w="100%" h={190} alignSelf="center">
                 <Video
                   ref={video}
                   onLoad={() => <Loading />}
@@ -348,7 +350,7 @@ export function ValidaColeta() {
                           </VStack>
                         </VStack>
 
-                        { isRequestMessage &&
+                        {isRequestMessage &&
                           <VStack bgColor="darkBlue.600" rounded="lg" justifyContent="start" mr={3} ml={3} mb={2} isFocused={isRequestMessage}>
                             <HStack ml={4}>
                               <VStack alignSelf="start" mr={4} mt={2}>
@@ -364,7 +366,7 @@ export function ValidaColeta() {
                                 </Text>
                               </VStack>
                             </HStack>
-                            <Input  placeholder="Mensagem" bg="blue.400" numberOfLines={4}  mr={2} ml={2} h={12} isDisabled={isRequestMessage} onChangeText={setMessage}/>
+                            <Input placeholder="Mensagem" bg="blue.400" numberOfLines={4} mr={2} ml={2} h={12} isDisabled={isRequestMessage} onChangeText={setMessage} />
                           </VStack>
                         }
 
@@ -401,10 +403,11 @@ export function ValidaColeta() {
                                   text: "Sim",
                                   onPress: () => {
                                     setIsRequestMessage(true)
-                                    {(message?.length !== undefined && message?.length > 5) ? 
-                                       handleValidadeCollect(StatusEnum.REJEITADO) 
+                                    {
+                                      (message?.length !== undefined && message?.length > 5) ?
+                                      handleValidadeCollect(StatusEnum.REJEITADO)
                                       :
-                                      Alert.alert("Atenção!", "Inclua o motivo da rejeição da coleta"); 
+                                      Alert.alert("Atenção!", "Inclua o motivo da rejeição da coleta");
                                     }
                                   }
                                 }

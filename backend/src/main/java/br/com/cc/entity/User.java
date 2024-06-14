@@ -1,13 +1,16 @@
 package br.com.cc.entity;
 
 import br.com.cc.enums.AuthUserRole;
-import lombok.*;
-import java.util.Collection;
-import java.util.List;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import jakarta.persistence.*;
+
+import java.util.Collection;
+import java.util.List;
 
 @Data
 @NoArgsConstructor

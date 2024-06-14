@@ -5,9 +5,10 @@ import br.com.cc.enums.Gravity;
 import br.com.cc.enums.Status;
 import br.com.cc.enums.WasteType;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -25,6 +26,7 @@ public class CollectDTO {
     private String collectImageAfter;
     private Set<UserDTO> collaborators;
     private boolean teamCollect;
+    private Long leaderId;
     private String title;
     private String description;
     private Locale locale;

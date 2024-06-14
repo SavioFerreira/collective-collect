@@ -11,11 +11,11 @@ import { useImagePicker } from '@hooks/useImagePicker';
 import { getAddressLocation } from '../utils/getArdressLocation';
 import * as Location from 'expo-location';
 import { FormatDate } from 'src/functions/FormatDate';
-import { Map } from '@functions/Map'
 
 import { FontAwesome6, Feather } from '@expo/vector-icons';
 import { LocationObjectCoords } from 'expo-location';
 import { SelectInputMap } from './selectInputMap';
+import { AppError } from '@utils/AppError';
 
 type Props = {
     onRegister: () => void;
@@ -31,11 +31,9 @@ export function DenunciaCadastro({ onRegister }: Props) {
     const [latitude, setLatitude] = useState<number | undefined>();
     const [longitude, setLongitude] = useState<number | undefined>();
     const [currentCoords, setCurrentCoords] = useState<LocationObjectCoords | null>(null);
-
     const [wasteType, setWasteType] = useState<ResiduoType | undefined>();
     const [gravityType, setGravityType] = useState<ResiduoGravity | undefined>();
     const [isLoading, setIsLoading] = useState(false);
-
     const [isOpenModal, setIsOpenModal] = useState(false);
 
     const handleWasteTypeChange = (itemValue: string) => {
@@ -46,33 +44,13 @@ export function DenunciaCadastro({ onRegister }: Props) {
         setGravityType(itemValue as ResiduoGravity);
     };
 
-    useEffect(() => {
+    const handleSelectLocation = (location: { latitude: number, longitude: number, address: string }) => {
+        if (!location) return;
+        setAddress(location.address);
+        setLatitude(location.latitude);
+        setLongitude(location.longitude);
+    };
 
-        let subscription: Location.LocationSubscription;
-
-        Location.watchPositionAsync({
-            accuracy: Location.LocationAccuracy.High,
-            timeInterval: 1000
-        }, (location) => {
-            setCurrentCoords(location.coords)
-            setLatitude(location.coords.latitude);
-            setLongitude(location.coords.longitude);
-            getAddressLocation(location.coords)
-
-                .then((address) => {
-                    if (address) setAddress(address || 'Localização não encontrada')
-
-                }).catch(error => {
-                    setAddress('Erro ao definir localização');
-                })
-        }).then((response) => subscription = response);
-
-        return () => {
-            if (subscription)
-                subscription.remove();
-        }
-
-    }, [])
 
     async function handleCreateComplaint() {
         setIsLoading(true);
@@ -131,7 +109,7 @@ export function DenunciaCadastro({ onRegister }: Props) {
             const dateTimeImageSelected = FormatDate(date.toString()).replaceAll('/', '-').replaceAll(':', '-').replaceAll(' ', '_');
             formData.append('image', {
                 uri: complaint.image,
-                type: 'image/png',
+                type: 'image/png' || 'image/jpeg',
                 name: `complaint_${dateTimeImageSelected.toString()}_autor-${complaint.author.id}.png`
             } as any);
         }
@@ -149,11 +127,48 @@ export function DenunciaCadastro({ onRegister }: Props) {
                 throw new Error('Falha ao enviar Denuncia!');
             }
         } catch (error) {
+            onRegister();
+
+            const title = error instanceof AppError ? error.message : 'Falha\n Não foi possível realizar a denúncia. Tente novamente mais tarde.';
+            toast.show({
+                title: title,
+                placement: 'top',
+                duration: 2000,
+                bgColor: 'red.500',
+            });
             return 'fail';
         } finally {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+
+        let subscription: Location.LocationSubscription;
+
+        Location.watchPositionAsync({
+            accuracy: Location.LocationAccuracy.High,
+            timeInterval: 1000
+        }, (location) => {
+            setCurrentCoords(location.coords)
+            setLatitude(location.coords.latitude);
+            setLongitude(location.coords.longitude);
+            getAddressLocation(location.coords)
+
+                .then((address) => {
+                    if (address) setAddress(address || 'Localização não encontrada')
+
+                }).catch(error => {
+                    setAddress('Erro ao definir localização');
+                })
+        }).then((response) => subscription = response);
+
+        return () => {
+            if (subscription)
+                subscription.remove();
+        }
+
+    }, [])
 
     return (
         <View flex={1} px={1}>
@@ -320,22 +335,20 @@ export function DenunciaCadastro({ onRegister }: Props) {
                                             onPress={() => setIsOpenModal(false)}
                                         />
                                     </HStack>
-                                    <Input 
-                                        h={10} mb={2} bgColor="darkBlue.800" fontSize="md" color="green.400" borderWidth={0} mt={2} 
-                                        _focus={{ borderWidth: 1, borderColor: 'blue.300', bgColor: 'darkBlue.700' }}
-                                        placeholder='Digite a localização ou selecione no mapa'
-                                        placeholderTextColor={colors.green[400]}
-                                        numberOfLines={3}
-                                        textAlign="justify"
-                                        onChangeText={() => {}}
-                                        value={''}
-                                    />
-
-                                    <HStack justifyContent='center' h={400}>
+                                    <HStack justifyContent='center' h={400} mb={2}>
                                         {(currentCoords) &&
-                                            <SelectInputMap coords={[currentCoords]} />
+                                            <SelectInputMap coords={[currentCoords]} onSelectLocation={handleSelectLocation} />
                                         }
                                     </HStack>
+                                    <Button
+                                        h={12}
+                                        size="lg"
+                                        bgColor="green.500"
+                                        _pressed={{ bg: "green.600" }}
+                                        onPress={() => setIsOpenModal(false)}
+                                        isLoading={isLoading}>
+                                            Finalizar
+                                    </Button>
                                 </VStack>
                             </ScrollView>
                         </View>

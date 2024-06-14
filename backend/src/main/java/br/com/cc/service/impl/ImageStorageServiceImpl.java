@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -24,12 +25,24 @@ public class ImageStorageServiceImpl  implements ImageStorageService {
     @Override
     public String uploadImage(MultipartFile image) throws IOException {
         String imageName = StringUtils.cleanPath(image.getOriginalFilename());
-        Path targetLocation = imageStorageLocation.resolve(imageName);
-        image.transferTo(targetLocation);
+
+        try {
+            Path targetLocation = imageStorageLocation.resolve(imageName);
+            image.transferTo(targetLocation);
 
         return ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/ccimages/download/")
                 .path(imageName)
                 .toUriString();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return "Falha no envio da imagem.";
+        }
+    }
+
+    public void deleteImage(String imageName) throws IOException {
+        Path filePath = imageStorageLocation.resolve(imageName).normalize();
+        Files.deleteIfExists(filePath);
     }
 }
