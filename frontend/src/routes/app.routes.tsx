@@ -11,13 +11,11 @@ import { HomeColeta } from '@screens/HomeColeta';
 import { Profile } from '@screens/Profile';
 import { Coleta } from '@screens/Coleta';
 import { Denuncia } from '@screens/Denuncia';
-import { ComplaintDetail } from '@screens/ComplaintDetail';
 
 type AppRoutes = {
   home: undefined;
   coletas: undefined;
   denuncias: {complaintId: string};
-  detalhesDenuncia: {complaintId: string};
   profile: undefined;
   detalhesColeta: {collectId: string};
 }
@@ -97,12 +95,6 @@ export function AppRoutes() {
       <Screen
         name='detalhesColeta'
         component={Coleta}
-        options={{ tabBarButton: () => null }}
-      />
-
-<Screen
-        name='detalhesDenuncia'
-        component={ComplaintDetail}
         options={{ tabBarButton: () => null }}
       />
     </Navigator>

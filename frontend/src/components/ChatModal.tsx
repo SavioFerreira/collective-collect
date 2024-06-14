@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Modal, FlatList } from 'react-native';
+import { Modal, FlatList, ActivityIndicator } from 'react-native';
 import { HStack, VStack, Text, View, Icon, Pressable, Input, useToast } from "native-base";
 import { MaterialIcons, FontAwesome6, Feather } from '@expo/vector-icons';
 import { IViewProps } from "native-base/lib/typescript/components/basic/View/types";
@@ -9,6 +9,7 @@ import { useAuth } from "@hooks/useAuth";
 import { api } from "@services/api";
 import { AppError } from "@utils/AppError";
 import { RoleType } from "@enums/RoleTypesEnum";
+import { Loading } from "./Loading";
 
 type Props = IViewProps & {
     coleta: ColetaDTO;
@@ -32,9 +33,11 @@ export function ChatModal({ coleta, ...rest }: Props) {
 
     const flatListRef = useRef<FlatList<MessageDTO>>(null);
 
+
     const scrollToBottom = () => {
         flatListRef.current?.scrollToEnd({ animated: true });
     };
+
 
     function toggleModal() {
         SetIsModalVisible(!isModalVisible);
@@ -46,6 +49,7 @@ export function ChatModal({ coleta, ...rest }: Props) {
             const chat = response.data;
             const messageResponse = await api.get(`/api/chat/${chat.chatId}/messages`);
             setMessage(messageResponse.data);
+            scrollToBottom();
         } catch (error) {
             const isAppError = error instanceof AppError;
             const title = isAppError ? error.message : 'Não foi possível carregar as mensagens do chat';
@@ -56,19 +60,16 @@ export function ChatModal({ coleta, ...rest }: Props) {
                 bgColor: 'orange.400'
             })
 
+        } finally {
         }
     }
 
     async function sendMessage() {
         try {
-            let response = await api.get(`/api/collect/${coleta.id}/chat`);
+            const response = await api.get(`/api/collect/${coleta.id}/chat`);
             const chat = response.data;
 
             if (content.trim()) {
-                if (content.length >= 255) {
-                    content.slice(0, 254);
-                    console.log(content)
-                }
                 const messageResponse = await api.post(`/api/chat/${chat.chatId}/messages`, { content }, {
                     headers: {
                         'Content-Type': 'application/json'
@@ -79,9 +80,9 @@ export function ChatModal({ coleta, ...rest }: Props) {
                     setMessage(prev => [...prev, messageResponse.data]);
                     setContent('');
                     scrollToBottom();
-                    fetchChatAndMessages();
                 }
             }
+
         } catch (error) {
             const isAppError = error instanceof AppError;
             const title = isAppError ? error.message : 'Não foi possível enviar a mensagem no chat';
@@ -101,9 +102,10 @@ export function ChatModal({ coleta, ...rest }: Props) {
     }, [isModalVisible]);
 
     useEffect(() => {
-        if (message.length > 0) {
+        const timeout = setTimeout(() => {
             scrollToBottom();
-        }
+        }, 100);
+        return () => clearTimeout(timeout);
     }, [message]);
 
     return (
@@ -125,6 +127,7 @@ export function ChatModal({ coleta, ...rest }: Props) {
                 visible={isModalVisible}
                 animationType="fade"
                 transparent={true}
+                onShow={scrollToBottom}
             >
                 <Pressable flex={1} alignItems="center" justifyContent="center" bg="rgba(0, 0, 0, 0.623)">
                     <View bgColor="darkBlue.300" p={5} pt={1} pb={1} justifyContent="end" borderRadius="lg" w="95%" h="80%">
@@ -155,25 +158,26 @@ export function ChatModal({ coleta, ...rest }: Props) {
                                             const iscurrentUser = item.userName === user.name;
                                             return (
                                                 <HStack justifyContent={iscurrentUser ? "flex-end" : "flex-start"}>
-                                                      <VStack mt={3} mr={5} ml={5} p={2}
-                                                        rounded="lg" 
-                                                        bgColor={isAdmin ? "purple.700" : (iscurrentUser ? "blue.300": "darkBlue.300")} 
-                                                      >
-                                                          <Text fontFamily="heading" fontSize="md" color={isAdmin ? "purple.200" : "blue.700"}>
-                                                              {isAdmin ? 'admin' : currentUser}
-                                                          </Text>
-                                                          <Text fontSize="sm" color={isAdmin ? "white" : "blue.700"}>
-                                                              {item.content}
-                                                          </Text>
-                                                          <Text fontSize={10} mt={1} textAlign="right" color={isAdmin ? "purple.300" : "blue.700"}>
-                                                              {FormatDate(item?.timestamp)}
-                                                          </Text>
-                                                      </VStack>
+                                                    <VStack mt={3} mr={5} ml={5} p={2}
+                                                        rounded="lg"
+                                                        bgColor={isAdmin ? "purple.700" : (iscurrentUser ? "blue.300" : "darkBlue.300")}
+                                                    >
+                                                        <Text fontFamily="heading" fontSize="md" color={isAdmin ? "purple.200" : "blue.700"}>
+                                                            {isAdmin ? 'admin' : currentUser}
+                                                        </Text>
+                                                        <Text fontSize="sm" color={isAdmin ? "white" : "blue.700"}>
+                                                            {item.content}
+                                                        </Text>
+                                                        <Text fontSize={10} mt={1} textAlign="right" color={isAdmin ? "purple.300" : "blue.700"}>
+                                                            {FormatDate(item?.timestamp)}
+                                                        </Text>
+                                                    </VStack>
                                                 </HStack>
                                             )
                                         }}
                                         keyExtractor={item => item.id.toString()}
                                     />
+
                                 </View>
                             </VStack>
                             <HStack rounded="lg" bgColor="blue.500" minH={60} maxH={60}>

@@ -10,7 +10,7 @@ type Props = TouchableOpacityProps & {
   data: DenunciaDTO;
 };
 
-export function DenunciaCard({ data, ...rest }: Props) {
+export function ColetaAdminCard({ data, ...rest }: Props) {
 
   const status = data.status?.toLocaleLowerCase().replace("_", " ");
   const showDate = data.complaintDate != undefined || null ? FormatDate(data.complaintDate) : "Data indisponível";

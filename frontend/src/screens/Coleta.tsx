@@ -111,7 +111,7 @@ export function Coleta() {
         bgColor: 'red.500'
       })
       handleGoBack();
-      
+
     } finally {
       setTimeout(() => {
         setIsLoading(false);
@@ -250,6 +250,35 @@ export function Coleta() {
                 </HStack>
               </Box>
 
+              {coleta.status === StatusEnum.APROVADO &&
+                <Box bg="green.700" mb={1} pt={2} pb={2} rounded="lg" borderTopRadius={0}>
+                  <Text textAlign="center" fontSize="md" fontFamily="body" color="white" mb={2}> 
+                    Coleta antes e depois da atividade
+                  </Text>
+                  <HStack justifyContent="space-evenly">
+                    <Image
+                      w={40}
+                      h={40}
+                      source={{ uri: `${coleta.collectImageBefore}` }}
+                      alt="imagem da coleta antes da limpeza"
+                      resizeMode="cover"
+                      borderWidth={1}
+                      borderColor="orange.500"
+                      rounded="lg"
+                    />
+                    <Image
+                      w={40}
+                      h={40}
+                      source={{ uri: `${coleta.collectImageAfter}` }}
+                      alt="imagem da coleta depois da limpeza"
+                      resizeMode="cover"
+                      borderWidth={1}
+                      borderColor="green.400"
+                      rounded="lg"
+                    />
+                  </HStack>
+                </Box>
+              }
               <Box>
                 {coleta.collaborators.length > 0 ?
                   <HStack bg="green.700" mb={1} pt={2} pb={1} px={2} flex={1} borderRadius="lg" borderTopRadius={0} justifyContent="space-evenly">
@@ -284,17 +313,24 @@ export function Coleta() {
 
                   </HStack>
                   :
-                  <HStack bg="green.700" mb={1} pt={2} pb={1} px={2} flex={1} borderRadius="lg" borderTopRadius={0} justifyContent="space-evenly">
-                    <Text fontSize="sm" color="white">
-                      Nenhum colaborador
-                    </Text>
-                  </HStack>
+                    <View>
+                      { coleta.status === StatusEnum.APROVADO ?
+                        ''
+                        :
+                        <HStack bg="green.700" mb={1} pt={2} pb={1} px={2} flex={1} borderRadius="lg" borderTopRadius={0} justifyContent="space-evenly">
+                          <Text fontSize="sm" color="white">
+                            Nenhum colaborador
+                          </Text>
+                        </HStack>
+                      }
+                    </View>
+                  
 
                 }
               </Box>
             </Box>
 
-            {!isUserCollaborator && isCollectPublic  && (coleta.status !== (StatusEnum.EM_ANALISE)) && (coleta.status !== (StatusEnum.APROVADO)) ?
+            {!isUserCollaborator && isCollectPublic && (coleta.status !== (StatusEnum.EM_ANALISE)) && (coleta.status !== (StatusEnum.APROVADO)) ?
               <Pressable
                 bgColor="orange.500"
                 _pressed={{ bg: "orange.700" }}
@@ -316,7 +352,7 @@ export function Coleta() {
 
             {isCollectLeader && (coleta.status !== StatusEnum.EM_ANALISE) ?
               <HStack justifyContent="space-between">
-                { !isCollectStartVisible ?
+                {!isCollectStartVisible ?
                   <Pressable
                     w="82%"
                     justifyContent="center"
@@ -340,48 +376,49 @@ export function Coleta() {
                       );
                     }}
                   >
-                    { coleta.status !== StatusEnum.OCORRENDO && coleta.id.toString() === collectId.toString() &&
+                    {coleta.status !== StatusEnum.OCORRENDO && coleta.id.toString() === collectId.toString() &&
                       <Text numberOfLines={1} fontSize={20} fontFamily="heading" color="blue.200" mb={1} textAlign="center">
                         Iniciar Coleta?
                       </Text>
                     }
-                    { coleta.status === StatusEnum.OCORRENDO && coleta.id.toString() === collectId.toString() &&
+                    {coleta.status === StatusEnum.OCORRENDO && coleta.id.toString() === collectId.toString() &&
                       <Text numberOfLines={1} fontSize={20} fontFamily="heading" color="blue.200" mb={1} textAlign="center">
                         Retornar para coleta?
                       </Text>
                     }
                   </Pressable>
                   :
-                 
+
                   <View w="82%">
-                    { coleta.status === StatusEnum.OCORRENDO &&
-                      <OnCollectModal label="Retornar para coleta " collectId={collectId}/>
+                    {coleta.status === StatusEnum.OCORRENDO &&
+                      <OnCollectModal label="Retornar para coleta " collectId={collectId} />
                     }
-                    { coleta.status !== StatusEnum.OCORRENDO &&
-                      <OnCollectModal label="Clique para Iniciar " borderWidth={1} borderColor="white" rounded="md" collectId={collectId}/>
+                    {coleta.status !== StatusEnum.OCORRENDO &&
+                      <OnCollectModal label="Clique para Iniciar " borderWidth={1} borderColor="white" rounded="md" collectId={collectId} />
                     }
                   </View>
-                  
+
                 }
-                  <Pressable
-                    justifyContent="center"
-                    bgColor="blue.500"
-                    p={4} borderRadius="md"
-                    _pressed={{ bg: "blue.700" }}
-                    onPress={() => {
-                      coleta.status !== StatusEnum.OCORRENDO ? 
-                        openColetaModal() 
-                      : 
-                        Alert.alert("Atenção!", "Não é possível editar a coleta ocorrendo")}}>
-                    <Icon
-                      as={Feather}
-                      name={'edit'}
-                      color="white"
-                      size={8}
-                      alignSelf="center"
-  
-                    />
-                  </Pressable>
+                <Pressable
+                  justifyContent="center"
+                  bgColor="blue.500"
+                  p={4} borderRadius="md"
+                  _pressed={{ bg: "blue.700" }}
+                  onPress={() => {
+                    coleta.status !== StatusEnum.OCORRENDO ?
+                      openColetaModal()
+                      :
+                      Alert.alert("Atenção!", "Não é possível editar a coleta ocorrendo")
+                  }}>
+                  <Icon
+                    as={Feather}
+                    name={'edit'}
+                    color="white"
+                    size={8}
+                    alignSelf="center"
+
+                  />
+                </Pressable>
               </HStack>
               :
               ''
@@ -401,10 +438,10 @@ export function Coleta() {
                       name="x-circle"
                       onPress={closeColetaModal}
                     />
-                    { (isCollectLeader || isCollectCollaboratorEmpy) && coleta.status !== StatusEnum.OCORRENDO ?
-                      <ColetaCadastroFull onRegister={closeColetaModal} collectId={coleta.id}/>
-                    :
-                      <ColetaCadastroBasic onRegister={closeColetaModal} collectId={coleta.id}/>
+                    {(isCollectLeader || isCollectCollaboratorEmpy) && coleta.status !== StatusEnum.OCORRENDO ?
+                      <ColetaCadastroFull onRegister={closeColetaModal} collectId={coleta.id} />
+                      :
+                      <ColetaCadastroBasic onRegister={closeColetaModal} collectId={coleta.id} />
                     }
                   </View>
                 </Flex>
