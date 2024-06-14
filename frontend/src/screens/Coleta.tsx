@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { HStack, Heading, Icon, VStack, Text, Image, Box, ScrollView, useToast, Pressable, View, Flex, } from 'native-base';
 import { TouchableOpacity, Modal, RefreshControl, Alert } from 'react-native';
-import { Feather, FontAwesome6, MaterialIcons } from '@expo/vector-icons';
+import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { AppNavigatorRoutesProps } from '@routes/app.routes'
@@ -22,6 +22,7 @@ import { ColetaCadastroFull } from '@functions/ColetaCadastroFull';
 import { ColetaCadastroBasic } from '@functions/ColetaCadastroBasic';
 import { StatusEnum } from '@enums/StatusEnum';
 import { ChatModal } from '@components/ChatModal';
+import { RoleType } from '@enums/RoleTypesEnum';
 
 type RouteParamsProps = {
   collectId: string;
@@ -272,7 +273,7 @@ export function Coleta() {
                         Agenda: {showCollectDate}
                       </Text>
                     </VStack>
-                    {isUserCollaborator ?
+                    {(isUserCollaborator || user.role === RoleType.ADMIN) ?
                       <VStack ml={2} mr={2} alignSelf="center">
                         <ChatModal coleta={coleta} />
                       </VStack>
