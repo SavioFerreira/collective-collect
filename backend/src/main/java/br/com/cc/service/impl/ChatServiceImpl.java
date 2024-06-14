@@ -3,22 +3,25 @@ package br.com.cc.service.impl;
 import br.com.cc.dto.ChatDTO;
 import br.com.cc.entity.Chat;
 import br.com.cc.entity.Collect;
+import br.com.cc.entity.Message;
 import br.com.cc.exception.collect.CollectNotFoundException;
 import br.com.cc.repository.ChatRepository;
 import br.com.cc.repository.CollectRepository;
+import br.com.cc.repository.MessageRepository;
 import br.com.cc.service.ChatService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
-    @Autowired
-    private ChatRepository chatRepository;
 
-    @Autowired
-    private CollectRepository collectRepository;
+    private final ChatRepository chatRepository;
+    private final CollectRepository collectRepository;
+    private final MessageRepository messageRepository;
 
     @Override
     public ChatDTO getOrCreateChatByCollectId(Long collectId) {
@@ -36,6 +39,19 @@ public class ChatServiceImpl implements ChatService {
             newChat = chatRepository.save(newChat);
 
             return convertToDTO(newChat);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteByCollectId(Long id) {
+        Optional<Chat> chat = chatRepository.findByCollectId(id);
+        if(chat.isPresent()) {
+            Message message = (Message) messageRepository.findByChatId(id);
+            if(message != null){
+                messageRepository.delete(message);
+            }
+            chatRepository.delete(chat.get());
         }
     }
 
