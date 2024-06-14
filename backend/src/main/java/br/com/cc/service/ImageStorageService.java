@@ -8,4 +8,5 @@ public interface ImageStorageService {
 
      String uploadImage(MultipartFile image) throws IOException;
 
+     void deleteImage(String imageName) throws IOException;
 }

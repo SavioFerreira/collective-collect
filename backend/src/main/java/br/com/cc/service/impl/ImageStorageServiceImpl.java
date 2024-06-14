@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -38,5 +39,10 @@ public class ImageStorageServiceImpl  implements ImageStorageService {
             ex.printStackTrace();
             return "Falha no envio da imagem.";
         }
+    }
+
+    public void deleteImage(String imageName) throws IOException {
+        Path filePath = imageStorageLocation.resolve(imageName).normalize();
+        Files.deleteIfExists(filePath);
     }
 }
