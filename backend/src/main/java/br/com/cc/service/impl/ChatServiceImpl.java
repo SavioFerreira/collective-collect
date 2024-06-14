@@ -45,11 +45,11 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public void deleteByCollectId(Long id) {
-        Optional<Chat> chat = chatRepository.findByCollectId(id);
+    public void deleteByCollectId(Long collectId) {
+        Optional<Chat> chat = chatRepository.findByCollectId(collectId);
         if(chat.isPresent()) {
-            List<Message> messages = messageRepository.findByChatId(id);
-            if(messages != null && !messages.isEmpty()){
+            List<Message> messages = messageRepository.findByChatId(chat.get().getId());
+            if(!messages.isEmpty()){
                 messageRepository.deleteAll(messages);
             }
             chatRepository.delete(chat.get());
