@@ -1,4 +1,5 @@
 package br.com.cc.service.impl;
+import br.com.cc.dto.ChatDTO;
 import br.com.cc.dto.CollectCollaboratorDTO;
 import br.com.cc.dto.CollectValidationDTO;
 import br.com.cc.entity.Collect;
@@ -6,8 +7,10 @@ import br.com.cc.enums.Status;
 import br.com.cc.mapper.UserMapperService;
 import br.com.cc.repository.CollectRepository;
 import br.com.cc.repository.UserRepository;
+import br.com.cc.service.ChatService;
 import br.com.cc.service.CollectService;
 import br.com.cc.service.ImageStorageService;
+import br.com.cc.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,13 +27,19 @@ public class CollectServiceImpl implements CollectService {
 	private CollectRepository collectRepository;
 
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@Autowired
-	UserMapperService userMapperService;
+	private UserMapperService userMapperService;
 
 	@Autowired
 	private ImageStorageService imageStorageService;
+
+	@Autowired
+	private MessageService messageService;
+
+	@Autowired
+	private ChatService chatService;
 
 	@Override
 	public List<Collect> findAll() {
@@ -134,7 +143,17 @@ public class CollectServiceImpl implements CollectService {
 	public void validateCollect(long id, CollectValidationDTO collectValidationDTO) {
 		collectRepository.findById(id).map(collect -> {
 			collect.setStatus(collectValidationDTO.getStatus());
-			if (collect.getStatus().equals(Status.APROVADO)) collect.getCollaborators().clear();
+			ChatDTO chatDTO = chatService.getOrCreateChatByCollectId(id);
+
+			if (collect.getStatus().equals(Status.REJEITADO)) {
+				messageService.sendMessage(chatDTO.getChatId(), collectValidationDTO.getMessage());
+			}
+
+			if (collect.getStatus().equals(Status.APROVADO)){
+				collect.getCollaborators().clear();
+				chatService.deleteByCollectId(id);
+			}
+
 			collectRepository.save(collect);
 			return collect;
 		});

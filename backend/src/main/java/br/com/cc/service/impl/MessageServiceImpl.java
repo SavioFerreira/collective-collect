@@ -1,9 +1,7 @@
 package br.com.cc.service.impl;
 
 import br.com.cc.dto.MessageDTO;
-import br.com.cc.entity.Chat;
-import br.com.cc.entity.Message;
-import br.com.cc.entity.User;
+import br.com.cc.entity.*;
 import br.com.cc.repository.ChatRepository;
 import br.com.cc.repository.MessageRepository;
 import br.com.cc.service.MessageService;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 import java.util.stream.Collectors;
 
 @Service
@@ -36,26 +35,26 @@ public class MessageServiceImpl implements MessageService {
         message.setContent(content);
         message.setTimestamp(LocalDateTime.now());
         message = messageRepository.save(message);
-        MessageDTO messageDTO = new MessageDTO();
-        messageDTO.setId(message.getId());
-        messageDTO.setContent(message.getContent());
-        messageDTO.setChatId(message.getChat().getId());
-        messageDTO.setUserName(message.getUser().getName());
-        messageDTO.setTimestamp(message.getTimestamp());
-        return messageDTO;
+
+        return convertToDTO(message);
     }
 
     @Override
     public List<MessageDTO> getMessagesByChatId(Long chatId) {
         List<Message> messages = messageRepository.findByChatId(chatId);
-        return messages.stream().map(message -> {
-            MessageDTO dto = new MessageDTO();
-            dto.setId(message.getId());
-            dto.setContent(message.getContent());
-            dto.setChatId(message.getChat().getId());
-            dto.setUserName(message.getUser().getName());
-            dto.setTimestamp(message.getTimestamp());
-            return dto;
-        }).collect(Collectors.toList());
+        return messages.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private MessageDTO convertToDTO(Message message) {
+        MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setId(message.getId());
+        messageDTO.setChatId(message.getChat().getId());
+        messageDTO.setUserName(message.getUser().getName());
+        messageDTO.setContent(message.getContent());
+        messageDTO.setTimestamp(message.getTimestamp());
+        messageDTO.setRole(message.getUser().getRole());
+        return messageDTO;
     }
 }

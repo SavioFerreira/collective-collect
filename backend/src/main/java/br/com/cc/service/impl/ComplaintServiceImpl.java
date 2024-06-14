@@ -15,10 +15,10 @@ import java.util.Optional;
 public class ComplaintServiceImpl implements ComplaintService {
 
 	@Autowired
-	private ComplaintRepository complaintRepository;
+	ComplaintRepository complaintRepository;
 
 	@Autowired
-	private CollectRepository collectRepository;
+	CollectRepository collectRepository;
 
 	@Override
 	public List<Complaint> findAll() {
