@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -47,9 +48,9 @@ public class ChatServiceImpl implements ChatService {
     public void deleteByCollectId(Long id) {
         Optional<Chat> chat = chatRepository.findByCollectId(id);
         if(chat.isPresent()) {
-            Message message = (Message) messageRepository.findByChatId(id);
-            if(message != null){
-                messageRepository.delete(message);
+            List<Message> messages = messageRepository.findByChatId(id);
+            if(messages != null && !messages.isEmpty()){
+                messageRepository.deleteAll(messages);
             }
             chatRepository.delete(chat.get());
         }
