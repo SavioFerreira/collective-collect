@@ -49,7 +49,7 @@ export function ColetaCadastroBasic({ onRegister, collectId }: Props) {
                     <Heading color='white' mb={3}>Cadastro Coleta</Heading>
                 </Center>
                 <Text color='blue.200' fontFamily="body" fontSize="lg" mb={2} textAlign="justify">
-                    A data e hora para a realização da coleta já foi definida, mas a coleta está publica.
+                    A data e hora para a realização da coleta já foi definida, mas a coleta está pública.
                 </Text>
                 <Text color='blue.200' fontFamily="body" fontSize="lg" mb={2} textAlign="justify">
                     Você pode conversar com os membros da coleta para alinhar questões de data e horário e se a data for alterada, o primeiro membro pode realizar a altação.
