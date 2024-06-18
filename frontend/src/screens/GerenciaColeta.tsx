@@ -5,13 +5,15 @@ import { ColetaDTO } from '@dtos/ColetaDTO';
 import { useFocusEffect } from '@react-navigation/native';
 import { api } from '@services/api';
 import { AppError } from '@utils/AppError';
-import { FlatList, VStack, View, Text, useToast, Heading, HStack, Icon, Pressable, Image, ScrollView, Center, Box } from 'native-base';
+import { FlatList, VStack, View, Text, useToast, HStack, Icon, Pressable, Image, ScrollView, Center, Box, Input, Select, CheckIcon, useTheme } from 'native-base';
 import React, { useCallback, useEffect, useState } from 'react';
 import { RefreshControl } from 'react-native';
-import { Feather, MaterialIcons, FontAwesome6 } from '@expo/vector-icons';
+import { Feather, MaterialIcons, FontAwesome6, Ionicons } from '@expo/vector-icons';
 import MapBackgroundImg from '@assets/mapBackGround.png'
 import { ResiduoType } from '@enums/ResiduoTypesEnum';
 import { Group } from '@components/Group';
+import { ResiduoGravity } from '@enums/ResiduoGravityEnum';
+import { StatusEnum } from '@enums/StatusEnum';
 
 
 export function GerenciaColeta() {
@@ -19,10 +21,40 @@ export function GerenciaColeta() {
   const [collect, setCollect] = useState<ColetaDTO[]>([]);
   const [allCollect, setAllCollect] = useState<ColetaDTO[]>([]);
   const [selectedItem, setSelectedItem] = useState<ColetaDTO | null>(null);
-  const [types, setTypes] = useState(Object.values(ResiduoType));
+  const types = Object.values(ResiduoType);
   const [typeSelected, setTypeSelected] = useState(types[0]);
+
+  const [wasteType, setWasteType] = useState<ResiduoType | undefined>();
+  const [gravityType, setGravityType] = useState<ResiduoGravity | undefined>();
+  const [statusType, setStatusType] = useState<StatusEnum | undefined>();
+
+  const { colors } = useTheme();
   const toast = useToast();
-  
+
+  const [isEditing, setIsEditing] = useState(true);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [isEditingType, setIsEditingType] = useState(false);
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [isEditingStatus, setIsEditingStatus] = useState(false);
+  const [isEditingGravity, setIsEditingGravity] = useState(false);
+
+  function handleWasteTypeChange(itemValue: string) {
+    setWasteType(itemValue as ResiduoType);
+  }
+
+  function handleGravityTypeChange(itemValue: string) {
+    setGravityType(itemValue as ResiduoGravity);
+  }
+
+  function handleStatusTypeChange(itemValue: string) {
+    setStatusType(itemValue as StatusEnum);
+  }
+
+  function toggleEdit() {
+    setIsEditing(!isEditing);
+  }
+
   const applyFilter = useCallback(() => {
     const filteredColetas = typeSelected === ResiduoType.TODOS ? allCollect : allCollect.filter(coleta => coleta.type === typeSelected);
     setCollect(filteredColetas);
@@ -113,23 +145,124 @@ export function GerenciaColeta() {
         </View>
       }
 
-      <VStack h="57%" minH="57%" maxH="57%" bgColor="blue.400" rounded="lg" m={3} mt={0} mb={1} p={2}>
+      <VStack h="60%" minH="60%" maxH="60%" bgColor="blue.400" rounded="lg" m={3} mt={0} mb={1} p={2}>
         <ScrollView>
           <Center mb={1} bgColor="darkBlue.800" rounded="lg" borderBottomRadius={0}>
-            <Text color="emerald.400" fontSize="md">
-              {selectedItem ? selectedItem.title : 'Título'}
-            </Text>
+            {isEditing ?
+              <Text color="emerald.400" fontSize="md">
+                {selectedItem ? selectedItem.title : 'Título'}
+              </Text>
+              :
+              <HStack>
+                <Text color="emerald.400" fontSize="md">
+                  {selectedItem ? selectedItem.title : 'Título'}
+                </Text>
+                <Pressable _pressed={{ opacity: 50 }} onPress={() => { setIsEditingTitle(!isEditingTitle) }} alignSelf="center">
+                  <Icon
+                    as={MaterialIcons}
+                    name={'mode-edit'}
+                    color="green.400"
+                    size={5}
+                    alignSelf="center"
+                    ml={3}
+                  />
+                </Pressable>
+              </HStack>
+            }
           </Center>
+          {!isEditing && isEditingTitle &&
+            <Box justifyContent="center" alignItems="center" mb={1} bgColor="darkBlue.700">
+              <Input h={6} w="100%" m={1} p={1} borderWidth={0} color="blue.200" fontSize="md" textAlign="center" alignContent="center"
+                placeholder={selectedItem ? selectedItem.title : 'Título'}
+                placeholderTextColor="green.400"
+                onSubmitEditing={() => { }}
+                returnKeyType="send"
+              />
+            </Box>
+          }
           <VStack bgColor="darkBlue.800" mb={1}>
-            <Text color="emerald.400" fontFamily="body" m={1} fontSize="sm" textAlign="center" numberOfLines={3}>
-              {selectedItem ? selectedItem.description : 'Descrição'}
-            </Text>
+            {isEditing ?
+              <Text color="emerald.400" fontFamily="body" m={1} fontSize="sm" textAlign="center" numberOfLines={3}>
+                {selectedItem ? selectedItem.description : 'Descrição'}
+              </Text>
+              :
+              <HStack alignSelf="center" m={1}>
+                <Text color="emerald.400" fontSize="sm" maxW="80%" numberOfLines={3}>
+                  {selectedItem ? selectedItem.description : 'Descrição'}
+                </Text>
+                <Pressable _pressed={{ opacity: 50 }} onPress={() => { setIsEditingDescription(!isEditingDescription) }} alignSelf="center">
+                  <Icon
+                    as={MaterialIcons}
+                    name={'mode-edit'}
+                    color="green.400"
+                    size={5}
+                    alignSelf="center"
+                    ml={3}
+                  />
+                </Pressable>
+              </HStack>
+            }
           </VStack>
+          {!isEditing && isEditingDescription &&
+            <Box justifyContent="center" alignItems="center" mb={1} bgColor="darkBlue.700">
+              <Input h={6} w="100%" p={1} m={1} borderWidth={0} color="blue.200" fontSize="md" textAlign="center" alignContent="center"
+                placeholder={selectedItem ? selectedItem.description : 'Descrição'}
+                placeholderTextColor="green.400"
+                onSubmitEditing={() => { }}
+                returnKeyType="send"
+              />
+            </Box>
+          }
           <HStack justifyContent="center" bgColor="darkBlue.800" mb={1}>
-            <Text m={1} color="emerald.400" fontFamily="body" fontSize="sm">
-              TIPO: {selectedItem ? selectedItem.type : ''}
-            </Text>
+            {isEditing ?
+              <Text m={1} color="emerald.400" fontFamily="body" fontSize="sm">
+                TIPO: {selectedItem ? selectedItem.type : 'Tipo'}
+              </Text>
+              :
+              <HStack alignSelf="center" m={1}>
+                <Text color="emerald.400" fontSize="sm" maxW="80%" numberOfLines={3}>
+                  TIPO: {selectedItem ? selectedItem.type : 'Tipo'}
+                </Text>
+                <Pressable _pressed={{ opacity: 50 }} onPress={() => { setIsEditingType(!isEditingType) }} alignSelf="center">
+                  <Icon
+                    as={MaterialIcons}
+                    name={'mode-edit'}
+                    color="green.400"
+                    size={5}
+                    alignSelf="center"
+                    ml={3}
+                  />
+                </Pressable>
+              </HStack>
+            }
           </HStack>
+          {!isEditing && isEditingType &&
+            <Box w="100%" mb={1}>
+              <Select
+                selectedValue={wasteType}
+                onValueChange={handleWasteTypeChange}
+                bgColor="darkBlue.700" fontSize="sm" color="green.400" borderWidth={0}
+                h={10} w="100%"
+                placeholder="Tipo de Resíduo"
+                placeholderTextColor={colors.green[400]}
+                dropdownIcon={<Icon as={Ionicons} name="chevron-down" size="7" color="green.400" mr={5} mt={2} />}
+                _actionSheetContent={{
+                  bg: "darkBlue.400", borderColor: "darkBlue.700", borderWidth: 1,
+                }}
+                _selectedItem={{
+                  bg: 'darkBlue.400', endIcon: <CheckIcon size="5" color="green.500" />,
+                }}
+                _item={{
+                  bg: "darkBlue.300", _text: { color: "darkBlue.700" }, _pressed: { bg: "darkBlue.500", },
+                }}
+              >
+                {Object.entries(ResiduoType).map(([key, value]) => (
+                  <Select.Item label={value} value={value} key={key} />
+                ))}
+              </Select>
+            </Box>
+          }
+
           {(selectedItem ? selectedItem.complaintImage : '') ?
             <Box w="full" h={56} position="relative" mb={1}>
               <Image
@@ -151,9 +284,27 @@ export function GerenciaColeta() {
                     mr={2}
                     ml={2}
                   />
-                  <Text color="emerald.400" fontStyle="italic" ml={2} numberOfLines={2} maxW={'80%'}>
-                    Endereço: {selectedItem ? selectedItem.locale.address : ''}
-                  </Text>
+                  {isEditing ?
+                    <Text color="emerald.400" fontStyle="italic" ml={2} numberOfLines={2} maxW={'80%'}>
+                      Endereço: {selectedItem ? selectedItem.locale.address : ''}
+                    </Text>
+                    :
+                    <HStack alignSelf="center">
+                      <Text color="emerald.400" fontSize="sm" maxW="87%" numberOfLines={2}>
+                        Endereço: {selectedItem ? selectedItem.locale.address : 'Endereço'}
+                      </Text>
+                      <Pressable _pressed={{ opacity: 50 }} onPress={() => { setIsEditingAddress(!isEditingAddress) }} alignSelf="center">
+                        <Icon
+                          as={MaterialIcons}
+                          name={'mode-edit'}
+                          color="green.400"
+                          size={6}
+                          alignSelf="center"
+                          ml={3}
+                        />
+                      </Pressable>
+                    </HStack>
+                  }
                 </HStack>
               </Box>
             </Box>
@@ -168,68 +319,176 @@ export function GerenciaColeta() {
               borderColor="darkBlue.800"
             />
           }
-          <HStack justifyContent="space-evenly" bgColor="darkBlue.800" mt={1}>
-            <Text m={1} color="emerald.400" fontFamily="body" fontSize="sm">
-              STATUS: {selectedItem ? selectedItem.status : ''}
-            </Text>
-            <Text m={1} color="emerald.400" fontFamily="body" fontSize="sm">
-              GRAVIDADE: {selectedItem ? selectedItem.gravity : ''}
-            </Text>
+          {!isEditing && isEditingAddress &&
+            <Box justifyContent="center" alignItems="center" bgColor="darkBlue.700">
+              <Input h={6} w="100%" p={1} m={1} borderWidth={0} color="blue.200" fontSize="md" textAlign="center" alignContent="center"
+                placeholder={selectedItem ? selectedItem.locale.address : 'Endereço'}
+                placeholderTextColor="green.400"
+                onSubmitEditing={() => { }}
+                returnKeyType="send"
+              />
+            </Box>
+          }
+          <HStack justifyContent="space-evenly" bgColor="darkBlue.800" mt={1} flex={1}>
+            {isEditing ?
+              <Text m={1} color="emerald.400" fontFamily="body" fontSize="sm">
+                STATUS: {selectedItem ? selectedItem.status : ''}
+              </Text>
+              :
+              <HStack alignSelf="center">
+                <Text m={1} color="emerald.400" fontSize="sm" maxW="80%" numberOfLines={3}>
+                  STATUS: {selectedItem ? selectedItem.status : 'status'}
+                </Text>
+                <Pressable _pressed={{ opacity: 50 }} onPress={() => { setIsEditingStatus(!isEditingStatus) }} alignSelf="center">
+                  <Icon
+                    as={MaterialIcons}
+                    name={'mode-edit'}
+                    color="green.400"
+                    size={6}
+                    alignSelf="center"
+                    ml={1}
+                  />
+                </Pressable>
+              </HStack>
+            }
+
+            {isEditing ?
+              <Text m={1} color="emerald.400" fontFamily="body" fontSize="sm">
+                GRAVIDADE: {selectedItem ? selectedItem.gravity : ''}
+              </Text>
+              :
+
+              <HStack alignSelf="center" >
+                <Text m={1} color="emerald.400" fontSize="sm" maxW="80%" numberOfLines={3}>
+                  GRAVIDADE: {selectedItem ? selectedItem.gravity : 'gravidade'}
+                </Text>
+                <Pressable _pressed={{ opacity: 50 }} onPress={() => { setIsEditingGravity(!isEditingGravity) }} alignSelf="center">
+                  <Icon
+                    as={MaterialIcons}
+                    name={'mode-edit'}
+                    color="green.400"
+                    size={6}
+                    alignSelf="center"
+                    ml={1}
+                  />
+                </Pressable>
+              </HStack>
+            }
           </HStack>
+          {!isEditing && isEditingStatus &&
+            <Box w="100%" justifyContent="center" alignItems="center" mt={1}>
+              <Select
+                selectedValue={statusType}
+                onValueChange={handleStatusTypeChange}
+                bgColor="darkBlue.700" fontSize="sm" color="green.400" borderWidth={0}
+                h={10} w="100%"
+                placeholder="Status"
+                placeholderTextColor={colors.green[400]}
+                dropdownIcon={<Icon as={Ionicons} name="chevron-down" size="7" color="green.400" mr={5} mt={2} />}
+                _actionSheetContent={{
+                  bg: "darkBlue.400", borderColor: "darkBlue.700", borderWidth: 1,
+                }}
+                _selectedItem={{
+                  bg: 'darkBlue.400', endIcon: <CheckIcon size="5" color="green.500" />,
+                }}
+                _item={{
+                  bg: "darkBlue.300", _text: { color: "darkBlue.700" }, _pressed: { bg: "darkBlue.500", },
+                }}
+              >
+                {Object.entries(StatusEnum).map(([key, value]) => (
+                  <Select.Item label={value} value={value} key={key} />
+                ))}
+              </Select>
+            </Box>
+          }
 
-          <HStack px={1} py={1} mt={1} bgColor="darkBlue.800" rounded="lg" borderTopRadius={0} justifyContent="space-evenly">
-            <HStack justifyContent="space-evenly" flex={1}>
-              <Pressable _pressed={{ opacity: 50 }}
-                onPress={() => { }} alignSelf="center">
-                <Icon
-                  as={Feather}
-                  name={'edit'}
-                  color="yellow.400"
-                  size={7}
-                  alignSelf="center"
-                />
-                <Text color="yellow.400" fontFamily="body" fontSize="sm">Editar</Text>
-              </Pressable>
+          {!isEditing && isEditingGravity &&
+            <Box w="100%" justifyContent="center" alignItems="center" mt={1}>
+              <Select
+                selectedValue={gravityType}
+                onValueChange={handleGravityTypeChange}
+                bgColor="darkBlue.700" fontSize="sm" color="green.400" borderWidth={0}
+                h={10} w="100%"
+                placeholder="Gravidade"
+                placeholderTextColor={colors.green[400]}
+                dropdownIcon={<Icon as={Ionicons} name="chevron-down" size="7" color="green.400" mr={5} mt={2} />}
+                _actionSheetContent={{
+                  bg: "darkBlue.400", borderColor: "darkBlue.700", borderWidth: 1,
+                }}
+                _selectedItem={{
+                  bg: 'darkBlue.400', endIcon: <CheckIcon size="5" color="green.500" />,
+                }}
+                _item={{
+                  bg: "darkBlue.300", _text: { color: "darkBlue.700" }, _pressed: { bg: "darkBlue.500", },
+                }}
+              >
+                {Object.entries(ResiduoGravity).map(([key, value]) => (
+                  <Select.Item label={value} value={value} key={key} />
+                ))}
+              </Select>
+            </Box>
+          }
 
-              <Pressable _pressed={{ opacity: 50 }}
-                onPress={() => { }} alignSelf="center">
-                <Icon
-                  as={MaterialIcons}
-                  name={'delete-forever'}
-                  color="danger.700"
-                  size={7}
-                  alignSelf="center"
-                />
-                <Text color="danger.700" fontFamily="body" fontSize="sm">Deletar</Text>
-              </Pressable>
+          <HStack px={1} py={1} mt={1} bgColor="darkBlue.800" rounded="lg" borderTopRadius={0}>
 
-              <Pressable _pressed={{ opacity: 50 }}
-                onPress={() => { }} alignSelf="center">
-                <Icon
-                  as={MaterialIcons}
-                  name={'cancel'}
-                  color="blue.400"
-                  size={7}
-                  alignSelf="center"
-                />
-                <Text color="blue.400" fontFamily="body" fontSize="sm">Cancelar</Text>
-              </Pressable>
+            {isEditing ?
+              <HStack flex={1} justifyContent="space-evenly">
+                <Pressable _pressed={{ opacity: 50 }}
+                  onPress={toggleEdit} alignSelf="center">
+                  <Icon
+                    as={Feather}
+                    name={'edit'}
+                    color="yellow.400"
+                    size={7}
+                    alignSelf="center"
+                  />
+                  <Text color="yellow.400" fontFamily="body" fontSize="sm">Editar</Text>
+                </Pressable>
 
-              <Pressable _pressed={{ opacity: 50 }}
-                onPress={() => { }} alignSelf="center">
-                <Icon
-                  as={FontAwesome6}
-                  name={'save'}
-                  color="green.400"
-                  size={7}
-                  alignSelf="center"
-                />
-                <Text color="green.400" fontFamily="body" fontSize="sm">Salvar</Text>
-              </Pressable>
+                <Pressable _pressed={{ opacity: 50 }}
+                  onPress={() => { }} alignSelf="center">
+                  <Icon
+                    as={MaterialIcons}
+                    name={'delete-forever'}
+                    color="danger.700"
+                    size={7}
+                    alignSelf="center"
+                  />
+                  <Text color="danger.700" fontFamily="body" fontSize="sm">Deletar</Text>
+                </Pressable>
+              </HStack>
+              : <Box />
+            }
+            {!isEditing ?
+              <HStack flex={1} justifyContent="space-evenly">
+                <Pressable _pressed={{ opacity: 50 }}
+                  onPress={toggleEdit} alignSelf="center">
+                  <Icon
+                    as={MaterialIcons}
+                    name={'cancel'}
+                    color="blue.400"
+                    size={7}
+                    alignSelf="center"
+                  />
+                  <Text color="blue.400" fontFamily="body" fontSize="sm">Cancelar</Text>
+                </Pressable>
 
-            </HStack>
+                <Pressable _pressed={{ opacity: 50 }}
+                  onPress={() => { }} alignSelf="center"> 
+                  <Icon
+                    as={FontAwesome6}
+                    name={'save'}
+                    color="green.400"
+                    size={7}
+                    alignSelf="center"
+                  />
+                  <Text color="green.400" fontFamily="body" fontSize="sm">Salvar</Text>
+                </Pressable>
+              </HStack>
+              : <Box />
+            }
+
           </HStack>
-
         </ScrollView>
       </VStack>
     </VStack >
