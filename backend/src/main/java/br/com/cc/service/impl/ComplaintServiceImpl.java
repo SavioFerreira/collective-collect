@@ -1,10 +1,14 @@
 package br.com.cc.service.impl;
 
+import br.com.cc.entity.Chat;
 import br.com.cc.entity.Collect;
 import br.com.cc.entity.Complaint;
+import br.com.cc.entity.Message;
 import br.com.cc.enums.Status;
+import br.com.cc.repository.ChatRepository;
 import br.com.cc.repository.CollectRepository;
 import br.com.cc.repository.ComplaintRepository;
+import br.com.cc.repository.MessageRepository;
 import br.com.cc.service.ComplaintService;
 import br.com.cc.service.ImageStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,12 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Autowired
     private ImageStorageService imageStorageService;
+
+    @Autowired
+    private ChatRepository chatRepository;
+
+    @Autowired
+    private MessageRepository messageRepository;
 
     @Override
     public List<Complaint> findAll() {
@@ -57,26 +67,57 @@ public class ComplaintServiceImpl implements ComplaintService {
     public boolean deleteById(Long id) {
         Optional<Complaint> complaint = complaintRepository.findById(id);
         if (complaint.isPresent()) {
-            Collect collect = collectRepository.findByComplaintId(id).orElse(null);
+            Optional<Collect> collect = collectRepository.findByComplaintId(id);
 
-            if (collect != null) {
-                collectRepository.delete(collect);
+            if (collect.isPresent()) {
+                deleteWasteImageAndCollectImages(complaint.get(), collect.get());
+                Optional<Chat> chat = chatRepository.findByCollectId(collect.get().getId());
+
+                if(chat.isPresent()){
+                    List<Message> messages =  messageRepository.findByChatId(chat.get().getId());
+
+                    if(!messages.isEmpty()){
+                        messageRepository.deleteAll(messages);
+                    }
+                    collect.get().getCollaborators().clear();
+                    messageRepository.deleteAll();
+                    chatRepository.deleteById(chat.get().getId());
+                }
+                collectRepository.deleteById(collect.get().getId());
+
             }
 
+            complaintRepository.delete(complaint.get());
+            return true;
+        }
+        return false;
+    }
+
+    public void deleteWasteImageAndCollectImages(Complaint complaint, Collect collect){
+        if (complaintRepository.existsById(complaint.getId()) && collectRepository.existsById(collect.getId())) {
             try {
-                String fileUrl = complaint.map(complaint1 -> complaint1.getWasteInfo().getImage()).orElse(null);
-                if (fileUrl != null) {
-                    String imageName = extractFilenameFromURL(fileUrl);
+                String fileUrlCollectImageBefore = collect.getCollectImageBefore();
+                String fileUrlCollectImageAfter = collect.getCollectImageAfter();
+                String fileUrlComplaintImage = complaint.getWasteInfo().getImage();
+
+                if (fileUrlCollectImageBefore != null) {
+                    String imageNameBefore = extractFilenameFromURL(fileUrlCollectImageBefore);
+                    if (fileUrlCollectImageAfter != null) {
+                        String imageNameAfter = extractFilenameFromURL(fileUrlCollectImageAfter);
+                        imageStorageService.deleteImage(imageNameBefore);
+                        imageStorageService.deleteImage(imageNameAfter);
+                    }
+                }
+
+                if (fileUrlComplaintImage != null) {
+                    String imageName = extractFilenameFromURL(fileUrlComplaintImage);
                     imageStorageService.deleteImage(imageName);
                 }
 
             } catch (IOException e) {
                 throw new RuntimeException("Falha ao excluir a imagem.", e);
             }
-            complaintRepository.delete(complaint.get());
-            return true;
         }
-        return false;
     }
 
     public String extractFilenameFromURL(String fileUrl) {
