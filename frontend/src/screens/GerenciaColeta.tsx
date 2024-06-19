@@ -7,7 +7,7 @@ import { api } from '@services/api';
 import { AppError } from '@utils/AppError';
 import { FlatList, VStack, View, Text, useToast, HStack, Icon, Pressable, Image, ScrollView, Center, Box, Input, Select, CheckIcon, useTheme } from 'native-base';
 import React, { useCallback, useEffect, useState } from 'react';
-import { RefreshControl } from 'react-native';
+import { Alert, RefreshControl } from 'react-native';
 import { Feather, MaterialIcons, FontAwesome6, Ionicons } from '@expo/vector-icons';
 import MapBackgroundImg from '@assets/mapBackGround.png'
 import { ResiduoType } from '@enums/ResiduoTypesEnum';
@@ -55,6 +55,10 @@ export function GerenciaColeta() {
     setIsEditing(!isEditing);
   }
 
+  function clearField() {
+    setSelectedItem(null);
+  }
+
   const applyFilter = useCallback(() => {
     const filteredColetas = typeSelected === ResiduoType.TODOS ? allCollect : allCollect.filter(coleta => coleta.type === typeSelected);
     setCollect(filteredColetas);
@@ -64,11 +68,30 @@ export function GerenciaColeta() {
     setTypeSelected(item);
   }, []);
 
-  async function fetchDenuncias() {
+  async function handleDeleteComplaintAndCollect() {
+    setIsLoading(true);
+    const id = selectedItem?.complaintId;
+    if (id !== undefined) {
+      try {
+        await api.delete(`api/complaint/${id}`);
+        fetchCollect();
+      } catch (error) {
+        const isAppError = error instanceof AppError; const title = isAppError ? error.message : 'Não foi possível deletar essa coleta';
+        toast.show({ title: title, placement: 'top', bgColor: 'red.500' })
+      }
+      finally {
+        setIsLoading(false);
+      }
+    }
+
+  }
+
+  async function fetchCollect() {
     setIsLoading(true);
     try {
       const { data } = await api.get('api/collect');
       setAllCollect(data);
+      clearField();
     } catch (error) {
       const isAppError = error instanceof AppError; const title = isAppError ? error.message : 'Não foi possível carregar os detalhes da denúncia';
       toast.show({ title: title, placement: 'top', bgColor: 'red.500' })
@@ -84,7 +107,7 @@ export function GerenciaColeta() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchDenuncias();
+      fetchCollect();
     }, [])
   );
 
@@ -121,7 +144,7 @@ export function GerenciaColeta() {
                 refreshControl={
                   <RefreshControl
                     refreshing={isLoading}
-                    onRefresh={fetchDenuncias}
+                    onRefresh={fetchCollect}
                   />
                 }
                 data={collect}
@@ -434,7 +457,7 @@ export function GerenciaColeta() {
             {isEditing ?
               <HStack flex={1} justifyContent="space-evenly">
                 <Pressable _pressed={{ opacity: 50 }}
-                  onPress={toggleEdit} alignSelf="center">
+                  onPress={ selectedItem?.id !== undefined ? () => toggleEdit() : () => Alert.alert("Atenção", "Selecione uma coleta!")} alignSelf="center">
                   <Icon
                     as={Feather}
                     name={'edit'}
@@ -446,7 +469,26 @@ export function GerenciaColeta() {
                 </Pressable>
 
                 <Pressable _pressed={{ opacity: 50 }}
-                  onPress={() => { }} alignSelf="center">
+                  alignSelf="center"
+                  onPress={selectedItem?.id !== undefined ?
+                    () => Alert.alert(
+                      "Atenção",
+                      `Deseja deletar a coleta ${selectedItem?.id}?\nEssa ação não pode ser revertida!`,
+                      [
+                        {
+                          text: "Não",
+                          style: "cancel"
+                        },
+                        {
+                          text: "Sim",
+                          onPress: () => handleDeleteComplaintAndCollect()
+                        }
+                      ]
+                    )
+                    :
+                    () => Alert.alert("Atenção", "Selecione uma coleta!")
+                  }
+                >
                   <Icon
                     as={MaterialIcons}
                     name={'delete-forever'}
@@ -462,7 +504,9 @@ export function GerenciaColeta() {
             {!isEditing ?
               <HStack flex={1} justifyContent="space-evenly">
                 <Pressable _pressed={{ opacity: 50 }}
-                  onPress={toggleEdit} alignSelf="center">
+                  alignSelf="center"
+                  onPress={toggleEdit}
+                >
                   <Icon
                     as={MaterialIcons}
                     name={'cancel'}
@@ -474,7 +518,7 @@ export function GerenciaColeta() {
                 </Pressable>
 
                 <Pressable _pressed={{ opacity: 50 }}
-                  onPress={() => { }} alignSelf="center"> 
+                  onPress={() => { }} alignSelf="center">
                   <Icon
                     as={FontAwesome6}
                     name={'save'}
