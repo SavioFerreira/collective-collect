@@ -27,9 +27,9 @@ export function GerenciaColeta() {
   const [wasteType, setWasteType] = useState<ResiduoType | undefined>();
   const [gravityType, setGravityType] = useState<ResiduoGravity | undefined>();
   const [statusType, setStatusType] = useState<StatusEnum | undefined>();
-
-  const { colors } = useTheme();
-  const toast = useToast();
+  const [collectTitle, setCollectTitle] = useState<string>();
+  const [collectDescription, setCollectDescription] = useState<string>();
+  const [collectAddress, setCollectAddress] = useState<string>();
 
   const [isEditing, setIsEditing] = useState(true);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -38,6 +38,9 @@ export function GerenciaColeta() {
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [isEditingStatus, setIsEditingStatus] = useState(false);
   const [isEditingGravity, setIsEditingGravity] = useState(false);
+
+  const { colors } = useTheme();
+  const toast = useToast();
 
   function handleWasteTypeChange(itemValue: string) {
     setWasteType(itemValue as ResiduoType);
@@ -56,7 +59,22 @@ export function GerenciaColeta() {
   }
 
   function clearField() {
+
     setSelectedItem(null);
+    setCollectTitle(undefined);
+    setCollectDescription(undefined);
+    setCollectAddress(undefined);
+    setWasteType(undefined);
+    setGravityType(undefined)
+    setStatusType(undefined);
+
+    setIsEditingTitle(false);
+    setIsEditingDescription(false);
+    setIsEditingAddress(false);
+    setIsEditingType(false);
+    setIsEditingGravity(false);
+    setIsEditingStatus(false);
+
   }
 
   const applyFilter = useCallback(() => {
@@ -83,7 +101,36 @@ export function GerenciaColeta() {
         setIsLoading(false);
       }
     }
+  }
 
+  async function handleEditCollect() {
+
+    const editedData = {
+      title: collectTitle?.length !== undefined && collectTitle?.length > 1  ? collectTitle : selectedItem?.title,
+      description: collectDescription?.length !== undefined && collectDescription?.length > 1 ? collectDescription : selectedItem?.description,
+      wasteType: wasteType ?? selectedItem?.type,
+      addrees: collectAddress?.length !== undefined && collectAddress?.length > 1 ? collectAddress : selectedItem?.locale.address,
+      status: statusType ?? selectedItem?.status,
+      gravity: gravityType ?? selectedItem?.gravity,
+    }
+
+    setIsLoading(true);
+    const id = selectedItem?.id;
+    if (id !== undefined) {
+      try {
+        const data = await api.patch(`api/collect/${id}`, editedData);
+        fetchCollect();
+        if(data.status === 200) {
+          toggleEdit();
+        }
+      } catch (error) {
+        const isAppError = error instanceof AppError; const title = isAppError ? error.message : 'Não foi possível atualizar essa coleta';
+        toast.show({ title: title, placement: 'top', bgColor: 'red.500' })
+      }
+      finally {
+        setIsLoading(false);
+      }
+    }
   }
 
   async function fetchCollect() {
@@ -200,6 +247,7 @@ export function GerenciaColeta() {
                 placeholderTextColor="green.400"
                 onSubmitEditing={() => { }}
                 returnKeyType="send"
+                onChangeText={setCollectTitle}
               />
             </Box>
           }
@@ -233,6 +281,8 @@ export function GerenciaColeta() {
                 placeholderTextColor="green.400"
                 onSubmitEditing={() => { }}
                 returnKeyType="send"
+                onChangeText={setCollectDescription}
+                
               />
             </Box>
           }
@@ -349,6 +399,7 @@ export function GerenciaColeta() {
                 placeholderTextColor="green.400"
                 onSubmitEditing={() => { }}
                 returnKeyType="send"
+                onChangeText={setCollectAddress}
               />
             </Box>
           }
@@ -473,7 +524,7 @@ export function GerenciaColeta() {
                   onPress={selectedItem?.id !== undefined ?
                     () => Alert.alert(
                       "Atenção",
-                      `Deseja deletar a coleta ${selectedItem?.id}?\nEssa ação não pode ser revertida!`,
+                      `Deletar coleta ${selectedItem?.id}?\nEssa ação não pode ser revertida!`,
                       [
                         {
                           text: "Não",
@@ -518,7 +569,26 @@ export function GerenciaColeta() {
                 </Pressable>
 
                 <Pressable _pressed={{ opacity: 50 }}
-                  onPress={() => { }} alignSelf="center">
+                  alignSelf="center"
+                  onPress={selectedItem?.id !== undefined ?
+                    () => Alert.alert(
+                      "Atenção",
+                      `Salvar alterações da coleta ${selectedItem?.id}?\nEssa ação não pode ser revertida!`,
+                      [
+                        {
+                          text: "Não",
+                          style: "cancel"
+                        },
+                        {
+                          text: "Sim",
+                          onPress: () => handleEditCollect()
+                        }
+                      ]
+                    )
+                    :
+                    () => Alert.alert("Atenção", "Selecione uma coleta!")
+                  }
+                >
                   <Icon
                     as={FontAwesome6}
                     name={'save'}
