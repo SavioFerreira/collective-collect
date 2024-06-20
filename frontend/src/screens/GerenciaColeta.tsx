@@ -217,7 +217,7 @@ export function GerenciaColeta() {
 
       <VStack h="60%" minH="60%" maxH="60%" bgColor="blue.400" rounded="lg" m={3} mt={0} mb={1} p={2}>
         <ScrollView>
-          <Center mb={1} bgColor="darkBlue.800" rounded="lg" borderBottomRadius={0}>
+          <Center mb={1} p={1} bgColor="darkBlue.800" rounded="lg" borderBottomRadius={0}>
             {isEditing ?
               <Text color="emerald.400" fontSize="md">
                 {selectedItem ? selectedItem.title : 'Título'}
@@ -251,7 +251,7 @@ export function GerenciaColeta() {
               />
             </Box>
           }
-          <VStack bgColor="darkBlue.800" mb={1}>
+          <VStack bgColor="darkBlue.800" mb={1} p={1}>
             {isEditing ?
               <Text color="emerald.400" fontFamily="body" m={1} fontSize="sm" textAlign="center" numberOfLines={3}>
                 {selectedItem ? selectedItem.description : 'Descrição'}
@@ -286,7 +286,7 @@ export function GerenciaColeta() {
               />
             </Box>
           }
-          <HStack justifyContent="center" bgColor="darkBlue.800" mb={1}>
+          <HStack justifyContent="center" bgColor="darkBlue.800" mb={1} p={1}>
             {isEditing ?
               <Text m={1} color="emerald.400" fontFamily="body" fontSize="sm">
                 TIPO: {selectedItem ? selectedItem.type : 'Tipo'}
@@ -310,7 +310,7 @@ export function GerenciaColeta() {
             }
           </HStack>
           {!isEditing && isEditingType &&
-            <Box w="100%" mb={1}>
+            <Box w="100%" mb={1} p={1}>
               <Select
                 selectedValue={wasteType}
                 onValueChange={handleWasteTypeChange}
@@ -337,7 +337,7 @@ export function GerenciaColeta() {
           }
 
           {(selectedItem ? selectedItem.complaintImage : '') ?
-            <Box w="full" h={56} position="relative" mb={1}>
+            <Box w="full" h={56} position="relative" mb={1} p={1}>
               <Image
                 alt="imagem da coleta"
                 source={{ uri: `${selectedItem ? selectedItem.complaintImage : ''}` }}
@@ -363,7 +363,7 @@ export function GerenciaColeta() {
                     </Text>
                     :
                     <HStack alignSelf="center">
-                      <Text color="emerald.400" fontSize="sm" maxW="87%" numberOfLines={2}>
+                      <Text color="emerald.400" fontSize="sm" maxW="86%" numberOfLines={2}>
                         Endereço: {selectedItem ? selectedItem.locale.address : 'Endereço'}
                       </Text>
                       <Pressable _pressed={{ opacity: 50 }} onPress={() => { setIsEditingAddress(!isEditingAddress) }} alignSelf="center">
@@ -403,7 +403,7 @@ export function GerenciaColeta() {
               />
             </Box>
           }
-          <HStack justifyContent="space-evenly" bgColor="darkBlue.800" mt={1} flex={1}>
+          <HStack justifyContent="space-evenly" bgColor="darkBlue.800" p={1} mt={1} flex={1}>
             {isEditing ?
               <Text m={1} color="emerald.400" fontFamily="body" fontSize="sm">
                 STATUS: {selectedItem ? selectedItem.status : ''}
