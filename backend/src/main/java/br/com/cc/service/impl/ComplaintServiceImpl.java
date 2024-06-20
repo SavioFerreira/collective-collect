@@ -11,7 +11,7 @@ import br.com.cc.repository.ComplaintRepository;
 import br.com.cc.repository.MessageRepository;
 import br.com.cc.service.ComplaintService;
 import br.com.cc.service.ImageStorageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,22 +22,19 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ComplaintServiceImpl implements ComplaintService {
 
-    @Autowired
-    private ComplaintRepository complaintRepository;
 
-    @Autowired
-    private CollectRepository collectRepository;
+    private final ComplaintRepository complaintRepository;
 
-    @Autowired
-    private ImageStorageService imageStorageService;
+    private final CollectRepository collectRepository;
 
-    @Autowired
-    private ChatRepository chatRepository;
+    private final ImageStorageService imageStorageService;
 
-    @Autowired
-    private MessageRepository messageRepository;
+    private final ChatRepository chatRepository;
+
+    private final MessageRepository messageRepository;
 
     @Override
     public List<Complaint> findAll() {

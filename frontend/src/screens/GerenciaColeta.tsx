@@ -556,7 +556,7 @@ export function GerenciaColeta() {
               <HStack flex={1} justifyContent="space-evenly">
                 <Pressable _pressed={{ opacity: 50 }}
                   alignSelf="center"
-                  onPress={toggleEdit}
+                  onPress={() => {toggleEdit(), clearField()}}
                 >
                   <Icon
                     as={MaterialIcons}
