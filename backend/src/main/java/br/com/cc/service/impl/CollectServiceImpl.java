@@ -6,40 +6,36 @@ import br.com.cc.entity.Collect;
 import br.com.cc.enums.Status;
 import br.com.cc.mapper.UserMapperService;
 import br.com.cc.repository.CollectRepository;
-import br.com.cc.repository.UserRepository;
 import br.com.cc.service.ChatService;
 import br.com.cc.service.CollectService;
 import br.com.cc.service.ImageStorageService;
 import br.com.cc.service.MessageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CollectServiceImpl implements CollectService {
 
-	@Autowired
-	private CollectRepository collectRepository;
 
-	@Autowired
-	private UserRepository userRepository;
+	private final CollectRepository collectRepository;
 
-	@Autowired
-	private UserMapperService userMapperService;
+	private final UserMapperService userMapperService;
 
-	@Autowired
-	private ImageStorageService imageStorageService;
+	private final ImageStorageService imageStorageService;
 
-	@Autowired
-	private MessageService messageService;
+	private final MessageService messageService;
 
-	@Autowired
-	private ChatService chatService;
+	private final ChatService chatService;
 
 	@Override
 	public List<Collect> findAll() {
@@ -61,12 +57,29 @@ public class CollectServiceImpl implements CollectService {
 	}
 
 	@Override
-	public Optional<Collect> updateById(Long id, Collect updateCollect) {
-		if (collectRepository.existsById(id)) {
-			updateCollect.setId(id);
-			return Optional.of(collectRepository.save(updateCollect));
+	public Collect updateById(Long id, Map<String, Object> updates) {
+		Optional<Collect> existingCollectOpt = collectRepository.findById(id);
+
+		if (existingCollectOpt.isPresent()) {
+			Collect existingCollect = existingCollectOpt.get();
+			BeanWrapper wrapper = new BeanWrapperImpl(existingCollect);
+			BeanWrapper wasteInfoWrapper = new BeanWrapperImpl(existingCollect.getWasteInfo());
+
+			updates.forEach((key, value) -> {
+				if (key.equals("status")) {
+					if (wrapper.isWritableProperty(key)) {
+						wrapper.setPropertyValue(key, value);
+					}
+				} else {
+					if (wasteInfoWrapper.isWritableProperty(key)) {
+						wasteInfoWrapper.setPropertyValue(key, value);
+					}
+				}
+			});
+
+			return collectRepository.save(existingCollect);
 		}
-		return Optional.empty();
+		throw new RuntimeException("Digite um ID válido!");
 	}
 
 	@Override
@@ -106,7 +119,6 @@ public class CollectServiceImpl implements CollectService {
 
 		collectRepository.save(collect);
 	}
-
 
 	@Override
 	public void startCollect(Long id)  {

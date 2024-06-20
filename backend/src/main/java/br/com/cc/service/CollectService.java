@@ -5,6 +5,7 @@ import br.com.cc.entity.Collect;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface CollectService {
@@ -23,7 +24,7 @@ public interface CollectService {
 
     Optional<Collect> findById(Long id);
 
-    Optional<Collect> updateById(Long id, Collect collect);
+    Collect updateById(Long id, Map<String, Object> updates);
 
     boolean deleteById(Long id);
 }

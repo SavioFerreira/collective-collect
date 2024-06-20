@@ -6,7 +6,7 @@ import br.com.cc.service.ComplaintService;
 import br.com.cc.service.ImageStorageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,16 +17,14 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/complaint")
+@RequiredArgsConstructor
 public class ComplaintController {
 
-	@Autowired
-	private ComplaintService complaintService;
+	private final ComplaintService complaintService;
 
-	@Autowired
-	private ComplaintMapperService complaintMapperService;
+	private final ComplaintMapperService complaintMapperService;
 
-	@Autowired
-	private ImageStorageService imageStorageService;
+	private final ImageStorageService imageStorageService;
 
 	@GetMapping
 	public List<ComplaintDTO> findAll() {
@@ -48,10 +46,8 @@ public class ComplaintController {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule()) ;
 		ComplaintDTO complaintDto = mapper.readValue(complaintDtoJson, ComplaintDTO.class);
-
 		String imageUrl = imageStorageService.uploadImage(image);
 		complaintDto.setImage(imageUrl);
-
 		Complaint complaint = complaintMapperService.convertComplaintDtoToEntity(complaintDto);
 		Complaint saved = complaintService.create(complaint);
 		return ResponseEntity.ok(complaintMapperService.convertComplaintToDTO(saved));
