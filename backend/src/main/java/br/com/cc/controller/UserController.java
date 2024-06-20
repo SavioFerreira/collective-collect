@@ -46,13 +46,6 @@ public class UserController {
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
-//	@PutMapping("/{id}")
-//	public ResponseEntity<UserDTO> updateById(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-//		User user = userMapperService.convertUserToEntity(userDTO);
-//		User updatedUser = userService.updateById(id, user);
-//		return updatedUser != null ? ResponseEntity.ok(userMapperService.convertUserToDTO(updatedUser)) : ResponseEntity.notFound().build();
-//	}
-
 	@PatchMapping("/{id}")
 	public ResponseEntity<UserDTO> updateById(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
 		User updatedUser = userService.updateById(id, updates);

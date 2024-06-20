@@ -350,7 +350,7 @@ export function Coleta() {
               ''
             }
 
-            {isCollectLeader && (coleta.status !== StatusEnum.EM_ANALISE) ?
+            {isCollectLeader && (coleta.status !== StatusEnum.EM_ANALISE && coleta.status !== StatusEnum.APROVADO) ?
               <HStack justifyContent="space-between">
                 {!isCollectStartVisible ?
                   <Pressable

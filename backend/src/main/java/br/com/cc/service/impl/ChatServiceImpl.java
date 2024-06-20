@@ -52,7 +52,7 @@ public class ChatServiceImpl implements ChatService {
             if(!messages.isEmpty()){
                 messageRepository.deleteAll(messages);
             }
-            chatRepository.delete(chat.get());
+            chatRepository.deleteById(chat.get().getId());
         }
     }
 

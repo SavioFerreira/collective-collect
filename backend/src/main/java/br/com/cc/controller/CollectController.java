@@ -1,10 +1,10 @@
 package br.com.cc.controller;
 
-import br.com.cc.dto.CollectCollaboratorDTO;
-import br.com.cc.dto.CollectDTO;
-import br.com.cc.dto.CollectValidationDTO;
+import br.com.cc.dto.*;
 
 import br.com.cc.entity.Collect;
+import br.com.cc.entity.Complaint;
+import br.com.cc.entity.User;
 import br.com.cc.exception.collect.CollectNotFoundException;
 import br.com.cc.mapper.CollectMapperService;
 import br.com.cc.service.CollectService;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -58,15 +59,10 @@ public class CollectController {
 		}
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<CollectDTO> updateById(@PathVariable Long id, @RequestBody CollectDTO collectDto) {
-		Collect collect = collectMapperService.convertCollectDtoToEntity(collectDto);
-		Optional<Collect> updatedOptional = collectService.updateById(id, collect);
-		if (updatedOptional.isPresent()) {
-			return ResponseEntity.ok(collectMapperService.convertCollectToDTO(updatedOptional.get()));
-		} else {
-			throw new CollectNotFoundException("Não foi possível encontrar e atualizar a coleta com o ID: " + id);
-		}
+	@PatchMapping("/{id}")
+	public ResponseEntity<CollectDTO> updateById(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+		Collect updatedCollect = collectService.updateById(id, updates);
+		return ResponseEntity.ok(collectMapperService.convertCollectToDTO(updatedCollect));
 	}
 
 	@PostMapping
