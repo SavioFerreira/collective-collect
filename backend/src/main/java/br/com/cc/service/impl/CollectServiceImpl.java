@@ -26,7 +26,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CollectServiceImpl implements CollectService {
 
-
 	private final CollectRepository collectRepository;
 
 	private final UserMapperService userMapperService;

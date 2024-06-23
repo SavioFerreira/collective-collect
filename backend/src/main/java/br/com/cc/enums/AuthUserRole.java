@@ -8,13 +8,10 @@ public enum AuthUserRole {
     AUTHOR("author"),
     USER("user");
 
-    private String role;
+    private final String role;
 
     AuthUserRole(String role){
         this.role = role;
     }
 
-    public String getRole(){
-        return role;
-    }
 }
